@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+
+    'paystack' => [
+        'secret_key'    => env('PAYSTACK_SECRET_KEY'),
+        'callback_url'  => env('PAYSTACK_CALLBACK_URL', '/donation/callback'),
+    ],
+
 ];
