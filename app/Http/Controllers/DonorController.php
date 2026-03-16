@@ -76,4 +76,24 @@ public function support()
 
         return back()->with('success', 'Your support ticket has been submitted successfully. We\'ll get back to you soon.');
     }
+
+
+  /**
+  * Show membership page
+  */
+  /**
+ * Show membership page within donor dashboard
+ */
+public function membership()
+{
+    $donor = Auth::guard('donor')->user();
+    $member = Member::where('donor_id', $donor->id)->first();
+    
+    if ($member && $member->status == 'active') {
+        return redirect()->route('member.dashboard')
+            ->with('info', 'You are already an active member!');
+    }
+    
+    return view('donor.membership', compact('donor', 'member'));
+}
 }

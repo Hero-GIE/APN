@@ -1,5 +1,4 @@
 <?php
-// app/Models/Member.php
 
 namespace App\Models;
 
@@ -22,9 +21,9 @@ class Member extends Model
     ];
 
     protected $casts = [
-        'start_date' => 'datetime',
-        'end_date' => 'datetime',
-        'renewal_reminder_sent_at' => 'datetime',
+        'start_date'                => 'datetime',
+        'end_date'                  => 'datetime',
+        'renewal_reminder_sent_at'  => 'datetime',
     ];
 
     public function donor()
@@ -37,22 +36,25 @@ class Member extends Model
         return $this->hasMany(MemberPayment::class);
     }
 
-    public function isActive()
+    public function isActive(): bool
     {
-        return $this->status === 'active' && $this->end_date->isFuture();
+        if ($this->status !== 'active') return false;
+        if (!$this->end_date) return true; 
+        return $this->end_date->isFuture();
     }
 
-    public function isExpired()
+    public function isExpired(): bool
     {
-        return $this->status === 'expired' || $this->end_date->isPast();
+        if ($this->status === 'expired') return true;
+        if (!$this->end_date) return false; // no end date = not expired
+        return $this->end_date->isPast();
     }
 
-    public function daysLeft()
+    public function daysLeft(): int
     {
-        if (!$this->isActive()) {
-            return 0;
-        }
-        return max(0, Carbon::now()->diffInDays($this->end_date, false));
+        if (!$this->isActive()) return 0;
+        if (!$this->end_date) return 0;
+        return max(0, (int) Carbon::now()->diffInDays($this->end_date, false));
     }
 
     public function getRenewalDateAttribute()
@@ -60,12 +62,12 @@ class Member extends Model
         return $this->end_date;
     }
 
-    public function getPlanNameAttribute()
+    public function getPlanNameAttribute(): string
     {
         return $this->membership_type === 'annual' ? 'Annual Plan' : 'Monthly Plan';
     }
 
-    public function getPriceAttribute()
+    public function getPriceAttribute(): int
     {
         return $this->membership_type === 'annual' ? 350 : 35;
     }

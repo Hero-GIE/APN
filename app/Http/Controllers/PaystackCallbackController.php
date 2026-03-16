@@ -86,6 +86,9 @@ class PaystackCallbackController extends Controller
         if ($existingDonor) {
             $donor = $existingDonor;
             $this->updateDonorIfNeeded($donor, $metadata);
+            
+            // Check if this donor already had a membership before
+            $hadMembershipBefore = Member::where('donor_id', $donor->id)->exists();
 
         } else {
             $plainPassword = $this->generateDefaultPassword();
@@ -107,6 +110,7 @@ class PaystackCallbackController extends Controller
             ]);
 
             $isNewDonor = true;
+            $hadMembershipBefore = false;
 
             Log::info('New donor created via Paystack callback', [
                 'donor_id' => $donor->id,
@@ -130,77 +134,118 @@ class PaystackCallbackController extends Controller
         $isMembership = in_array($membershipType, ['monthly', 'annual']);
         
         if ($isMembership) {
-            $this->processMembership($donor, $donation, $membershipType, $amount);
+            $member = $this->processMembership($donor, $donation, $membershipType, $amount);
         }
 
-       // ── 8. Send emails ──
-    if (function_exists('sendEmail')) {
-    if ($isNewDonor) {
-        if ($isMembership) {
-            $member = Member::where('donor_id', $donor->id)->first();
+        // ── 8. Send emails ──
+        if (function_exists('sendEmail')) {
+            // CASE 1: Brand new donor + membership = member-welcome
+            if ($isNewDonor && $isMembership) {
+                sendEmail(
+                    'emails.member-welcome',
+                    [
+                        'member' => $member,
+                        'membership' => $member,
+                        'password' => $plainPassword,
+                    ],
+                    $donor->email,
+                    'Welcome to APN Membership — Your Account is Ready'
+                );
+                
+                Log::info('New member welcome email sent', [
+                    'donor_id' => $donor->id,
+                    'email' => $donor->email
+                ]);
+            }
             
-            sendEmail(
-                'emails.member-welcome',
-                [
-                    'member' => $member, 
-                    'password' => $plainPassword,
-                ],
-                $donor->email,
-                'Welcome to APN Membership — Your Account is Ready'
-            );
-        } else {
-
-            sendEmail(
-                'emails.donor-welcome',
-                [
-                    'donor' => $donor,
-                    'donation' => $donation,
-                    'password' => $plainPassword,
-                ],
-                $donor->email,
-                'Welcome to APN — Your Account is Ready'
-            );
+            // CASE 2: Brand new donor + donation = donor-welcome
+            elseif ($isNewDonor && !$isMembership) {
+                sendEmail(
+                    'emails.donor-welcome',
+                    [
+                        'donor' => $donor,
+                        'donation' => $donation,
+                        'password' => $plainPassword,
+                    ],
+                    $donor->email,
+                    'Welcome to APN — Thank You for Your Donation'
+                );
+                
+                Log::info('New donor welcome email sent', [
+                    'donor_id' => $donor->id,
+                    'email' => $donor->email
+                ]);
+            }
+            
+            // CASE 3: Existing donor + membership (first time becoming member) = member-welcome
+            elseif (!$isNewDonor && $isMembership && !$hadMembershipBefore) {
+                sendEmail(
+                    'emails.member-welcome',
+                    [
+                        'member' => $member,
+                        'membership' => $member,
+                        'password' => null, // No password needed as they already have account
+                    ],
+                    $donor->email,
+                    'Welcome to APN Membership — You\'re Now a Member!'
+                );
+                
+                Log::info('Existing donor became member - welcome email sent', [
+                    'donor_id' => $donor->id,
+                    'email' => $donor->email
+                ]);
+            }
+            
+            // CASE 4: Existing member renewing = member-renewal
+            elseif (!$isNewDonor && $isMembership && $hadMembershipBefore) {
+                sendEmail(
+                    'emails.member-renewal',
+                    [
+                        'member' => $member,
+                        'donation' => $donation,
+                        'membership_type' => $membershipType,
+                    ],
+                    $donor->email,
+                    'APN Membership — Thank You for Your Renewal'
+                );
+                
+                Log::info('Member renewal email sent', [
+                    'donor_id' => $donor->id,
+                    'email' => $donor->email
+                ]);
+            }
+            
+            // CASE 5: Existing donor making another donation = donor-thankyou
+            elseif (!$isNewDonor && !$isMembership) {
+                sendEmail(
+                    'emails.donor-thankyou',
+                    [
+                        'donor' => $donor,
+                        'donation' => $donation,
+                    ],
+                    $donor->email,
+                    'APN — Thank You for Your Donation'
+                );
+                
+                Log::info('Donor thank you email sent', [
+                    'donor_id' => $donor->id,
+                    'email' => $donor->email
+                ]);
+            }
         }
 
-        if (function_exists('messageAdmin')) {
+        // ── 9. Admin notification (optional)
+        if (function_exists('messageAdmin') && $isNewDonor) {
             $type = $isMembership ? 'Member' : 'Donor';
             messageAdmin([
                 'title'     => "New {$type} Account Created",
                 'message'   => "A new {$type} account was created after a successful payment.",
                 'user_info' => $donor->firstname . ' ' . $donor->lastname
                              . ' — ' . $donor->email
-                             . ($isMembership ? " ({$membershipType} membership)" : ''),
+                             . ($isMembership ? " ({$membershipType} membership)" : ' (Donation)'),
                 'time'      => now()->format('d M Y, h:i A'),
             ]);
         }
-    } else {
-        if ($isMembership) {
-            $member = Member::where('donor_id', $donor->id)->first();
-            
-            sendEmail(
-                'emails.member-renewal',
-                [
-                    'member' => $member,
-                    'donation' => $donation,
-                    'membership_type' => $membershipType,
-                ],
-                $donor->email,
-                'APN Membership — Thank You for Your Renewal'
-            );
-        } else {
-        
-            sendEmail(
-                'emails.donor-thankyou',
-                [
-                    'donor' => $donor,
-                    'donation' => $donation,
-                ],
-                $donor->email,
-                'APN — Thank You for Your Donation'
-            );
-        }
-    }
-   }
 
         Log::info('Payment processed via Paystack callback', [
             'donor_id'       => $donor->id,
@@ -211,11 +256,12 @@ class PaystackCallbackController extends Controller
             'new_donor'      => $isNewDonor,
             'is_membership'  => $isMembership,
             'membership_type' => $membershipType,
+            'had_membership_before' => $hadMembershipBefore ?? false,
         ]);
 
         Auth::guard('donor')->login($donor);
 
-        // ── 9. Redirect to appropriate success page
+        // ── 10. Redirect to appropriate success page
         if ($isMembership) {
             return redirect()->route('member.success', ['reference' => $reference])
                 ->with('success', 'Membership payment successful! Welcome to APN.');
@@ -242,7 +288,6 @@ class PaystackCallbackController extends Controller
             ->first();
 
         if ($existingMember) {
-
             $existingMember->update([
                 'end_date' => $existingMember->end_date->add($membershipType === 'annual' ? '1 year' : '1 month'),
                 'renewal_count' => $existingMember->renewal_count + 1,

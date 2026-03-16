@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to APN Membership</title>
+    <title>Welcome to Africa Prosperity Network</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Lora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -11,8 +11,8 @@
         body {
             font-family: 'Inter', 'Lora', Arial, sans-serif;
             line-height: 1.7;
-            color: #1a1f36;
-            background: #f1f5f9;
+            color: #1e293b;
+            background: #f8fafc;
             margin: 0;
             padding: 20px;
         }
@@ -20,12 +20,12 @@
             max-width: 600px;
             margin: 0 auto;
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
         }
         .header {
-            background: linear-gradient(135deg, #3730a3 0%, #4f46e5 60%, #6366f1 100%);
+            background: linear-gradient(135deg, #5b4bc4 0%, #6d5fd6 60%, #7f71e8 100%);
             padding: 40px 30px;
             text-align: center;
             position: relative;
@@ -38,7 +38,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.2) 0%, transparent 50%);
             animation: pulse 4s ease-in-out infinite;
         }
         @keyframes pulse {
@@ -50,7 +50,7 @@
             font-size: 11px;
             letter-spacing: 3px;
             text-transform: uppercase;
-            color: #c7d2fe;
+            color: #e0e7ff;
             font-weight: 700;
             position: relative;
         }
@@ -64,7 +64,7 @@
             position: relative;
         }
         .header-sub {
-            color: #c7d2fe;
+            color: #e0e7ff;
             margin: 8px 0 0;
             font-size: 14px;
             font-family: 'Lora', serif;
@@ -78,7 +78,7 @@
             font-family: 'Syne', sans-serif;
             font-size: 22px;
             font-weight: 700;
-            color: #1a1f36;
+            color: #1e293b;
             margin: 0 0 15px;
         }
         .greeting-message {
@@ -87,22 +87,25 @@
             margin: 0 0 30px;
             line-height: 1.7;
         }
-        .membership-card {
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            border: 2px solid #e2e8f0;
+        .donation-card {
+            background: linear-gradient(135deg, #fafcff, #f5f7fa);
+            border: 2px solid #e9edf2;
             border-radius: 12px;
             padding: 28px;
             margin-bottom: 30px;
             transition: all 0.3s ease;
         }
-        .membership-header {
+        .donation-card:hover {
+            border-color: #8b7cf0;
+        }
+        .donation-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 20px;
         }
-        .membership-badge {
-            background: #4f46e5;
+        .donation-badge {
+            background: #8b7cf0;
             color: white;
             padding: 4px 12px;
             border-radius: 30px;
@@ -110,21 +113,37 @@
             font-weight: 600;
             letter-spacing: 0.5px;
         }
-        .membership-label {
+        .donation-label {
             font-size: 12px;
             font-weight: 700;
             letter-spacing: 2px;
             text-transform: uppercase;
-            color: #4f46e5;
+            color: #8b7cf0;
             margin: 0 0 5px;
         }
-        .membership-type {
+        .donation-amount {
             font-family: 'Syne', sans-serif;
-            font-size: 32px;
+            font-size: 48px;
             font-weight: 800;
-            color: #1a1f36;
+            color: #1e293b;
             line-height: 1;
-            margin: 0;
+            margin: 20px 0 12px;
+            text-align: center;
+        }
+        .donation-amount small {
+            font-size: 24px;
+            color: #64748b;
+        }
+        .donation-ref {
+            font-size: 13px;
+            color: #64748b;
+            background: white;
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 30px;
+            border: 2px solid #e9edf2;
+            font-family: monospace;
+            margin: 10px 0;
         }
         .info-grid {
             display: grid;
@@ -134,7 +153,7 @@
         }
         .info-box {
             background: white;
-            border: 2px solid #e2e8f0;
+            border: 2px solid #e9edf2;
             border-radius: 10px;
             padding: 12px;
         }
@@ -147,18 +166,13 @@
         }
         .info-value {
             font-family: 'Syne', sans-serif;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
-            color: #1a1f36;
+            color: #1e293b;
             margin: 0;
         }
-        .info-value small {
-            font-size: 12px;
-            color: #64748b;
-            font-weight: normal;
-        }
         .credentials-card {
-            background: linear-gradient(135deg, #3730a3, #4f46e5);
+            background: linear-gradient(135deg, #8b7cf0, #6d5fd6);
             border-radius: 16px;
             padding: 30px;
             margin-bottom: 30px;
@@ -172,7 +186,7 @@
             right: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
             animation: rotate 20s linear infinite;
         }
         @keyframes rotate {
@@ -180,7 +194,7 @@
             to { transform: rotate(360deg); }
         }
         .credentials-title {
-            color: #c7d2fe;
+            color: #e0e7ff;
             font-family: 'Syne', sans-serif;
             font-size: 16px;
             font-weight: 700;
@@ -190,15 +204,15 @@
             position: relative;
         }
         .credentials-sub {
-            color: #c7d2fe;
+            color: #e0e7ff;
             font-size: 14px;
             margin: 0 0 25px;
             opacity: 0.9;
             position: relative;
         }
         .credential-box {
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.25);
             border-radius: 10px;
             padding: 12px 16px;
             margin-bottom: 12px;
@@ -206,7 +220,7 @@
             backdrop-filter: blur(10px);
         }
         .credential-label {
-            color: #a5b4fc;
+            color: #e0e7ff;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -227,86 +241,41 @@
         .login-button {
             display: inline-block;
             background: white;
-            color: #4f46e5;
+            color: #6d5fd6;
             padding: 14px 40px;
             text-decoration: none;
-            border-radius: 40px;
+            border-radius: 10px;
             font-family: 'Syne', sans-serif;
             font-weight: 700;
             font-size: 15px;
             margin-top: 20px;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
             position: relative;
             overflow: hidden;
         }
         .login-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 25px -5px rgba(109, 95, 214, 0.3);
         }
         .security-notice {
-            background: #e8f0fe;
-            border: 2px solid #c7d2fe;
+            background: #f0f3fe;
+            border: 2px solid #d9e0fc;
             border-radius: 12px;
             padding: 16px 20px;
             margin-bottom: 30px;
         }
         .security-notice p {
             font-size: 13px;
-            color: #1e3a8a;
+            color: #3b4b8c;
             margin: 0;
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-        .security-notice i {
-            font-style: normal;
-            font-size: 16px;
-        }
-        .benefits-preview {
-            margin: 30px 0;
-        }
-        .benefits-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: #1a1f36;
-            margin: 0 0 15px;
-        }
-        .benefits-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        .benefit-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .benefit-icon {
-            background: #e8f0fe;
-            border-radius: 8px;
-            padding: 6px;
-            display: inline-flex;
-        }
-        .benefit-icon svg {
-            width: 16px;
-            height: 16px;
-            color: #4f46e5;
-        }
-        .benefit-text {
-            font-size: 13px;
-            color: #1a1f36;
-            margin: 0;
-        }
-        .benefit-text small {
-            font-size: 11px;
-            color: #64748b;
-            display: block;
         }
         .footer {
-            background: #f8fafc;
-            border-top: 2px solid #e2e8f0;
+            background: #fafcff;
+            border-top: 2px solid #e9edf2;
             padding: 30px 35px;
             text-align: center;
         }
@@ -320,7 +289,7 @@
             margin: 0 0 8px;
         }
         .footer-email a {
-            color: #4f46e5;
+            color: #8b7cf0;
             text-decoration: none;
             font-weight: 500;
         }
@@ -334,7 +303,7 @@
         }
         .footer-auto i {
             font-style: normal;
-            color: #4f46e5;
+            color: #8b7cf0;
             margin: 0 4px;
         }
     </style>
@@ -342,79 +311,72 @@
 <body>
     <div class="email-container">
 
-        {{-- Header with gradient and orb effect --}}
+        <!-- Header with gradient and orb effect (lighter colors) -->
         <div class="header">
-            <div class="header-brand">✦ APN MEMBERSHIP ✦</div>
+            <div class="header-brand">✦ APN DONATION ✦</div>
             <h1 class="header-title">Africa Prosperity Network</h1>
-            <p class="header-sub">Your membership is building a prosperous Africa</p>
+            <p class="header-sub">Your generosity is building a prosperous Africa</p>
         </div>
 
-        {{-- Body --}}
+        <!-- Body -->
         <div class="content">
 
-            {{-- Greeting with dynamic message --}}
-            <h2 class="greeting">Welcome, {{ $member->donor->firstname ?? $member->firstname ?? 'Valued Member' }}! 🎉</h2>
+            <!-- Greeting with dynamic message -->
+            <h2 class="greeting">Thank you, {{ $donor->firstname }}! 🎉</h2>
             
             <p class="greeting-message">
                 @if(isset($password) && $password)
-                    Thank you for becoming an APN Member! Your membership has been successfully activated and you now have access to exclusive member benefits. Below is a summary of your membership and your secure login credentials.
+                    Your donation has been received and your APN account has been created. Below is a summary of your contribution and your secure login credentials.
                 @else
-                    Thank you for your continued membership with APN. Your support is helping build a prosperous Africa.
+                    Thank you for your continued support. Your donation has been received successfully and is making a real difference.
                 @endif
             </p>
 
-            {{-- Membership Summary Card --}}
-            @if(isset($member))
-            <div class="membership-card">
-                <div class="membership-header">
-                    <div>
-                        <div class="membership-label">Membership Activated</div>
-                        <div class="membership-type">{{ ucfirst($member->membership_type) }} Plan</div>
+            <!-- Donation Summary Card -->
+            @if(isset($donation))
+            <div class="donation-card">
+                <div class="text-center">
+                    <div class="donation-label">Donation Received</div>
+                    <div class="donation-amount">
+                        {{ $donation->currency }} {{ number_format($donation->amount, 2) }}
+                        <small>one-time</small>
                     </div>
-                    <div class="membership-badge">
-                        <span class="w-2 h-2 bg-green-500 rounded-full inline-block mr-1" style="background: #10b981; width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
-                        ACTIVE
+                    <div class="donation-ref">
+                        Ref: {{ $donation->transaction_id }}
                     </div>
+                    @if(isset($donation->payment_method))
+                    <p style="margin: 15px 0 0; font-size: 12px; color: #64748b;">
+                        Paid via {{ ucfirst($donation->payment_method) }}
+                    </p>
+                    @endif
                 </div>
 
-                <div class="info-grid">
+                <div class="info-grid" style="margin-top: 25px;">
                     <div class="info-box">
-                        <div class="info-label">Amount</div>
-                        <div class="info-value">${{ number_format($member->price ?? 0, 2) }}</div>
+                        <div class="info-label">Donor Name</div>
+                        <div class="info-value">{{ $donor->firstname }} {{ $donor->lastname }}</div>
                     </div>
                     <div class="info-box">
-                        <div class="info-label">Valid Until</div>
-                        <div class="info-value">{{ \Carbon\Carbon::parse($member->end_date)->format('M d, Y') }}</div>
+                        <div class="info-label">Donor Email</div>
+                        <div class="info-value">{{ $donor->email }}</div>
                     </div>
                     <div class="info-box">
-                        <div class="info-label">Member Since</div>
-                        <div class="info-value">{{ \Carbon\Carbon::parse($member->start_date)->format('M d, Y') }}</div>
+                        <div class="info-label">Date</div>
+                        <div class="info-value">{{ now()->format('M d, Y') }}</div>
                     </div>
                     <div class="info-box">
-                        <div class="info-label">Days Remaining</div>
-                        <div class="info-value">{{ $member->daysLeft() }} <small>days</small></div>
+                        <div class="info-label">Status</div>
+                        <div class="info-value" style="color: #10b981;">Successful</div>
                     </div>
                 </div>
-
-                @if(isset($transaction_id))
-                <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #e2e8f0;">
-                    <div class="info-label">Transaction Reference</div>
-                    <div style="font-family: monospace; font-size: 13px; color: #1a1f36;">{{ $transaction_id }}</div>
-                </div>
-                @endif
             </div>
             @endif
 
-            {{-- Login Credentials for new members --}}
+            <!-- Login Credentials for new donors -->
             @if(isset($password) && $password)
             <div class="credentials-card">
                 <div class="credentials-title">🔐 Your Secure Login Credentials</div>
-                <p class="credentials-sub">Use these details to access your member dashboard:</p>
-
-                <div class="credential-box">
-                    <div class="credential-label">Email Address</div>
-                    <div class="credential-value">{{ $member->donor->email ?? $member->email }}</div>
-                </div>
+                <p class="credentials-sub">Use these details to access your donor dashboard:</p>
 
                 <div class="credential-box">
                     <div class="credential-label">Temporary Password</div>
@@ -422,98 +384,37 @@
                 </div>
 
                 <div style="text-align: center;">
-                    <a href="{{ route('member.dashboard') }}" class="login-button">
-                        Go to Member Dashboard →
+                    <a href="{{ route('donor.login') }}" class="login-button">
+                        Login to Your Dashboard →
                     </a>
                 </div>
             </div>
 
-            {{-- Security notice --}}
+            <!-- Security notice -->
             <div class="security-notice">
                 <p>
-                    <i>🔒</i>
+                    <span style="font-size: 16px;">🔒</span>
                     <span><strong>Security tip:</strong> For your safety, please log in and change your password immediately. Never share your credentials with anyone.</span>
                 </p>
             </div>
             @endif
 
-            {{-- Member Benefits Preview --}}
-            <div class="benefits-preview">
-                <h3 class="benefits-title">Your Member Benefits Include:</h3>
-                
-                <div class="benefits-grid">
-                    <div class="benefit-item">
-                        <span class="benefit-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </span>
-                        <div>
-                            <div class="benefit-text">Event Discounts</div>
-                            <small>10% off all APN events</small>
-                        </div>
-                    </div>
-
-                    <div class="benefit-item">
-                        <span class="benefit-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </span>
-                        <div>
-                            <div class="benefit-text">Priority Registration</div>
-                            <small>Early access to events</small>
-                        </div>
-                    </div>
-
-                    <div class="benefit-item">
-                        <span class="benefit-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </span>
-                        <div>
-                            <div class="benefit-text">Member Directory</div>
-                            <small>Exclusive networking</small>
-                        </div>
-                    </div>
-
-                    <div class="benefit-item">
-                        <span class="benefit-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </span>
-                        <div>
-                            <div class="benefit-text">APN Magazine</div>
-                            <small>Digital access included</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="text-align: center; margin-top: 20px;">
-                    <a href="{{ route('member.benefits') }}" style="color: #4f46e5; font-size: 13px; font-weight: 600; text-decoration: none;">
-                        View All Member Benefits →
-                    </a>
-                </div>
-            </div>
-
-            {{-- Impact message --}}
-            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #e2e8f0;">
+            <!-- Impact message -->
+            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #e9edf2;">
                 <p style="color: #64748b; font-size: 14px; margin: 0 0 5px; font-style: italic;">
                     "Alone we can do so little; together we can do so much."
                 </p>
-                <p style="color: #4f46e5; font-size: 12px; font-weight: 600; margin: 0;">
+                <p style="color: #8b7cf0; font-size: 12px; font-weight: 600; margin: 0;">
                     — Building Africa's Prosperity, Together —
                 </p>
             </div>
         </div>
 
-        {{-- Footer --}}
+        <!-- Footer -->
         <div class="footer">
             <p class="footer-copyright">© {{ date('Y') }} Africa Prosperity Network · All rights reserved</p>
             <p class="footer-email">
-                <a href="mailto:membership@africaprosperitynetwork.com">membership@africaprosperitynetwork.com</a>
+                <a href="mailto:donations@africaprosperitynetwork.com">donations@africaprosperitynetwork.com</a>
             </p>
             <p class="footer-auto">
                 <i>✦</i> This is an automated email. Please do not reply directly. <i>✦</i>

@@ -236,47 +236,91 @@ class MemberController extends Controller
             ->with('success', 'Profile updated successfully.');
     }
 
-    /**
-     * Show Change Password Form
-     */
-    public function showChangePasswordForm()
-    {
-        $donor = Auth::guard('donor')->user();
-        $member = Member::where('donor_id', $donor->id)->first();
+   
+   /**
+ * Show Change Password Form
+ */
+public function showChangePasswordForm()
+{
+    $donor = Auth::guard('donor')->user();
+    $member = Member::where('donor_id', $donor->id)->first();
 
-        return view('member.change-password', compact('donor', 'member'));
+    return view('member.change-password', compact('donor', 'member'));
+}
+
+ 
+  /**
+ * Change Password
+ */
+public function changePassword(Request $request)
+{
+
+    $validator = Validator::make($request->all(), [
+        'current_password' => 'required',
+        'new_password' => 'required|string|min:8|confirmed',
+    ]);
+
+    if ($validator->fails()) {
+        Log::warning('Password change validation failed', [
+            'errors' => $validator->errors()->toArray()
+        ]);
+        
+        return redirect()->back()
+            ->withErrors($validator)
+            ->withInput();
     }
 
-    /**
-     * Change Password
-     */
-    public function changePassword(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'current_password' => 'required',
-            'new_password' => 'required|string|min:8|confirmed',
+    $donor = Auth::guard('donor')->user();
+    
+    if (!Hash::check($request->current_password, $donor->password)) {
+        Log::warning('Current password incorrect', [
+            'donor_id' => $donor->id,
+            'provided_password_length' => strlen($request->current_password)
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $donor = Auth::guard('donor')->user();
-
-        if (!Hash::check($request->current_password, $donor->password)) {
-            return redirect()->back()
-                ->with('error', 'Current password is incorrect.');
-        }
-
-        $donor->update([
-            'password' => Hash::make($request->new_password)
-        ]);
-
-        return redirect()->route('member.profile.show')
-            ->with('success', 'Password changed successfully.');
+        
+        return redirect()->back()
+            ->with('error', 'Current password is incorrect.');
     }
+
+    // Hash the new password
+    $newHashedPassword = Hash::make($request->new_password);
+    
+    Log::info('New password hashed', [
+        'new_hash_length' => strlen($newHashedPassword)
+    ]);
+
+    // Update password
+    try {
+        $updateResult = $donor->update([
+            'password' => $newHashedPassword
+        ]);
+
+        $updatedDonor = Donor::find($donor->id);
+        $verifyCheck = Hash::check($request->new_password, $updatedDonor->password);
+        
+        Log::info('Password update verification', [
+            'new_password_works' => $verifyCheck,
+            'updated_at' => $updatedDonor->updated_at->toDateTimeString()
+        ]);
+
+        if (!$verifyCheck) {
+            Log::error('Password update verification failed - new password does not work');
+        }
+
+    } catch (\Exception $e) {
+        Log::error('Exception during password update', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        
+        return redirect()->back()
+            ->with('error', 'An error occurred while updating your password. Please try again.');
+    }
+
+
+    return redirect()->route('member.profile.show')
+        ->with('success', 'Password changed successfully.');
+}
 
     /**
      * Support Page
@@ -402,4 +446,16 @@ class MemberController extends Controller
             ->header('Content-Type', 'text/html')
             ->header('Content-Disposition', 'attachment; filename="receipt-' . $payment->donation->transaction_id . '.html"');
     }
+
+
+    /**
+ * Show About APN page
+ */
+public function about()
+{
+    $donor = Auth::guard('donor')->user();
+    $member = Member::where('donor_id', $donor->id)->first();
+    
+    return view('member.about', compact('donor', 'member'));
+}
 }

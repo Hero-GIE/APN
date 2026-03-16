@@ -1,11 +1,90 @@
 @extends('layouts.guest')
 
 @section('content')
+
+<style>
+    body {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    h1, h2, h3, h4, h5, h6, .heading-font, .font-urbanist, .btn, button, [class*="font-bold"] {
+        font-family: 'Urbanist', sans-serif;
+    }
+    
+    /* Text size adjustments */
+    .text-xs {
+        font-size: 0.8rem !important;
+    }
+    .text-sm {
+        font-size: 0.95rem !important;
+    }
+    .text-base {
+        font-size: 1rem !important;
+    }
+    .text-lg {
+        font-size: 1.125rem !important;
+    }
+    .text-xl {
+        font-size: 1.3rem !important;
+    }
+    .text-2xl {
+        font-size: 1.65rem !important;
+    }
+    .text-3xl {
+        font-size: 2rem !important;
+    }
+    
+    .breadcrumb-link {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 0.95rem;
+    }
+    
+    .stat-card p {
+        font-size: 0.8rem;
+    }
+    
+    .stat-card .font-semibold {
+        font-size: 1rem;
+    }
+    
+    .info-label {
+        font-size: 0.8rem;
+        letter-spacing: 0.02em;
+    }
+    
+    .info-value {
+        font-size: 1rem;
+    }
+    
+    .section-title {
+        font-family: 'Urbanist', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        body {
+            font-size: 15px;
+        }
+        .text-xs {
+            font-size: 0.75rem !important;
+        }
+        .text-sm {
+            font-size: 0.875rem !important;
+        }
+        h1 {
+            font-size: 1.75rem !important;
+        }
+    }
+</style>
+
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header with breadcrumb (matching edit page) -->
         <div class="mb-8">
-            <div class="flex items-center text-sm text-gray-500 mb-2">
+            <div class="flex items-center text-sm text-gray-500 mb-2 breadcrumb-link">
                 <a href="{{ route('member.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
                 <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
@@ -43,7 +122,7 @@
 
             <!-- Stats Cards Row (Matching edit page) -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-gray-50 border-b border-gray-200">
-                <div class="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
+                <div class="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow stat-card">
                     <div class="flex items-center">
                         <div class="p-2 bg-indigo-100 rounded-full">
                             <svg class="h-5 w-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,7 +136,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
+                <div class="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow stat-card">
                     <div class="flex items-center">
                         <div class="p-2 bg-green-100 rounded-full">
                             <svg class="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,7 +150,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
+                <div class="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow stat-card">
                     <div class="flex items-center">
                         <div class="p-2 bg-purple-100 rounded-full">
                             <svg class="h-5 w-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,7 +169,7 @@
             <div class="p-6">
                 <!-- Header with Edit Button (matching edit page) -->
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800">Personal Information</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 section-title">Personal Information</h3>
                     <a href="{{ route('member.profile.edit') }}" 
                        class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,61 +182,61 @@
                 <!-- Personal Information Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                        <p class="text-xs text-gray-500 mb-1">First Name</p>
-                        <p class="text-base font-medium text-gray-900">{{ $donor->firstname }}</p>
+                        <p class="text-xs text-gray-500 mb-1 info-label">First Name</p>
+                        <p class="text-base font-medium text-gray-900 info-value">{{ $donor->firstname }}</p>
                     </div>
 
                     <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                        <p class="text-xs text-gray-500 mb-1">Last Name</p>
-                        <p class="text-base font-medium text-gray-900">{{ $donor->lastname }}</p>
+                        <p class="text-xs text-gray-500 mb-1 info-label">Last Name</p>
+                        <p class="text-base font-medium text-gray-900 info-value">{{ $donor->lastname }}</p>
                     </div>
 
                     <div class="bg-gray-50 rounded-lg p-4 border border-gray-100 md:col-span-2">
-                        <p class="text-xs text-gray-500 mb-1">Email Address</p>
-                        <p class="text-base font-medium text-gray-900">{{ $donor->email }}</p>
+                        <p class="text-xs text-gray-500 mb-1 info-label">Email Address</p>
+                        <p class="text-base font-medium text-gray-900 info-value">{{ $donor->email }}</p>
                     </div>
 
                     <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                        <p class="text-xs text-gray-500 mb-1">Phone Number</p>
-                        <p class="text-base font-medium text-gray-900">{{ $donor->phone ?? 'Not provided' }}</p>
+                        <p class="text-xs text-gray-500 mb-1 info-label">Phone Number</p>
+                        <p class="text-base font-medium text-gray-900 info-value">{{ $donor->phone ?? 'Not provided' }}</p>
                     </div>
 
                     <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                        <p class="text-xs text-gray-500 mb-1">Country</p>
-                        <p class="text-base font-medium text-gray-900">{{ $donor->country ?? 'Not provided' }}</p>
+                        <p class="text-xs text-gray-500 mb-1 info-label">Country</p>
+                        <p class="text-base font-medium text-gray-900 info-value">{{ $donor->country ?? 'Not provided' }}</p>
                     </div>
                 </div>
 
                 <!-- Address Information -->
                 <div class="mb-8">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Address Information</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 section-title">Address Information</h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="bg-gray-50 rounded-lg p-4 border border-gray-100 md:col-span-2">
-                            <p class="text-xs text-gray-500 mb-1">Street Address</p>
-                            <p class="text-base font-medium text-gray-900">{{ $donor->address ?? 'Not provided' }}</p>
+                            <p class="text-xs text-gray-500 mb-1 info-label">Street Address</p>
+                            <p class="text-base font-medium text-gray-900 info-value">{{ $donor->address ?? 'Not provided' }}</p>
                         </div>
 
                         <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                            <p class="text-xs text-gray-500 mb-1">City</p>
-                            <p class="text-base font-medium text-gray-900">{{ $donor->city ?? 'Not provided' }}</p>
+                            <p class="text-xs text-gray-500 mb-1 info-label">City</p>
+                            <p class="text-base font-medium text-gray-900 info-value">{{ $donor->city ?? 'Not provided' }}</p>
                         </div>
 
                         <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                            <p class="text-xs text-gray-500 mb-1">Region/State</p>
-                            <p class="text-base font-medium text-gray-900">{{ $donor->region ?? 'Not provided' }}</p>
+                            <p class="text-xs text-gray-500 mb-1 info-label">Region/State</p>
+                            <p class="text-base font-medium text-gray-900 info-value">{{ $donor->region ?? 'Not provided' }}</p>
                         </div>
 
                         <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                            <p class="text-xs text-gray-500 mb-1">Postal Code</p>
-                            <p class="text-base font-medium text-gray-900">{{ $donor->postcode ?? 'Not provided' }}</p>
+                            <p class="text-xs text-gray-500 mb-1 info-label">Postal Code</p>
+                            <p class="text-base font-medium text-gray-900 info-value">{{ $donor->postcode ?? 'Not provided' }}</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Communication Preferences -->
                 <div class="mb-8">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Communication Preferences</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 section-title">Communication Preferences</h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="bg-gray-50 rounded-lg p-4 border border-gray-100 flex items-center">
@@ -184,7 +263,7 @@
 
                 <!-- Account Security -->
                 <div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Account Security</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 section-title">Account Security</h3>
                     
                     <div class="bg-gray-50 rounded-lg p-4 border border-gray-100 flex items-center justify-between">
                         <div class="flex items-center">

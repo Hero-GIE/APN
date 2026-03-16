@@ -76,7 +76,7 @@
 
         <!-- Header -->
         <h1 class="font-['Syne'] text-4xl font-bold text-[#1a1f36] mb-2 text-center leading-tight">Welcome to APN!</h1>
-        <p class="text-[#64748b] text-sm mb-8 text-center font-['Lora']">Your membership has been activated successfully.</p>
+        <p class="text-[#64748b] text-sm mb-8 text-center font-['Lora']">Your membership has been created successfully.</p>
 
         @if(isset($membership) && $membership)
         <!-- Receipt Card -->

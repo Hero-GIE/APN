@@ -20,7 +20,8 @@ class DonationController extends Controller
                  
             Log::info('Donation/Membership initialization request received', $request->all());
 
-            $validator = Validator::make($request->all(), [
+            // Base validation for all requests
+            $rules = [
                 'amount' => 'required|numeric|min:1',
                 'email' => 'required|email',
                 'firstname' => 'required|string',
@@ -29,12 +30,22 @@ class DonationController extends Controller
                 'country' => 'nullable|string',
                 'city' => 'nullable|string',
                 'region' => 'nullable|string',
-                'membership_type' => 'nullable|in:monthly,annual', 
                 'email_updates' => 'sometimes|boolean',
                 'text_updates' => 'sometimes|boolean',
-            ]);
+            ];
+
+            if ($request->has('membership_type') && $request->membership_type !== 'donation') {
+                $rules['membership_type'] = 'required|in:monthly,annual';
+            }
+
+            $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
+                Log::warning('Donation validation failed', [
+                    'errors' => $validator->errors()->toArray(),
+                    'input' => $request->all()
+                ]);
+                
                 return response()->json([
                     'status' => false,
                     'message' => 'Validation failed',
@@ -42,10 +53,15 @@ class DonationController extends Controller
                 ], 422);
             }
 
+            $isMembership = in_array($request->membership_type, ['monthly', 'annual']);
+            
             $orderId = 'APN_' . time() . '_' . uniqid();
+            
+            $amountInSmallestUnit = $request->amount * 100;
+            
             $paystackData = [
                 'email' => $request->email,
-                'amount' => $request->amount,
+                'amount' => $amountInSmallestUnit,
                 'order_id' => $orderId,
                 'metadata' => [
                     'firstname' => $request->firstname,
@@ -54,7 +70,8 @@ class DonationController extends Controller
                     'country' => $request->country ?? '',
                     'city' => $request->city ?? '',
                     'region' => $request->region ?? '',
-                    'membership_type' => $request->membership_type ?? 'donation', 
+                    'membership_type' => $isMembership ? $request->membership_type : 'donation',
+                    'is_membership' => $isMembership,
                     'email_updates' => $request->boolean('email_updates', true),
                     'text_updates' => $request->boolean('text_updates', false)
                 ]

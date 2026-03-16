@@ -21,7 +21,7 @@
         </div>
 
         <div class="bg-white rounded-lg shadow overflow-hidden">
-            <form method="POST" action="{{ route('donor.profile.update') }}">
+            <form method="POST" action="{{ route('donor.profile.update') }}" id="profileForm">
                 @csrf
                 @method('PUT')
 
@@ -29,6 +29,16 @@
                     @if(session('success'))
                         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
                             {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if($errors->any())
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                            <ul class="list-disc list-inside">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
                         </div>
                     @endif
 
@@ -42,9 +52,6 @@
                                 <label for="firstname" class="block text-sm font-medium text-gray-700 mb-1">First Name <span class="text-red-500">*</span></label>
                                 <input type="text" name="firstname" id="firstname" value="{{ old('firstname', $donor->firstname) }}" 
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('firstname') border-red-500 @enderror">
-                                @error('firstname')
-                                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                @enderror
                             </div>
 
                             <!-- Last Name -->
@@ -52,9 +59,6 @@
                                 <label for="lastname" class="block text-sm font-medium text-gray-700 mb-1">Last Name <span class="text-red-500">*</span></label>
                                 <input type="text" name="lastname" id="lastname" value="{{ old('lastname', $donor->lastname) }}" 
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('lastname') border-red-500 @enderror">
-                                @error('lastname')
-                                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                @enderror
                             </div>
 
                             <!-- Email -->
@@ -62,9 +66,6 @@
                                 <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address <span class="text-red-500">*</span></label>
                                 <input type="email" name="email" id="email" value="{{ old('email', $donor->email) }}" 
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('email') border-red-500 @enderror">
-                                @error('email')
-                                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                @enderror
                             </div>
 
                             <!-- Phone -->
@@ -72,9 +73,6 @@
                                 <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
                                 <input type="tel" name="phone" id="phone" value="{{ old('phone', $donor->phone) }}" 
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('phone') border-red-500 @enderror">
-                                @error('phone')
-                                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                @enderror
                             </div>
                         </div>
                     </div>
@@ -89,9 +87,6 @@
                                 <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
                                 <input type="text" name="country" id="country" value="{{ old('country', $donor->country) }}" 
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('country') border-red-500 @enderror">
-                                @error('country')
-                                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                @enderror
                             </div>
 
                             <!-- Street Address -->
@@ -99,9 +94,6 @@
                                 <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
                                 <input type="text" name="address" id="address" value="{{ old('address', $donor->address) }}" 
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('address') border-red-500 @enderror">
-                                @error('address')
-                                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                @enderror
                             </div>
 
                             <!-- City -->
@@ -109,9 +101,6 @@
                                 <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
                                 <input type="text" name="city" id="city" value="{{ old('city', $donor->city) }}" 
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('city') border-red-500 @enderror">
-                                @error('city')
-                                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                @enderror
                             </div>
 
                             <!-- Region/State -->
@@ -119,9 +108,6 @@
                                 <label for="region" class="block text-sm font-medium text-gray-700 mb-1">Region/State</label>
                                 <input type="text" name="region" id="region" value="{{ old('region', $donor->region) }}" 
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('region') border-red-500 @enderror">
-                                @error('region')
-                                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                                @enderror
                             </div>
                         </div>
                     </div>
@@ -154,15 +140,70 @@
 
                 <!-- Form Actions -->
                 <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-end space-x-3">
-                    <a href="{{ route('donor.profile.show') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 focus:bg-gray-300 active:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    <a href="{{ route('donor.profile.show') }}" 
+                       id="cancelButton"
+                       class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 focus:bg-gray-300 active:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
                         Cancel
                     </a>
-                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                        Save Changes
+                    
+                    <button type="submit" 
+                            id="submitButton"
+                            class="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 min-w-[120px]">
+                        <span id="buttonText">Save Changes</span>
+                        <span id="loadingSpinner" class="hidden ml-2">
+                            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </span>
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<style>
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .animate-spin {
+        animation: spin 1s linear infinite;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('profileForm');
+        const submitButton = document.getElementById('submitButton');
+        const cancelButton = document.getElementById('cancelButton');
+        const buttonText = document.getElementById('buttonText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        
+        if (form) {
+            form.addEventListener('submit', function(e) {
+
+                if (submitButton.disabled) {
+                    e.preventDefault();
+                    return;
+                }
+                
+                submitButton.disabled = true;
+                submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+                
+                buttonText.textContent = 'Saving...';
+                loadingSpinner.classList.remove('hidden');
+                
+                if (cancelButton) {
+                    cancelButton.style.pointerEvents = 'none';
+                    cancelButton.classList.add('opacity-50');
+                }
+                
+                console.log('Profile update form submitting...');
+                
+            });
+        }
+    });
+</script>
 @endsection

@@ -1,11 +1,126 @@
 @extends('layouts.guest')
 
 @section('content')
+<style>
+    body {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    h1, h2, h3, h4, h5, h6, .heading-font, .font-urbanist, .btn, button, [class*="font-bold"] {
+        font-family: 'Urbanist', sans-serif;
+    }
+    
+    /* Text size adjustments */
+    .text-xs {
+        font-size: 0.8rem !important;
+    }
+    .text-sm {
+        font-size: 0.95rem !important;
+    }
+    .text-base {
+        font-size: 1rem !important;
+    }
+    .text-lg {
+        font-size: 1.125rem !important;
+    }
+    .text-xl {
+        font-size: 1.3rem !important;
+    }
+    .text-2xl {
+        font-size: 1.65rem !important;
+    }
+    .text-3xl {
+        font-size: 2rem !important;
+    }
+    
+    .breadcrumb-link {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 0.95rem;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem;
+        letter-spacing: 0.02em;
+    }
+    
+    .stat-value {
+        font-size: 1.65rem;
+        font-family: 'Urbanist', sans-serif;
+        font-weight: 600;
+    }
+    
+    .table-header {
+        font-size: 0.8rem;
+        font-family: 'Urbanist', sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+    }
+    
+    .table-date {
+        font-size: 0.95rem;
+    }
+    
+    .table-time {
+        font-size: 0.8rem;
+    }
+    
+    .table-transaction {
+        font-size: 0.9rem;
+        font-family: monospace;
+    }
+    
+    .table-amount {
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+    
+    .table-period {
+        font-size: 0.9rem;
+    }
+    
+    .table-period-small {
+        font-size: 0.8rem;
+    }
+    
+    .badge-status {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    
+    .empty-state-title {
+        font-family: 'Urbanist', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+    
+    .empty-state-text {
+        font-size: 0.9rem;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        body {
+            font-size: 15px;
+        }
+        .text-xs {
+            font-size: 0.75rem !important;
+        }
+        .text-sm {
+            font-size: 0.875rem !important;
+        }
+        h1 {
+            font-size: 1.75rem !important;
+        }
+    }
+</style>
+
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
-            <div class="flex items-center text-sm text-gray-500 mb-2">
+            <div class="flex items-center text-sm text-gray-500 mb-2 breadcrumb-link">
                 <a href="{{ route('member.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
                 <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
@@ -26,8 +141,8 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <p class="text-gray-500 text-sm">Total Payments</p>
-                        <p class="text-2xl font-semibold text-gray-900">{{ $payments->total() }}</p>
+                        <p class="text-gray-500 stat-label">Total Payments</p>
+                        <p class="stat-value text-gray-900">{{ $payments->total() }}</p>
                     </div>
                 </div>
             </div>
@@ -40,8 +155,8 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <p class="text-gray-500 text-sm">Total Amount</p>
-                        <p class="text-2xl font-semibold text-gray-900">${{ number_format($payments->sum('amount'), 2) }}</p>
+                        <p class="text-gray-500 stat-label">Total Amount</p>
+                        <p class="stat-value text-gray-900">${{ number_format($payments->sum('amount'), 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -54,8 +169,8 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <p class="text-gray-500 text-sm">Successful Payments</p>
-                        <p class="text-2xl font-semibold text-gray-900">{{ $payments->where('donation.payment_status', 'success')->count() }}</p>
+                        <p class="text-gray-500 stat-label">Successful Payments</p>
+                        <p class="stat-value text-gray-900">{{ $payments->where('donation.payment_status', 'success')->count() }}</p>
                     </div>
                 </div>
             </div>
@@ -71,32 +186,32 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Method</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Receipt</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Transaction ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Amount</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Period</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Payment Method</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Receipt</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($payments as $payment)
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $payment->payment_date->format('M d, Y') }}</div>
-                                <div class="text-xs text-gray-500">{{ $payment->payment_date->format('h:i A') }}</div>
+                                <div class="table-date text-gray-900">{{ $payment->payment_date->format('M d, Y') }}</div>
+                                <div class="table-time text-gray-500">{{ $payment->payment_date->format('h:i A') }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="text-sm font-mono text-gray-600">{{ substr($payment->donation->transaction_id, 0, 12) }}...</span>
+                                <span class="table-transaction text-gray-600">{{ substr($payment->donation->transaction_id, 0, 12) }}...</span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="text-sm font-semibold text-gray-900">${{ number_format($payment->amount, 2) }}</span>
+                                <span class="table-amount text-gray-900">${{ number_format($payment->amount, 2) }}</span>
                                 <span class="text-xs text-gray-500 block">{{ ucfirst($payment->membership_type) }}</span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                {{ $payment->period_start->format('M d, Y') }}<br>
-                                <span class="text-xs">to {{ $payment->period_end->format('M d, Y') }}</span>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="table-period text-gray-600">{{ $payment->period_start->format('M d, Y') }}</span><br>
+                                <span class="table-period-small text-gray-500">to {{ $payment->period_end->format('M d, Y') }}</span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
@@ -108,7 +223,7 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 badge-status">
                                     Success
                                 </span>
                             </td>
@@ -125,8 +240,8 @@
                                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                                 </svg>
-                                <h3 class="mt-2 text-sm font-medium text-gray-900">No payment records</h3>
-                                <p class="mt-1 text-sm text-gray-500">Your membership payments will appear here.</p>
+                                <h3 class="mt-2 empty-state-title text-gray-900">No payment records</h3>
+                                <p class="mt-1 empty-state-text text-gray-500">Your membership payments will appear here.</p>
                             </td>
                         </tr>
                         @endforelse

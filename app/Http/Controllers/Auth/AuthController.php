@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cookie;
 
 
 class AuthController extends Controller
@@ -18,14 +19,29 @@ class AuthController extends Controller
     /**
      * Show donor login form
      */
-    public function showLoginForm()
-    {
-        if (Auth::guard('donor')->check()) {
-            return redirect()->route('donor.dashboard');
-        }
+   public function showLoginForm()
+{
+    Log::info('Login form accessed', [
+        'url' => request()->fullUrl(),
+        'previous' => url()->previous(),
+        'authenticated' => Auth::guard('donor')->check(),
+        'session' => session()->all()
+    ]);
 
-        return view('auth.donor-login');
+    if (Auth::guard('donor')->check()) {
+        $donor = Auth::guard('donor')->user();
+        $member = Member::where('donor_id', $donor->id)
+                        ->where('status', 'active')
+                        ->first();
+        
+        if ($member) {
+            return redirect()->route('member.dashboard');
+        }
+        return redirect()->route('donor.dashboard');
     }
+
+    return view('auth.donor-login');
+}
 
     /**
      * Show donor profile
@@ -38,181 +54,94 @@ class AuthController extends Controller
     return view('donor.profile', compact('donor', 'member'));
 }
 
-    /**
-     * Handle donor login
-     */
+  /**
+ * Handle donor login
+ */
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email'    => 'required|email',
-            'password' => 'required|string',
-        ]);
+    $validator = Validator::make($request->all(), [
+        'email'    => 'required|email',
+        'password' => 'required|string',
+    ]);
 
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
+    if ($validator->fails()) {
+        return back()->withErrors($validator)->withInput();
+    }
 
-        $credentials = $request->only('email', 'password');
-        
-        $donor = Donor::where('email', $credentials['email'])->first();
-        
-        if (!$donor) {
-            Log::error('Login failed: Donor not found', ['email' => $credentials['email']]);
-            return back()->withErrors([
-                'email' => 'The provided credentials do not match our records.',
-            ])->withInput($request->only('email'));
-        }
-        
-        $passwordCheck = Hash::check($credentials['password'], $donor->password);
-        
-        Log::info('Login attempt details', [
-            'email' => $credentials['email'],
-            'donor_id' => $donor->id,
-            'donor_found' => true,
-            'password_check_result' => $passwordCheck,
-            'password_in_db_length' => strlen($donor->password),
-            'input_password_length' => strlen($credentials['password'])
-        ]);
-
-        if (Auth::guard('donor')->attempt($credentials, $request->filled('remember'))) {
-            $request->session()->regenerate();
-            
-            Log::info('Login successful', ['email' => $credentials['email']]);
-            
-            // Send email notification
-            $donor = Auth::guard('donor')->user();
-            sendEmail(
-                'emails.admin_message',
-                [
-                    'title'    => 'New Login Detected',
-                    'message'  => 'A new login was recorded on your APN Membership account.',
-                    'user_info'=> $donor->firstname . ' ' . $donor->lastname . ' (' . $donor->email . ')',
-                    'time'     => now()->format('d M Y, h:i A'),
-                ],
-                $donor->email,
-                'APN Membership — New Login Detected'
-            );
-
-            // Check if donor has active membership and redirect accordingly
-            $member = Member::where('donor_id', $donor->id)
-                            ->where('status', 'active')
-                            ->first();
-            
-            if ($member) {
-                return redirect()->intended(route('member.dashboard'));
-            }
-            
-            return redirect()->intended(route('donor.dashboard'));
-        }
-
+    $credentials = $request->only('email', 'password');
+    
+    $donor = Donor::where('email', $credentials['email'])->first();
+    
+    if (!$donor) {
+        Log::error('Login failed: Donor not found', ['email' => $credentials['email']]);
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ])->withInput($request->only('email'));
     }
+    
 
-    /**
-     * Handle donor registration
-     */
-    public function register(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'firstname' => 'required|string|max:255',
-            'lastname'  => 'required|string|max:255',
-            'email'     => 'required|string|email|max:255|unique:donors',
-            'phone'     => 'nullable|string|max:20',
-            'country'   => 'nullable|string|max:100',
-            'address'   => 'nullable|string|max:255',
-            'city'      => 'nullable|string|max:100',
-            'region'    => 'nullable|string|max:100',
-            'postcode'  => 'nullable|string|max:20',
-            'password'  => 'required|string|min:8|confirmed',
-        ]);
-
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
-
-        // Create the donor
-        $donor = Donor::create([
-            'firstname'     => $request->firstname,
-            'lastname'      => $request->lastname,
-            'email'         => $request->email,
-            'phone'         => $request->phone,
-            'country'       => $request->country,
-            'address'       => $request->address,
-            'city'          => $request->city,
-            'region'        => $request->region,
-            'postcode'      => $request->postcode,
-            'email_updates' => $request->has('email_updates'),
-            'text_updates'  => $request->has('text_updates'),
-            'password'      => Hash::make($request->password),
-        ]);
-
-        // Welcome email → donor
-        sendEmail(
-            'emails.admin_message',
-            [
-                'title'      => 'Welcome to Africa Prosperity Network!',
-                'message'    => 'Your donor account has been created successfully. We are glad to have you as part of our community.',
-                'user_info'  => $donor->firstname . ' ' . $donor->lastname,
-                'time'       => now()->format('d M Y, h:i A'),
-                'action_url' => route('donor.dashboard'),
-            ],
-            $donor->email,
-            'Welcome to APN Membership'
-        );
-
-        // Notify admin of new registration
-        messageAdmin([
-            'title'    => 'New Donor Registration',
-            'message'  => 'A new donor has just registered on the APN Membership portal.',
-            'user_info'=> $donor->firstname . ' ' . $donor->lastname . ' — ' . $donor->email . ' (' . ($donor->country ?? 'N/A') . ')',
-            'time'     => now()->format('d M Y, h:i A'),
-            'action_url'=> route('donor.dashboard'),
-        ]);
-
-        Auth::guard('donor')->login($donor);
+    if (Auth::guard('donor')->attempt($credentials, $request->filled('remember'))) {
+        $request->session()->regenerate();
+     
+        $donor = Auth::guard('donor')->user();
+     
         $member = Member::where('donor_id', $donor->id)
                         ->where('status', 'active')
                         ->first();
+
+        $message = 'Welcome back, ' . $donor->firstname . '! You have successfully logged in.';
         
         if ($member) {
-            return redirect()->route('member.dashboard')->with('success', 'Welcome! Your account has been created successfully.');
+            return redirect()->intended(route('member.dashboard'))->with('login_success', $message);
         }
         
-        return redirect()->route('donor.dashboard')->with('success', 'Welcome! Your account has been created successfully.');
+        return redirect()->intended(route('donor.dashboard'))->with('login_success', $message);
     }
 
-    /**
-     * Handle donor logout
-     */
-    public function logout(Request $request)
-    {
-        $donor = Auth::guard('donor')->user();
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+    ])->withInput($request->only('email'));
+}
 
-        Auth::guard('donor')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
 
-        if ($donor) {
-            sendEmail(
-                'emails.admin_message',
-                [
-                    'title'   => 'You have been logged out',
-                    'message' => 'You have successfully logged out of your APN Membership account. If this was not you, please contact support immediately.',
-                    'time'    => now()->format('d M Y, h:i A'),
-                ],
-                $donor->email,
-                'APN Membership — Logout Notification'
-            );
-        }
-
-        return redirect()->route('donor.login')->with('success', 'You have been logged out successfully.');
+public function logout(Request $request)
+{
+    $donor = Auth::guard('donor')->user();
+ 
+    Log::info('User logged out', [
+        'donor_id' => $donor ? $donor->id : null,
+        'email'    => $donor ? $donor->email : null,
+    ]);
+ 
+    Auth::guard('donor')->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    $request->session()->flush();
+ 
+    $sessionCookieName = \Illuminate\Support\Str::slug(
+        (string) env('APP_NAME', 'laravel')
+    ) . '-session';
+ 
+    $response = redirect()->route('donor.login')
+        ->with('success', 'You have been logged out successfully.');
+ 
+    foreach ([$sessionCookieName, 'XSRF-TOKEN'] as $name) {
+        $response->headers->setCookie(
+            \Symfony\Component\HttpFoundation\Cookie::create($name)
+                ->withValue('')
+                ->withExpires(now()->subYear()->getTimestamp())
+                ->withPath('/')
+                ->withDomain(null)
+                ->withSecure((bool) env('SESSION_SECURE_COOKIE', false))
+                ->withHttpOnly(true)
+                ->withSameSite('lax')
+        );
     }
+ 
+    return $response;
+}
+ 
 
-    /**
-     * Show donor dashboard
-     */
    /**
  * Show donor dashboard
  */
@@ -220,10 +149,8 @@ public function dashboard()
 {
     $donor = Auth::guard('donor')->user();
     
-    // Check if donor has a membership
     $member = Member::where('donor_id', $donor->id)->first();
     
-    // Get donation stats
     $donations = Donation::where('donor_id', $donor->id)
         ->where('payment_status', 'success')
         ->get();
@@ -240,7 +167,6 @@ public function dashboard()
         'is_member' => $member ? true : false,
     ];
     
-    // Member status for display
     $memberStatus = null;
     $memberStatusColor = null;
     $memberStatusPulse = false;
@@ -327,17 +253,10 @@ public function dashboard()
             'text_updates'  => $request->has('text_updates'),
         ]);
 
-        // Notify donor of profile update
-        sendEmail(
-            'emails.admin_message',
-            [
-                'title'   => 'Profile Updated Successfully',
-                'message' => 'Your APN Membership profile information has been updated.',
-                'time'    => now()->format('d M Y, h:i A'),
-            ],
-            $donor->email,
-            'APN Membership — Profile Updated'
-        );
+        Log::info('Profile updated successfully', [
+            'donor_id' => $donor->id,
+            'email' => $donor->email
+        ]);
 
         return back()->with('success', 'Profile updated successfully.');
     }
@@ -380,16 +299,10 @@ public function showChangePasswordForm()
             'password' => Hash::make($request->password),
         ]);
 
-        sendEmail(
-            'emails.admin_message',
-            [
-                'title'   => 'Password Changed Successfully',
-                'message' => 'Your APN Membership account password has been changed. If you did not make this change, please contact support immediately.',
-                'time'    => now()->format('d M Y, h:i A'),
-            ],
-            $donor->email,
-            'APN Membership — Password Changed'
-        );
+        Log::info('Password changed successfully', [
+            'donor_id' => $donor->id,
+            'email' => $donor->email
+        ]);
 
         return back()->with('success', 'Password changed successfully.');
     }

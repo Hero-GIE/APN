@@ -1,11 +1,140 @@
 @extends('layouts.guest')
 
 @section('content')
+<style>
+    body {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    h1, h2, h3, h4, h5, h6, .heading-font, .font-urbanist, .btn, button, [class*="font-bold"] {
+        font-family: 'Urbanist', sans-serif;
+    }
+    
+    /* Text size adjustments */
+    .text-xs {
+        font-size: 0.8rem !important;
+    }
+    .text-sm {
+        font-size: 0.95rem !important;
+    }
+    .text-base {
+        font-size: 1rem !important;
+    }
+    .text-lg {
+        font-size: 1.125rem !important;
+    }
+    .text-xl {
+        font-size: 1.3rem !important;
+    }
+    .text-2xl {
+        font-size: 1.65rem !important;
+    }
+    .text-3xl {
+        font-size: 2rem !important;
+    }
+    
+    .breadcrumb-link {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 0.95rem;
+    }
+    
+    .card-title {
+        font-family: 'Urbanist', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+    
+    .card-text {
+        font-size: 0.95rem;
+    }
+    
+    .section-title {
+        font-family: 'Urbanist', sans-serif;
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+    
+    .form-label {
+        font-size: 0.95rem;
+        font-family: 'Urbanist', sans-serif;
+        font-weight: 600;
+    }
+    
+    .form-input, .form-select, .form-textarea {
+        font-size: 0.95rem;
+        font-family: 'Open Sans', sans-serif;
+    }
+    
+    .table-header {
+        font-size: 0.8rem;
+        font-family: 'Urbanist', sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+    }
+    
+    .table-cell {
+        font-size: 0.95rem;
+    }
+    
+    .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    
+    .faq-question {
+        font-family: 'Urbanist', sans-serif;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+    
+    .faq-answer {
+        font-size: 0.95rem;
+    }
+    
+    .modal-title {
+        font-family: 'Urbanist', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+    
+    .contact-info-label {
+        font-size: 0.85rem;
+        font-family: 'Urbanist', sans-serif;
+        font-weight: 600;
+    }
+    
+    .contact-info-value {
+        font-size: 0.95rem;
+    }
+    
+    .contact-info-small {
+        font-size: 0.8rem;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        body {
+            font-size: 15px;
+        }
+        .text-xs {
+            font-size: 0.75rem !important;
+        }
+        .text-sm {
+            font-size: 0.875rem !important;
+        }
+        h1 {
+            font-size: 1.75rem !important;
+        }
+    }
+</style>
+
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="mb-8">
-            <div class="flex items-center text-sm text-gray-500 mb-2">
-                <a href="{{ route('donor.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
+            <div class="flex items-center text-sm text-gray-500 mb-2 breadcrumb-link">
+                <a href="{{ route('member.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
                 <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                 </svg>
@@ -24,9 +153,9 @@
                             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-800 ml-3">Email Support</h3>
+                    <h3 class="card-title text-gray-800 ml-3">Email Support</h3>
                 </div>
-                <p class="text-gray-600 text-sm mb-3">Get help via email. We respond within 24 hours.</p>
+                <p class="text-gray-600 card-text mb-3">Get help via email. We respond within 24 hours.</p>
                 <a href="mailto:support@africaprosperitynetwork.com" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center">
                     support@africaprosperitynetwork.com
                     <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,9 +171,9 @@
                             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-800 ml-3">Live Chat</h3>
+                    <h3 class="card-title text-gray-800 ml-3">Live Chat</h3>
                 </div>
-                <p class="text-gray-600 text-sm mb-3">Chat with our support team in real-time.</p>
+                <p class="text-gray-600 card-text mb-3">Chat with our support team in real-time.</p>
                 <button class="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center">
                     Start Chat (Coming Soon)
                     <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,9 +190,9 @@
                             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-800 ml-3">FAQs</h3>
+                    <h3 class="card-title text-gray-800 ml-3">FAQs</h3>
                 </div>
-                <p class="text-gray-600 text-sm mb-3">Find answers to common questions.</p>
+                <p class="text-gray-600 card-text mb-3">Find answers to common questions.</p>
                 <a href="#faqs" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center">
                     Browse FAQs
                     <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,23 +218,23 @@
             <div class="lg:col-span-2">
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                     <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                        <h2 class="text-lg font-semibold text-gray-800">Submit a Support Ticket</h2>
+                        <h2 class="text-lg font-semibold text-gray-800 card-title">Submit a Support Ticket</h2>
                         <p class="text-gray-500 text-sm mt-1">Fill out the form below and we'll get back to you within 24 hours.</p>
                     </div>
 
-                    <form method="POST" action="{{ route('donor.support.ticket') }}" enctype="multipart/form-data" class="p-6" id="supportTicketForm">
+                    <form method="POST" action="{{ route('member.support.ticket') }}" enctype="multipart/form-data" class="p-6" id="supportTicketForm">
                         @csrf
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div class="md:col-span-2">
-                                <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">
+                                <label for="subject" class="block text-sm font-medium text-gray-700 mb-2 form-label">
                                     Subject <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" 
                                        name="subject" 
                                        id="subject" 
                                        value="{{ old('subject') }}"
-                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('subject') border-red-500 @enderror"
+                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('subject') border-red-500 @enderror form-input"
                                        placeholder="Brief summary of your issue"
                                        required>
                                 @error('subject')
@@ -115,12 +244,12 @@
 
                             <!-- Category -->
                             <div>
-                                <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
+                                <label for="category" class="block text-sm font-medium text-gray-700 mb-2 form-label">
                                     Category <span class="text-red-500">*</span>
                                 </label>
                                 <select name="category" 
                                         id="category" 
-                                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('category') border-red-500 @enderror"
+                                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('category') border-red-500 @enderror form-select"
                                         required>
                                     <option value="">Select a category</option>
                                     <option value="technical" {{ old('category') == 'technical' ? 'selected' : '' }}>Technical Issue</option>
@@ -136,12 +265,12 @@
 
                             <!-- Priority -->
                             <div>
-                                <label for="priority" class="block text-sm font-medium text-gray-700 mb-2">
+                                <label for="priority" class="block text-sm font-medium text-gray-700 mb-2 form-label">
                                     Priority <span class="text-red-500">*</span>
                                 </label>
                                 <select name="priority" 
                                         id="priority" 
-                                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('priority') border-red-500 @enderror"
+                                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('priority') border-red-500 @enderror form-select"
                                         required>
                                     <option value="">Select priority</option>
                                     <option value="low" {{ old('priority') == 'low' ? 'selected' : '' }}>Low - General question</option>
@@ -155,43 +284,16 @@
 
                             <!-- Message -->
                             <div class="md:col-span-2">
-                                <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
+                                <label for="message" class="block text-sm font-medium text-gray-700 mb-2 form-label">
                                     Message <span class="text-red-500">*</span>
                                 </label>
                                 <textarea name="message" 
                                           id="message" 
                                           rows="6" 
-                                          class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('message') border-red-500 @enderror"
+                                          class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('message') border-red-500 @enderror form-textarea"
                                           placeholder="Please describe your issue in detail..."
                                           required>{{ old('message') }}</textarea>
                                 @error('message')
-                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- Attachment -->
-                            <div class="md:col-span-2">
-                                <label for="attachment" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Attachment (Optional)
-                                </label>
-                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-indigo-400 transition-colors">
-                                    <div class="space-y-1 text-center">
-                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H8a4 4 0 01-4-4V12a4 4 0 014-4h12m20 0v4a4 4 0 01-4 4h-4m-6-4v4m6-4h-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                        </svg>
-                                        <div class="flex text-sm text-gray-600">
-                                            <label for="attachment" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                                                <span>Upload a file</span>
-                                                <input id="attachment" name="attachment" type="file" class="sr-only">
-                                            </label>
-                                            <p class="pl-1">or drag and drop</p>
-                                        </div>
-                                        <p class="text-xs text-gray-500">
-                                            PNG, JPG, PDF, DOC up to 5MB
-                                        </p>
-                                    </div>
-                                </div>
-                                @error('attachment')
                                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -216,7 +318,7 @@
                 <!-- Contact Info Card -->
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                     <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                        <h3 class="font-semibold text-gray-800">Contact Information</h3>
+                        <h3 class="font-semibold text-gray-800 card-title">Contact Information</h3>
                     </div>
                     <div class="p-6 space-y-4">
                         <div class="flex items-start">
@@ -265,35 +367,35 @@
 
         @if($tickets->count() > 0)
         <div class="mt-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Your Recent Support Tickets</h2>
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 section-title">Your Recent Support Tickets</h2>
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ticket #</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Ticket #</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Subject</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Category</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Priority</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach($tickets as $ticket)
                             <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600 table-cell">
                                     {{ $ticket->ticket_number }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 table-cell">
                                     {{ Str::limit($ticket->subject, 30) }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 table-cell">
                                     {{ ucfirst($ticket->category) }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full badge
                                         @if($ticket->priority == 'low') bg-green-100 text-green-800
                                         @elseif($ticket->priority == 'medium') bg-yellow-100 text-yellow-800
                                         @else bg-red-100 text-red-800 @endif">
@@ -301,7 +403,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full badge
                                         @if($ticket->status == 'open') bg-blue-100 text-blue-800
                                         @elseif($ticket->status == 'in_progress') bg-yellow-100 text-yellow-800
                                         @elseif($ticket->status == 'resolved') bg-green-100 text-green-800
@@ -309,7 +411,7 @@
                                         {{ ucfirst(str_replace('_', ' ', $ticket->status)) }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 table-cell">
                                     {{ $ticket->created_at->format('M d, Y') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
@@ -334,21 +436,21 @@
 
         <!-- FAQs Section -->
         <div id="faqs" class="mt-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Frequently Asked Questions</h2>
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 section-title">Frequently Asked Questions</h2>
             
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <div class="divide-y divide-gray-200">
                     <!-- FAQ 1 -->
                     <div class="p-6" x-data="{ open: false }">
                         <button @click="open = !open" class="flex justify-between items-center w-full text-left">
-                            <span class="text-base font-medium text-gray-900">How do I update my payment method?</span>
+                            <span class="text-base font-medium text-gray-900 faq-question">How do I update my payment method?</span>
                             <svg class="w-5 h-5 text-gray-500 transform transition-transform" 
                                  :class="{ 'rotate-180': open }" 
                                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div x-show="open" x-collapse class="mt-3 text-sm text-gray-600">
+                        <div x-show="open" x-collapse class="mt-3 text-sm text-gray-600 faq-answer">
                             You can update your payment method by going to Your Profile → Edit Profile → Payment Information. If you need assistance, please contact our support team.
                         </div>
                     </div>
@@ -356,14 +458,14 @@
                     <!-- FAQ 2 -->
                     <div class="p-6" x-data="{ open: false }">
                         <button @click="open = !open" class="flex justify-between items-center w-full text-left">
-                            <span class="text-base font-medium text-gray-900">How do I get a receipt for my donation?</span>
+                            <span class="text-base font-medium text-gray-900 faq-question">How do I get a receipt for my donation?</span>
                             <svg class="w-5 h-5 text-gray-500 transform transition-transform" 
                                  :class="{ 'rotate-180': open }" 
                                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div x-show="open" x-collapse class="mt-3 text-sm text-gray-600">
+                        <div x-show="open" x-collapse class="mt-3 text-sm text-gray-600 faq-answer">
                             You can download receipts from your Dashboard under "Donation History" or from the Transactions page. Click the "Receipt" button next to any donation.
                         </div>
                     </div>
@@ -371,14 +473,14 @@
                     <!-- FAQ 3 -->
                     <div class="p-6" x-data="{ open: false }">
                         <button @click="open = !open" class="flex justify-between items-center w-full text-left">
-                            <span class="text-base font-medium text-gray-900">How do I cancel my recurring donation?</span>
+                            <span class="text-base font-medium text-gray-900 faq-question">How do I cancel my recurring donation?</span>
                             <svg class="w-5 h-5 text-gray-500 transform transition-transform" 
                                  :class="{ 'rotate-180': open }" 
                                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div x-show="open" x-collapse class="mt-3 text-sm text-gray-600">
+                        <div x-show="open" x-collapse class="mt-3 text-sm text-gray-600 faq-answer">
                             To cancel a recurring donation, please contact our support team with your donor information and the donation details. We'll process your request within 24 hours.
                         </div>
                     </div>
@@ -411,16 +513,14 @@
 <!-- Ticket Details Modal -->
 <div id="ticketModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <!-- Background overlay -->
         <div id="modalOverlay" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
 
-        <!-- Modal panel -->
         <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <!-- Modal Header -->
                 <div class="flex justify-between items-center border-b border-gray-200 pb-4">
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900" id="modal-title">Ticket Details</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 modal-title" id="modal-title">Ticket Details</h3>
                         <p id="ticketNumber" class="text-sm text-gray-500 font-mono mt-1"></p>
                     </div>
                     <button onclick="closeTicketModal()" class="text-gray-400 hover:text-gray-500">
@@ -432,7 +532,7 @@
 
                 <!-- Ticket Details Content -->
                 <div class="mt-4" id="ticketDetails">
-                    <!-- Loading State -->
+
                     <div id="modalLoading" class="text-center py-8">
                         <svg class="animate-spin h-8 w-8 text-indigo-600 mx-auto" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -440,18 +540,15 @@
                         </svg>
                         <p class="mt-2 text-sm text-gray-500">Loading ticket details...</p>
                     </div>
-
-                    <!-- Ticket Content (populated by JavaScript) -->
                     <div id="ticketContent" class="hidden">
-                        <!-- Status and Priority Badges -->
                         <div class="flex justify-between items-center mb-6">
                             <div>
                                 <span class="text-xs text-gray-500 block mb-1">Status</span>
-                                <span id="statusBadge" class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full"></span>
+                                <span id="statusBadge" class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full badge"></span>
                             </div>
                             <div>
                                 <span class="text-xs text-gray-500 block mb-1">Priority</span>
-                                <span id="priorityBadge" class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full"></span>
+                                <span id="priorityBadge" class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full badge"></span>
                             </div>
                             <div>
                                 <span class="text-xs text-gray-500 block mb-1">Category</span>
@@ -488,8 +585,6 @@
                                 </a>
                             </div>
                         </div>
-
-                        <!-- Timeline -->
                         <div class="border-t border-gray-200 pt-4">
                             <h4 class="text-sm font-semibold text-gray-700 mb-3">Timeline</h4>
                             <div class="space-y-3">
@@ -548,34 +643,24 @@
             alert('Ticket not found');
             return;
         }
-
-        // Show modal
         document.getElementById('ticketModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
-        
-        // Show loading
         document.getElementById('modalLoading').classList.remove('hidden');
         document.getElementById('ticketContent').classList.add('hidden');
         
-        // Simulate loading
         setTimeout(() => {
-            // Hide loading
             document.getElementById('modalLoading').classList.add('hidden');
             document.getElementById('ticketContent').classList.remove('hidden');
             
-            // Populate data
             populateTicketModal(ticket);
         }, 500);
     }
 
     function populateTicketModal(ticket) {
-        // Set ticket number
         document.getElementById('ticketNumber').textContent = ticket.ticket_number;
-
-        // Set status badge
         const statusBadge = document.getElementById('statusBadge');
         statusBadge.textContent = ticket.status.replace('_', ' ').charAt(0).toUpperCase() + ticket.status.replace('_', ' ').slice(1);
-        statusBadge.className = 'px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full';
+        statusBadge.className = 'px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full badge';
         
         if (ticket.status === 'open') {
             statusBadge.classList.add('bg-blue-100', 'text-blue-800');
@@ -587,10 +672,9 @@
             statusBadge.classList.add('bg-gray-100', 'text-gray-800');
         }
 
-        // Set priority badge
         const priorityBadge = document.getElementById('priorityBadge');
         priorityBadge.textContent = ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1);
-        priorityBadge.className = 'px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full';
+        priorityBadge.className = 'px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full badge';
         
         if (ticket.priority === 'low') {
             priorityBadge.classList.add('bg-green-100', 'text-green-800');
@@ -600,14 +684,11 @@
             priorityBadge.classList.add('bg-red-100', 'text-red-800');
         }
 
-        // Set category
         document.getElementById('category').textContent = ticket.category.charAt(0).toUpperCase() + ticket.category.slice(1);
 
-        // Set subject and message
         document.getElementById('ticketSubject').textContent = ticket.subject;
         document.getElementById('ticketMessage').textContent = ticket.message;
 
-        // Handle attachment
         if (ticket.attachment) {
             document.getElementById('attachmentSection').classList.remove('hidden');
             document.getElementById('attachmentName').textContent = ticket.attachment.split('/').pop();
@@ -616,8 +697,6 @@
         } else {
             document.getElementById('attachmentSection').classList.add('hidden');
         }
-
-        // Set dates
         const createdDate = new Date(ticket.created_at);
         document.getElementById('createdAt').textContent = createdDate.toLocaleDateString('en-US', { 
             month: 'long', 
@@ -647,12 +726,10 @@
         document.body.style.overflow = 'auto';
     }
 
-    // Close modal when clicking outside
     document.getElementById('modalOverlay').addEventListener('click', function() {
         closeTicketModal();
     });
 
-    // Close modal with Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeTicketModal();

@@ -18,7 +18,7 @@ Route::get('/donate', function () {
 })->name('donate');
 
 Route::get('/donation/callback', [PaystackCallbackController::class, 'handle'])
-    ->name('donation.callback');
+    ->name('donation.callback'); 
 
 Route::get('/donation/success', function (Request $request) {
     $reference = $request->reference;
@@ -91,9 +91,43 @@ Route::middleware(['auth:donor', 'member.active'])->prefix('member')->name('memb
     
     // Receipt Download
     Route::get('/receipt/{payment}', [MemberController::class, 'downloadReceipt'])->name('receipt');
+
+    // About
+    Route::get('/about', [MemberController::class, 'about'])->name('about');
 });
 
-// Add this redirect at the end
 Route::get('/login', function() {
     return redirect()->route('donor.login');
 })->name('login');
+
+Route::get('/debug-logout', function() {
+    if (Auth::guard('donor')->check()) {
+        $donor = Auth::guard('donor')->user();
+        
+        Auth::guard('donor')->logout();
+        
+        $cookies = [
+            'laravel_session',
+            'XSRF-TOKEN',
+            'remember_web_' . sha1(config('app.key'))
+        ];
+        
+        foreach ($cookies as $cookie) {
+            \Illuminate\Support\Facades\Cookie::queue(\Illuminate\Support\Facades\Cookie::forget($cookie));
+        }
+        
+        // Clear session
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        request()->session()->flush();
+        
+        return response()->json([
+            'message' => 'Logged out',
+            'cookies_cleared' => $cookies,
+            'session_cleared' => true
+        ])->withCookie(\Illuminate\Support\Facades\Cookie::forget('laravel_session'))
+          ->withCookie(\Illuminate\Support\Facades\Cookie::forget('XSRF-TOKEN'));
+    }
+    
+    return response()->json(['message' => 'Not logged in']);
+});

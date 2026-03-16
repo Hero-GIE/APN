@@ -332,12 +332,12 @@
                             Cancel
                         </button>
                         
-                        <form method="POST" action="{{ route('donor.logout') }}" class="flex-1">
-                            @csrf
-                            <button type="submit" class="w-full px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all font-medium text-sm shadow-md">
-                                Logout
-                            </button>
-                        </form>
+                     <form method="POST" action="{{ route('donor.logout') }}" class="flex-1" id="logoutForm">
+    @csrf
+    <button type="button" onclick="clearCookiesAndLogout()" class="w-full px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all font-medium text-sm shadow-md">
+        Logout
+    </button>
+</form>
                     </div>
                 </div>
             </div>
@@ -352,7 +352,21 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script>
-    // Get donor data from Laravel
+  
+function clearCookiesAndLogout() {
+    document.cookie.split(';').forEach(function(cookie) {
+        const name = cookie.split('=')[0].trim();
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname + ';';
+    });
+
+    try { localStorage.clear(); } catch(e) {}
+    try { sessionStorage.clear(); } catch(e) {}
+
+    document.getElementById('logoutForm').submit();
+}
+
+
     const donorData = {
         name: '{{ $donor->firstname }} {{ $donor->lastname }}',
         email: '{{ $donor->email }}',

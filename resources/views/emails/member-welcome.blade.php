@@ -4,50 +4,360 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to APN Membership</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Lora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', 'Lora', Arial, sans-serif; }
-        .font-syne { font-family: 'Syne', sans-serif; }
-        .font-lora { font-family: 'Lora', serif; }
-        .font-inter { font-family: 'Inter', sans-serif; }
-        
+        body {
+            font-family: 'Inter', 'Lora', Arial, sans-serif;
+            line-height: 1.7;
+            color: #1e293b;
+            background: #f8fafc;
+            margin: 0;
+            padding: 20px;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+        }
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 60%, #60a5fa 100%);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.2) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
         @keyframes pulse {
             0%, 100% { opacity: 0.5; }
             50% { opacity: 1; }
         }
-        .animate-pulse-slow { animation: pulse 4s ease-in-out infinite; }
-        
+        .header-brand {
+            margin: 0 0 10px;
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #dbeafe;
+            font-weight: 700;
+            position: relative;
+        }
+        .header-title {
+            color: white;
+            margin: 0;
+            font-family: 'Syne', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            position: relative;
+        }
+        .header-sub {
+            color: #dbeafe;
+            margin: 8px 0 0;
+            font-size: 14px;
+            font-family: 'Lora', serif;
+            position: relative;
+        }
+        .content {
+            padding: 40px 35px;
+            background: white;
+        }
+        .greeting {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 15px;
+        }
+        .greeting-message {
+            color: #64748b;
+            font-size: 15px;
+            margin: 0 0 30px;
+            line-height: 1.7;
+            font-family: 'Lora', sans-serif;
+        }
+        .membership-card {
+            background: linear-gradient(135deg, #f0f9ff, #e6f0fa);
+            border: 2px solid #b8d6f0;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+        .membership-card:hover {
+            border-color: #3b82f6;
+        }
+        .membership-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .membership-badge {
+            background: #3b82f6;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .membership-label {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #3b82f6;
+            margin: 0 0 5px;
+        }
+        .membership-type {
+            font-family: 'Syne', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            color: #1e293b;
+            line-height: 1;
+            margin: 0;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .info-box {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px;
+        }
+        .info-label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 4px;
+        }
+        .info-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+        .info-value small {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: normal;
+        }
+        .credentials-card {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        .credentials-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
         @keyframes rotate {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-        .animate-rotate { animation: rotate 20s linear infinite; }
+        .credentials-title {
+            color: #dbeafe;
+            font-family: 'Syne', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin: 0 0 10px;
+            position: relative;
+        }
+        .credentials-sub {
+            color: #dbeafe;
+            font-size: 14px;
+            margin: 0 0 25px;
+            opacity: 0.9;
+            position: relative;
+        }
+        .credential-box {
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.25);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+        .credential-label {
+            color: #dbeafe;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 0 4px;
+        }
+        .credential-value {
+            color: white !important;
+            font-size: 16px;
+            font-family: monospace;
+            margin: 0;
+            font-weight: 500;
+            word-break: break-all;
+        }
+        .credential-value.password {
+            letter-spacing: 3px;
+            font-size: 18px;
+        }
+        .login-button {
+            display: inline-block;
+            background: white !important;
+            color: #2563eb !important;
+            padding: 14px 40px;
+            text-decoration: none;
+            border-radius: 10px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.3);
+        }
+        .security-notice {
+            background: #eff6ff;
+            border: 2px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 30px;
+        }
+        .security-notice p {
+            font-size: 13px;
+            color: #1e3a8a;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .security-notice i {
+            font-style: normal;
+            font-size: 16px;
+        }
+        .benefits-preview {
+            margin: 30px 0;
+        }
+        .benefits-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 15px;
+        }
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .benefit-icon {
+            background: #eff6ff;
+            border-radius: 8px;
+            padding: 6px;
+            display: inline-flex;
+        }
+        .benefit-icon svg {
+            width: 16px;
+            height: 16px;
+            color: #3b82f6;
+        }
+        .benefit-text {
+            font-size: 13px;
+            color: #1e293b;
+            margin: 0;
+        }
+        .benefit-text small {
+            font-size: 11px;
+            color: #64748b;
+            display: block;
+        }
+        .footer {
+            background: #f8fafc;
+            border-top: 2px solid #e2e8f0;
+            padding: 30px 35px;
+            text-align: center;
+        }
+        .footer-copyright {
+            font-size: 12px;
+            color: #64748b;
+            margin: 0 0 8px;
+        }
+        .footer-email {
+            font-size: 13px;
+            margin: 0 0 8px;
+        }
+        .footer-email a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .footer-email a:hover {
+            text-decoration: underline;
+        }
+        .footer-auto {
+            font-size: 11px;
+            color: #94a3b8;
+            margin: 0;
+        }
+        .footer-auto i {
+            font-style: normal;
+            color: #3b82f6;
+            margin: 0 4px;
+        }
     </style>
 </head>
-<body class="bg-slate-100 p-5 m-0">
-    <div class="max-w-[600px] mx-auto bg-white rounded-xl overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]">
+<body>
+    <div class="email-container">
 
-        <!-- Header with gradient and orb effect (matching donor page) -->
-        <div class="bg-gradient-to-r from-[#3730a3] via-[#4f46e5] to-[#6366f1] px-8 py-10 text-center relative overflow-hidden">
-            <div class="absolute inset-0 animate-pulse-slow" 
-                 style="background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);"></div>
-            <div class="relative">
-                <div class="text-[#c7d2fe] text-[11px] tracking-[3px] uppercase font-bold mb-2.5">✦ APN MEMBERSHIP ✦</div>
-                <h1 class="font-syne text-white text-[28px] font-extrabold tracking-tight m-0">Africa Prosperity Network</h1>
-                <p class="text-[#c7d2fe] text-sm font-lora mt-2 m-0">Your membership is building a prosperous Africa</p>
-            </div>
+        <div class="header">
+            <div class="header-brand">✦ APN MEMBERSHIP ✦</div>
+            <h1 class="header-title">Africa Prosperity Network</h1>
+            <p class="header-sub">Your membership is building a prosperous Africa</p>
         </div>
 
         <!-- Body -->
-        <div class="p-10 bg-white">
+        <div class="content">
 
-            <!-- Greeting with dynamic message -->
-            <h2 class="font-syne text-[22px] font-bold text-[#1a1f36] mb-4">Welcome, {{ $member->firstname }}! 🎉</h2>
+            <h2 class="greeting">Welcome, {{ $member->firstname }}! 🎉</h2>
             
-            <p class="text-[#64748b] text-[15px] leading-relaxed mb-8">
+            <p class="greeting-message">
                 @if(isset($password) && $password)
                     Thank you for becoming an APN Member! Your membership has been successfully activated and you now have access to exclusive member benefits. Below is a summary of your membership and your secure login credentials.
                 @else
@@ -55,184 +365,98 @@
                 @endif
             </p>
 
-            <!-- Membership Summary Card (matching donor card style) -->
             @if(isset($membership) && $membership)
-            <div class="bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-slate-200 rounded-xl p-7 mb-8 hover:border-[#4f46e5] transition-all duration-300">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center">
-                        <div class="p-3 bg-indigo-100 rounded-full mr-4">
-                            <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="text-[#4f46e5] text-xs font-bold tracking-wider uppercase mb-1">Membership Activated</div>
-                            <div class="font-syne text-2xl font-bold text-[#1a1f36]">{{ ucfirst($membership->membership_type) }} Plan</div>
-                        </div>
+            <div class="membership-card">
+                <div class="membership-header">
+                    <div>
+                        <div class="membership-label">Membership Activated</div>
+                        <div class="membership-type">{{ ucfirst($membership->membership_type) }} Plan</div>
                     </div>
-                    <div class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold flex items-center">
-                        <span class="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse"></span>
+                    <div class="membership-badge">
+                        <span style="background: #4ade80; width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px;"></span>
                         ACTIVE
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-white rounded-lg p-4 border border-slate-200">
-                        <p class="text-xs text-slate-500 mb-1">Amount</p>
-                        <p class="font-syne text-xl font-bold text-[#1a1f36]">${{ number_format($membership->amount, 2) }}</p>
+                <div class="info-grid">
+                    <div class="info-box">
+                        <div class="info-label">Amount</div>
+                        <div class="info-value">${{ number_format($membership->amount, 2) }}</div>
                     </div>
-                    <div class="bg-white rounded-lg p-4 border border-slate-200">
-                        <p class="text-xs text-slate-500 mb-1">Valid Until</p>
-                        <p class="font-syne text-xl font-bold text-[#1a1f36]">{{ \Carbon\Carbon::parse($membership->end_date)->format('M d, Y') }}</p>
+                    <div class="info-box">
+                        <div class="info-label">Valid Until</div>
+                        <div class="info-value">{{ \Carbon\Carbon::parse($membership->end_date)->format('M d, Y') }}</div>
                     </div>
-                    <div class="bg-white rounded-lg p-4 border border-slate-200">
-                        <p class="text-xs text-slate-500 mb-1">Member Since</p>
-                        <p class="font-syne text-xl font-bold text-[#1a1f36]">{{ \Carbon\Carbon::parse($membership->start_date)->format('M d, Y') }}</p>
+                    <div class="info-box">
+                        <div class="info-label">Member Since</div>
+                        <div class="info-value">{{ \Carbon\Carbon::parse($membership->start_date)->format('M d, Y') }}</div>
                     </div>
-                    <div class="bg-white rounded-lg p-4 border border-slate-200">
-                        <p class="text-xs text-slate-500 mb-1">Days Remaining</p>
-                        <p class="font-syne text-xl font-bold text-[#1a1f36]">{{ $membership->daysLeft() }} days</p>
+                    <div class="info-box">
+                        <div class="info-label">Days Remaining</div>
+                        <div class="info-value">{{ $membership->daysLeft() }} <small>days</small></div>
                     </div>
                 </div>
 
-                <!-- Transaction Reference -->
                 @if(isset($membership->transaction_id))
-                <div class="mt-4 pt-4 border-t border-slate-200">
-                    <p class="text-xs text-slate-500 mb-1">Transaction Reference</p>
-                    <p class="text-sm font-mono text-slate-700">{{ $membership->transaction_id }}</p>
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #e2e8f0;">
+                    <div class="info-label">Transaction Reference</div>
+                    <div style="font-family: monospace; font-size: 13px; color: #1e293b;">{{ $membership->transaction_id }}</div>
                 </div>
-                @endif
+                @endif 
             </div>
             @endif
 
-            <!-- Login Credentials Card (matching donor page style) -->
+            <!-- Login Credentials Card-->
             @if(isset($password) && $password)
-            <div class="bg-gradient-to-br from-[#3730a3] to-[#4f46e5] rounded-2xl p-8 mb-8 relative overflow-hidden">
-                <div class="absolute top-[-50%] right-[-50%] w-[200%] h-[200%] animate-rotate"
-                     style="background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);"></div>
-                <div class="relative">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-white/20 rounded-full p-3 mr-4">
-                            <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="text-[#c7d2fe] text-sm font-bold tracking-wider uppercase mb-1">🔐 Your Secure Login Credentials</div>
-                            <p class="text-[#c7d2fe] text-sm opacity-90">Use these details to access your member dashboard</p>
-                        </div>
-                    </div>
+            <div class="credentials-card">
+                <div class="credentials-title">🔐 Your Secure Login Credentials</div>
+                <p class="credentials-sub">Use these details to access your member dashboard</p>
 
-                    <div class="bg-white/10 border-2 border-white/20 rounded-lg p-5 mb-4 backdrop-blur-sm">
-                        <p class="text-[#a5b4fc] text-xs uppercase tracking-wider mb-1">Email Address</p>
-                        <p class="text-white text-lg font-mono break-all">{{ $member->email }}</p>
-                    </div>
-
-                    <div class="bg-white/10 border-2 border-white/20 rounded-lg p-5 mb-6 backdrop-blur-sm">
-                        <p class="text-[#a5b4fc] text-xs uppercase tracking-wider mb-1">Temporary Password</p>
-                        <p class="text-white text-2xl font-mono tracking-[4px] break-all">{{ $password }}</p>
-                    </div>
-
-                    <div class="bg-yellow-400/20 border border-yellow-400/30 rounded-lg p-4 mb-6">
-                        <p class="text-yellow-100 text-sm flex items-start">
-                            <svg class="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                            </svg>
-                            <span><strong>Security tip:</strong> For your safety, please log in and change your password immediately. Never share your credentials with anyone.</span>
-                        </p>
-                    </div>
-
-                    <div class="text-center">
-                        <a href="{{ route('member.dashboard') }}" class="inline-block bg-white text-[#4f46e5] px-10 py-4 rounded-full font-syne font-bold text-sm no-underline shadow-[0_10px_15px_-3px_rgba(0,0,0,0.2)] hover:-translate-y-0.5 hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.3)] transition-all duration-300">
-                            Go to Member Dashboard →
-                        </a>
-                    </div>
-                </div>
-            </div>
-            @endif
-
-            <!-- Member Benefits Preview (enhanced from donor page) -->
-            <div class="mb-8">
-                <h3 class="font-syne text-lg font-bold text-[#1a1f36] mb-4">Your Member Benefits Include:</h3>
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="flex items-start space-x-3">
-                        <div class="bg-green-100 rounded-lg p-2 flex-shrink-0">
-                            <svg class="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-medium text-gray-900 text-sm">Event Discounts</p>
-                            <p class="text-xs text-gray-500">10% off all APN events</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start space-x-3">
-                        <div class="bg-green-100 rounded-lg p-2 flex-shrink-0">
-                            <svg class="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-medium text-gray-900 text-sm">Priority Registration</p>
-                            <p class="text-xs text-gray-500">Early access to events</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start space-x-3">
-                        <div class="bg-green-100 rounded-lg p-2 flex-shrink-0">
-                            <svg class="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-medium text-gray-900 text-sm">Member Directory</p>
-                            <p class="text-xs text-gray-500">Exclusive networking</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start space-x-3">
-                        <div class="bg-green-100 rounded-lg p-2 flex-shrink-0">
-                            <svg class="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-medium text-gray-900 text-sm">APN Magazine</p>
-                            <p class="text-xs text-gray-500">Digital access included</p>
-                        </div>
-                    </div>
+                <div class="credential-box">
+                    <div class="credential-label">Email Address</div>
+                    <div class="credential-value">{{ $member->email }}</div>
                 </div>
 
-                <div class="mt-4 text-center">
-                    <a href="{{ route('member.benefits') }}" class="text-[#4f46e5] text-sm font-semibold hover:underline">
-                        View All Member Benefits →
+                <div class="credential-box">
+                    <div class="credential-label">Temporary Password</div>
+                    <div class="credential-value password">{{ $password }}</div>
+                </div>
+
+                <div style="text-align: center;">
+                    <a href="{{ route('donor.login') }}" class="login-button">
+                       LOGIN TO YOUR ACCOUNT →
                     </a>
                 </div>
             </div>
 
-            <!-- Impact Message (matching donor page) -->
-            <div class="text-center mt-8 pt-6 border-t-2 border-slate-200">
-                <p class="text-[#64748b] text-sm italic mb-2">
+            <!-- Security notice -->
+            <div class="security-notice">
+                <p>
+                    <span style="font-size: 16px;">🔒</span>
+                    <span><strong>Security tip:</strong> For your safety, please log in and change your password immediately. Never share your credentials with anyone.</span>
+                </p>
+            </div>
+            @endif
+
+            <!-- Impact Message -->
+            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #e2e8f0;">
+                <p style="color: #64748b; font-size: 14px; margin: 0 0 5px; font-style: italic;">
                     "Alone we can do so little; together we can do so much."
                 </p>
-                <p class="text-[#4f46e5] text-xs font-semibold">
+                <p style="color: #3b82f6; font-size: 12px; font-weight: 600; margin: 0;">
                     — Building Africa's Prosperity, Together —
                 </p>
             </div>
         </div>
 
-        <!-- Footer (matching donor page) -->
-        <div class="bg-slate-50 border-t-2 border-slate-200 px-9 py-8 text-center">
-            <p class="text-xs text-slate-500 mb-2">© {{ date('Y') }} Africa Prosperity Network · All rights reserved</p>
-            <p class="text-sm mb-2">
-                <a href="mailto:membership@africaprosperitynetwork.com" class="text-[#4f46e5] no-underline hover:underline font-medium">
-                    membership@africaprosperitynetwork.com
-                </a>
+        <!-- Footer -->
+        <div class="footer">
+            <p class="footer-copyright">© {{ date('Y') }} Africa Prosperity Network · All rights reserved</p>
+            <p class="footer-email">
+                <a href="mailto:membership@africaprosperitynetwork.com">membership@africaprosperitynetwork.com</a>
             </p>
-            <p class="text-[11px] text-slate-400">
-                <span class="text-[#4f46e5] mx-1">✦</span> This is an automated email. Please do not reply directly. <span class="text-[#4f46e5] mx-1">✦</span>
+            <p class="footer-auto">
+                <span style="color: #3b82f6;">✦</span> This is an automated email. Please do not reply directly. <span style="color: #3b82f6;">✦</span>
             </p>
         </div>
 

@@ -152,13 +152,13 @@ h1, h2, h3, h4, .font-serif {
 .success-icon {
     width: 80px;
     height: 80px;
-    background: linear-gradient(135deg, #3730a3, #4f46e5);
+    background: linear-gradient(135deg, #059669, #10b981);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 1.5rem;
-    box-shadow: 0 20px 30px -10px rgba(79,70,229,0.4);
+    box-shadow: 0 20px 30px -10px rgba(5, 150, 105, 0.4);
     animation: iconPop 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -232,7 +232,7 @@ h1, h2, h3, h4, .font-serif {
 
 .amount-value {
     font-size: 1.3rem;
-    color: #4f46e5;
+    color: #059669;
 }
 
 .reference-value {
@@ -376,6 +376,34 @@ h1, h2, h3, h4, .font-serif {
     transform: translateY(-2px);
 }
 
+.btn-outline {
+    display: block;
+    width: 100%;
+    padding: 0.875rem;
+    background: transparent;
+    color: #4f46e5;
+    border: 2px solid #4f46e5;
+    border-radius: var(--radius);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.btn-outline:hover {
+    background: #4f46e5;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(79,70,229,0.3);
+}
+
 /* Security Note */
 .security-note {
     display: flex;
@@ -434,7 +462,7 @@ h1, h2, h3, h4, .font-serif {
 
     <!-- Header -->
     <h1 class="card-title">Thank You!</h1>
-    <p class="card-sub">Your donation has been received successfully.</p>
+    <p class="card-sub">Your generous donation has been received.</p>
 
     @if(isset($donation) && $donation)
     <div class="receipt-card">
@@ -457,6 +485,10 @@ h1, h2, h3, h4, .font-serif {
                 Successful
             </span>
         </div>
+        <div class="receipt-row">
+            <span class="receipt-label">Payment Method</span>
+            <span class="receipt-value">{{ ucfirst($donation->payment_method ?? 'Card') }}</span>
+        </div>
     </div>
     @else
     <div class="receipt-card" style="text-align: center;">
@@ -468,19 +500,62 @@ h1, h2, h3, h4, .font-serif {
         <i class="fas fa-envelope-open-text"></i>
         <div class="info-content">
             <strong>Check your email</strong>
-            <p>We've sent your donation receipt and account login credentials to your email address. Use them to log in and manage your donations.</p>
+            <p>We've sent a confirmation receipt to your email address. You can also download it from your dashboard.</p>
         </div>
     </div>
 
-    <!-- Actions -->
-    <a href="{{ route('donor.login') }}" class="btn-primary">
-        <span>Login to Dashboard</span>
-        <i class="fas fa-arrow-right"></i>
-    </a>
+    @auth('donor')
+        {{-- User is logged in --}}
+        @php
+            $donor = Auth::guard('donor')->user();
+            $member = \App\Models\Member::where('donor_id', $donor->id)
+                        ->where('status', 'active')
+                        ->first();
+        @endphp
+        
+        @if($member)
+            <a href="{{ route('member.dashboard') }}" class="btn-primary">
+                <span>Go to Member Dashboard</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        @else
+            <a href="{{ route('donor.dashboard') }}" class="btn-primary">
+                <span>Go to Donor Dashboard</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        @endif
+        
+        <a href="{{ route('donor.transactions') }}" class="btn-outline">
+            <i class="fas fa-receipt"></i>
+            <span>View All Transactions</span>
+        </a>
+    @else
+        {{-- User is not logged in --}}
+        <a href="{{ route('donor.login') }}" class="btn-primary">
+            <span>Login to Dashboard</span>
+            <i class="fas fa-arrow-right"></i>
+        </a>
+        
+        <a href="{{ route('donate') }}" class="btn-outline">
+            <i class="fas fa-heart"></i>
+            <span>Make Another Donation</span>
+        </a>
+    @endauth
+
     <a href="{{ url('/') }}" class="btn-secondary">
         <i class="fas fa-home"></i>
         <span>Return to Homepage</span>
     </a>
+
+    <!-- Impact Message -->
+    <div style="text-align: center; margin: 2rem 0 0; padding: 1rem 0 0; border-top: 2px solid #e2e8f0;">
+        <p style="color: #64748b; font-size: 0.9rem; margin: 0 0 0.5rem; font-style: italic;">
+            "Your contribution is building a prosperous Africa."
+        </p>
+        <p style="color: #4f46e5; font-size: 0.8rem; font-weight: 600; margin: 0;">
+            — Together We Rise —
+        </p>
+    </div>
 
     <!-- Security Note -->
     <div class="security-note">
@@ -488,6 +563,8 @@ h1, h2, h3, h4, .font-serif {
         <span>256‑bit encrypted transaction</span>
         <i class="fas fa-circle"></i>
         <span>Secure receipt</span>
+        <i class="fas fa-circle"></i>
+        <span>Tax deductible</span>
     </div>
 
     <!-- Footer -->
@@ -510,5 +587,10 @@ function createParticles() {
     }
 }
 createParticles();
+
+// Print receipt function
+function printReceipt() {
+    window.print();
+}
 </script>
 @endsection

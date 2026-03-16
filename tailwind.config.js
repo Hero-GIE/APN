@@ -10,17 +10,13 @@ export default {
     ],
 
     theme: {
-        extend: {
-            fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-                serif: ['Lora', ...defaultTheme.fontFamily.serif],
-            },
-        },
+      extend: {
+        fontFamily: {
+        sans: ['Open Sans', ...defaultTheme.fontFamily.sans],
+        urban: ['Urbanist', 'sans-serif'],
+    },
+},
     },
 
     plugins: [forms],
 };
-
-
-
-{/* <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet"></link> */}

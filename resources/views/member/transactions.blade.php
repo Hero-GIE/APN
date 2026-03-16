@@ -1,11 +1,155 @@
 @extends('layouts.guest')
 
 @section('content')
+<style>
+    body {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    h1, h2, h3, h4, h5, h6, .heading-font, .font-urbanist, .btn, button, [class*="font-bold"] {
+        font-family: 'Urbanist', sans-serif;
+    }
+    
+    /* Text size adjustments */
+    .text-xs {
+        font-size: 0.8rem !important;
+    }
+    .text-sm {
+        font-size: 0.95rem !important;
+    }
+    .text-base {
+        font-size: 1rem !important;
+    }
+    .text-lg {
+        font-size: 1.125rem !important;
+    }
+    .text-xl {
+        font-size: 1.3rem !important;
+    }
+    .text-2xl {
+        font-size: 1.65rem !important;
+    }
+    .text-3xl {
+        font-size: 2rem !important;
+    }
+    
+    .breadcrumb-link {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 0.95rem;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem;
+        letter-spacing: 0.02em;
+    }
+    
+    .stat-value {
+        font-size: 1.3rem;
+        font-family: 'Urbanist', sans-serif;
+        font-weight: 600;
+    }
+    
+    .section-title {
+        font-family: 'Urbanist', sans-serif;
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+    
+    .table-header {
+        font-size: 0.8rem;
+        font-family: 'Urbanist', sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+    }
+    
+    .table-date {
+        font-size: 0.95rem;
+    }
+    
+    .table-time {
+        font-size: 0.8rem;
+    }
+
+.filter-select,
+#statusFilter,
+#statementPeriod {
+    min-width: 100px !important;
+    width: auto !important;
+    padding: 0.5rem 2rem 0.5rem 0.75rem !important;
+    font-size: 0.95rem;
+}
+
+.search-input,
+#searchInput {
+    min-width: 200px !important;
+    width: auto !important;
+}
+
+@media (max-width: 640px) {
+    .filter-select,
+    #statusFilter,
+    #statementPeriod,
+    .search-input,
+    #searchInput {
+        width: 100% !important;
+        min-width: 100% !important;
+    }
+}
+    
+    .table-transaction {
+        font-size: 0.9rem;
+        font-family: monospace;
+    }
+    
+    .table-amount {
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+    
+    .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    
+    .modal-title {
+        font-family: 'Urbanist', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+    
+    .filter-select, .search-input {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+    
+    .download-button {
+        font-size: 0.85rem;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        body {
+            font-size: 15px;
+        }
+        .text-xs {
+            font-size: 0.75rem !important;
+        }
+        .text-sm {
+            font-size: 0.875rem !important;
+        }
+        h1 {
+            font-size: 1.75rem !important;
+        }
+    }
+</style>
+
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header with breadcrumb -->
         <div class="mb-8">
-            <div class="flex items-center text-sm text-gray-500 mb-2">
+            <div class="flex items-center text-sm text-gray-500 mb-2 breadcrumb-link">
                 <a href="{{ route('member.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
                 <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
@@ -26,8 +170,8 @@
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <p class="text-xs text-gray-500">Total Transactions</p>
-                        <p class="text-lg font-semibold text-gray-900">{{ $transactions->count() }}</p>
+                        <p class="stat-label text-gray-500">Total Transactions</p>
+                        <p class="stat-value text-gray-900">{{ $transactions->count() }}</p>
                     </div>
                 </div>
             </div>
@@ -40,8 +184,8 @@
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <p class="text-xs text-gray-500">Total Amount</p>
-                        <p class="text-lg font-semibold text-gray-900">${{ number_format($transactions->sum('amount'), 2) }}</p>
+                        <p class="stat-label text-gray-500">Total Amount</p>
+                        <p class="stat-value text-gray-900">${{ number_format($transactions->sum('amount'), 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -54,8 +198,8 @@
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <p class="text-xs text-gray-500">Membership Payments</p>
-                        <p class="text-lg font-semibold text-gray-900">{{ $memberPayments->count() ?? 0 }}</p>
+                        <p class="stat-label text-gray-500">Membership Payments</p>
+                        <p class="stat-value text-gray-900">{{ $memberPayments->count() ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -68,8 +212,8 @@
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <p class="text-xs text-gray-500">Member Since</p>
-                        <p class="text-lg font-semibold text-gray-900">{{ $member->start_date->format('M Y') }}</p>
+                        <p class="stat-label text-gray-500">Member Since</p>
+                        <p class="stat-value text-gray-900">{{ $member->start_date->format('M Y') }}</p>
                     </div>
                 </div>
             </div>
@@ -77,17 +221,17 @@
 
         <!-- Transactions Table -->
         <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                <h2 class="text-xl font-semibold text-gray-800">All Transactions</h2>
-                <div class="flex space-x-2">
-                    <select id="statusFilter" class="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+            <div class="px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <h2 class="text-xl font-semibold text-gray-800 section-title">All Transactions</h2>
+                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+                    <select id="statusFilter" class="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 filter-select">
                         <option value="all">All Status</option>
                         <option value="success">Success</option>
                         <option value="pending">Pending</option>
                         <option value="failed">Failed</option>
                     </select>
                     <input type="text" id="searchInput" placeholder="Search transactions..." 
-                           class="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                           class="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 search-input">
                 </div>
             </div>
             
@@ -95,13 +239,13 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Method</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th class="px-6 py-3 text-left table-header text-gray-500 uppercase tracking-wider">Date & Time</th>
+                            <th class="px-6 py-3 text-left table-header text-gray-500 uppercase tracking-wider">Transaction ID</th>
+                            <th class="px-6 py-3 text-left table-header text-gray-500 uppercase tracking-wider">Description</th>
+                            <th class="px-6 py-3 text-left table-header text-gray-500 uppercase tracking-wider">Amount</th>
+                            <th class="px-6 py-3 text-left table-header text-gray-500 uppercase tracking-wider">Payment Method</th>
+                            <th class="px-6 py-3 text-left table-header text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left table-header text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -109,19 +253,19 @@
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @if(isset($transaction['date']))
-                                    <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($transaction['date'])->format('M d, Y') }}</div>
-                                    <div class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($transaction['date'])->format('h:i A') }}</div>
+                                    <div class="table-date text-gray-900">{{ \Carbon\Carbon::parse($transaction['date'])->format('M d, Y') }}</div>
+                                    <div class="table-time text-gray-500">{{ \Carbon\Carbon::parse($transaction['date'])->format('h:i A') }}</div>
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="text-sm font-mono text-gray-600">{{ $transaction['transaction_id'] ?? 'N/A' }}</span>
+                                <span class="table-transaction text-gray-600">{{ $transaction['transaction_id'] ?? 'N/A' }}</span>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">{{ $transaction['description'] ?? 'Donation to APN' }}</div>
-                                <div class="text-xs text-gray-500">{{ $transaction['type'] == 'membership' ? 'Membership Payment' : 'One-time Donation' }}</div>
+                                <div class="table-date text-gray-900">{{ $transaction['description'] ?? 'Donation to APN' }}</div>
+                                <div class="table-time text-gray-500">{{ $transaction['type'] == 'membership' ? 'Membership Payment' : 'One-time Donation' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="text-sm font-semibold text-gray-900">${{ number_format($transaction['amount'] ?? 0, 2) }}</span>
+                                <span class="table-amount text-gray-900">${{ number_format($transaction['amount'] ?? 0, 2) }}</span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
@@ -141,15 +285,15 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @if(($transaction['status'] ?? '') == 'success')
-                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    <span class="badge px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                         Success
                                     </span>
                                 @elseif(($transaction['status'] ?? '') == 'pending')
-                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    <span class="badge px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                                         Pending
                                     </span>
                                 @else
-                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                    <span class="badge px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                                         Failed
                                     </span>
                                 @endif
@@ -190,13 +334,13 @@
 
         <!-- Download Statement Section -->
         <div class="mt-8 bg-white rounded-lg shadow p-6">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <h3 class="text-lg font-semibold text-gray-800">Download Statement</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 section-title">Download Statement</h3>
                     <p class="text-sm text-gray-500 mt-1">Get a complete statement of all your transactions</p>
                 </div>
-                <div class="flex space-x-3">
-                    <select id="statementPeriod" class="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
+                    <select id="statementPeriod" class="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 filter-select">
                         <option value="30">Last 30 days</option>
                         <option value="90">Last 3 months</option>
                         <option value="180">Last 6 months</option>
@@ -204,7 +348,7 @@
                         <option value="all">All time</option>
                     </select>
                     <button onclick="downloadStatement()" 
-                            class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
+                            class="download-button inline-flex items-center justify-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                         </svg>
@@ -219,15 +363,13 @@
 <!-- Transaction Details Modal -->
 <div id="transactionModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <!-- Background overlay -->
+
         <div id="modalOverlay" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
 
-        <!-- Modal panel -->
         <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <!-- Modal Header -->
                 <div class="flex justify-between items-center border-b border-gray-200 pb-4">
-                    <h3 class="text-lg font-semibold text-gray-900" id="modal-title">Transaction Details</h3>
+                    <h3 class="modal-title text-gray-900" id="modal-title">Transaction Details</h3>
                     <button onclick="closeTransactionModal()" class="text-gray-400 hover:text-gray-500">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -237,7 +379,7 @@
 
                 <!-- Transaction Details Content -->
                 <div class="mt-4" id="transactionDetails">
-                    <!-- Loading State -->
+           
                     <div id="modalLoading" class="text-center py-8">
                         <svg class="animate-spin h-8 w-8 text-indigo-600 mx-auto" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -246,11 +388,11 @@
                         <p class="mt-2 text-sm text-gray-500">Loading transaction details...</p>
                     </div>
 
-                    <!-- Transaction Info (populated by JavaScript) -->
+                    <!-- Transaction Info -->
                     <div id="transactionContent" class="hidden">
                         <!-- Status Badge -->
                         <div class="flex justify-center mb-6">
-                            <span id="statusBadge" class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full"></span>
+                            <span id="statusBadge" class="badge px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full"></span>
                         </div>
 
                         <!-- Transaction ID -->
@@ -316,7 +458,7 @@
             <!-- Modal Footer -->
             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button onclick="downloadReceiptFromModal()" 
-                        class="w-full inline-flex justify-center items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        class="download-button w-full inline-flex justify-center items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                     </svg>
@@ -334,12 +476,11 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script>
-    // Store transactions data from the paginated items
     const transactions = @json($paginated->items());
     let currentTransaction = null;
 
     function openTransactionModal(transactionId) {
-        // Find transaction by ID (convert both to string for comparison)
+
         currentTransaction = transactions.find(t => String(t.id) === String(transactionId));
         
         if (!currentTransaction) {
@@ -347,15 +488,12 @@
             return;
         }
 
-        // Show modal
         document.getElementById('transactionModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
         
-        // Show loading
         document.getElementById('modalLoading').classList.remove('hidden');
         document.getElementById('transactionContent').classList.add('hidden');
         
-        // Populate data after a short delay
         setTimeout(() => {
             document.getElementById('modalLoading').classList.add('hidden');
             document.getElementById('transactionContent').classList.remove('hidden');
@@ -364,11 +502,10 @@
     }
 
     function populateTransactionModal(transaction) {
-        // Set status badge
         const statusBadge = document.getElementById('statusBadge');
         const status = transaction.status || 'success';
         statusBadge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-        statusBadge.className = 'px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full';
+        statusBadge.className = 'badge px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full';
         
         if (status === 'success') {
             statusBadge.classList.add('bg-green-100', 'text-green-800');
@@ -377,12 +514,9 @@
         } else {
             statusBadge.classList.add('bg-red-100', 'text-red-800');
         }
-
-        // Transaction details
         document.getElementById('transactionId').textContent = transaction.transaction_id || 'N/A';
         document.getElementById('transactionAmount').textContent = `$${parseFloat(transaction.amount || 0).toFixed(2)}`;
         
-        // Parse date if it exists
         if (transaction.date) {
             const date = new Date(transaction.date);
             document.getElementById('transactionDate').textContent = date.toLocaleDateString('en-US', { 
@@ -396,11 +530,8 @@
             });
         }
 
-        // Payment method
         const method = transaction.payment_method || 'card';
         document.getElementById('paymentMethod').textContent = method.charAt(0).toUpperCase() + method.slice(1);
-        
-        // Transaction type
         const type = transaction.type || 'donation';
         document.getElementById('transactionType').textContent = type === 'membership' ? 'Membership Payment' : 'One-time Donation';
     }
@@ -633,26 +764,23 @@
         window.URL.revokeObjectURL(url);
     }
 
-    // Close modal when clicking outside
     document.getElementById('modalOverlay').addEventListener('click', function() {
         closeTransactionModal();
     });
 
-    // Close modal with Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeTransactionModal();
         }
     });
 
-    // Filter functionality
     document.getElementById('statusFilter')?.addEventListener('change', function() {
-        // Implement filter logic
+
         console.log('Filter by:', this.value);
     });
 
     document.getElementById('searchInput')?.addEventListener('keyup', function() {
-        // Implement search logic
+
         console.log('Search:', this.value);
     });
 </script>
