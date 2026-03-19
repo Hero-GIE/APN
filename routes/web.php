@@ -144,7 +144,6 @@ Route::prefix('puzzles')->name('puzzles.')->group(function () {
     Route::get('/all', [PuzzleController::class, 'index'])->name('index');
     Route::get('/achievements', [PuzzleController::class, 'achievements'])->name('achievements');
     Route::get('/{slug}', [PuzzleController::class, 'show'])->name('show');
-    Route::get('/leaderboard/{slug}', [PuzzleController::class, 'getLeaderboard'])->name('leaderboard');
     Route::get('/leaderboard', [PuzzleController::class, 'globalLeaderboard'])->name('leaderboard');
     
     // Protected routes

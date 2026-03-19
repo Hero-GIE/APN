@@ -820,34 +820,6 @@ class PuzzleController extends Controller
     }
 
     /**
-     * Get leaderboard data (AJAX)
-     */
-    public function getLeaderboard($slug)
-    {
-        $puzzle = Puzzle::where('slug', $slug)->firstOrFail();
-        
-        $leaderboard = PuzzleLeaderboard::with('donor')
-            ->where('puzzle_id', $puzzle->id)
-            ->whereNotNull('rank')
-            ->orderBy('rank')
-            ->limit(50)
-            ->get()
-            ->map(function($entry) {
-                return [
-                    'rank' => $entry->rank,
-                    'name' => $entry->display_name,
-                    'initials' => $entry->initials,
-                    'avatar_color' => $entry->avatar_color,
-                    'score' => $entry->best_score,
-                    'time' => $entry->best_time_formatted,
-                    'attempts' => $entry->total_attempts,
-                ];
-            });
-        
-        return response()->json($leaderboard);
-    }
-
-    /**
      * Get user statistics (AJAX)
      */
     public function getUserStats()
@@ -973,4 +945,6 @@ class PuzzleController extends Controller
         
         return view('puzzles.achievements', compact('achievements', 'donor'));
     }
+
+    
 }
