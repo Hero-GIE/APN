@@ -16,22 +16,20 @@ class JobOpportunitySeeder extends Seeder
                 'title' => 'Regional Director - East Africa',
                 'slug' => Str::slug('Regional Director - East Africa'),
                 'summary' => 'Lead regional development initiatives and manage strategic partnerships across East Africa.',
-                'description' => "<p>We are seeking an experienced Regional Director to lead our East Africa operations. The ideal candidate will have a proven track record in strategic leadership, partnership development, and regional program management.</p>
-                <h4>Key Responsibilities:</h4>
-                <ul>
-                    <li>Develop and implement regional strategy aligned with organizational goals</li>
-                    <li>Manage relationships with government partners, donors, and stakeholders</li>
-                    <li>Oversee program implementation across 5+ countries</li>
-                    <li>Lead and mentor a diverse team of professionals</li>
-                    <li>Ensure compliance with local regulations and organizational policies</li>
-                </ul>
-                <h4>Qualifications:</h4>
-                <ul>
-                    <li>10+ years of senior leadership experience</li>
-                    <li>Master's degree in Business, Economics, or related field</li>
-                    <li>Deep understanding of East African economic landscape</li>
-                    <li>Excellent stakeholder management and negotiation skills</li>
-                </ul>",
+                'description' => 'We are seeking an experienced Regional Director to lead our East Africa operations. The ideal candidate will have a proven track record in strategic leadership, partnership development, and regional program management.
+
+Key Responsibilities:
+• Develop and implement regional strategy aligned with organizational goals
+• Manage relationships with government partners, donors, and stakeholders
+• Oversee program implementation across 5+ countries
+• Lead and mentor a diverse team of professionals
+• Ensure compliance with local regulations and organizational policies
+
+Qualifications:
+• 10+ years of senior leadership experience
+• Master\'s degree in Business, Economics, or related field
+• Deep understanding of East African economic landscape
+• Excellent stakeholder management and negotiation skills',
                 'company' => 'African Development Bank',
                 'location' => 'Nairobi, Kenya',
                 'city' => 'Nairobi',
@@ -55,22 +53,20 @@ class JobOpportunitySeeder extends Seeder
                 'title' => 'Senior Investment Analyst',
                 'slug' => Str::slug('Senior Investment Analyst'),
                 'summary' => 'Analyze investment opportunities in infrastructure projects across the continent.',
-                'description' => "<p>Africa50 is seeking a Senior Investment Analyst to join our growing team. You will play a key role in identifying, analyzing, and executing infrastructure investment opportunities across Africa.</p>
-                <h4>Key Responsibilities:</h4>
-                <ul>
-                    <li>Conduct financial modeling and valuation analysis</li>
-                    <li>Perform due diligence on potential investments</li>
-                    <li>Prepare investment memos and presentations</li>
-                    <li>Monitor portfolio company performance</li>
-                    <li>Support deal execution and closing</li>
-                </ul>
-                <h4>Qualifications:</h4>
-                <ul>
-                    <li>3-5 years of investment banking or private equity experience</li>
-                    <li>CFA or MBA preferred</li>
-                    <li>Strong financial modeling skills</li>
-                    <li>Knowledge of infrastructure sectors (energy, transport, digital)</li>
-                </ul>",
+                'description' => 'Africa50 is seeking a Senior Investment Analyst to join our growing team. You will play a key role in identifying, analyzing, and executing infrastructure investment opportunities across Africa.
+
+Key Responsibilities:
+• Conduct financial modeling and valuation analysis
+• Perform due diligence on potential investments
+• Prepare investment memos and presentations
+• Monitor portfolio company performance
+• Support deal execution and closing
+
+Qualifications:
+• 3-5 years of investment banking or private equity experience
+• CFA or MBA preferred
+• Strong financial modeling skills
+• Knowledge of infrastructure sectors (energy, transport, digital)',
                 'company' => 'Africa50',
                 'location' => 'Casablanca, Morocco',
                 'city' => 'Casablanca',
@@ -80,8 +76,8 @@ class JobOpportunitySeeder extends Seeder
                 'category_color' => 'purple',
                 'experience_level' => 'Senior Level',
                 'salary_range' => '$80k - $100k',
-                'badge_type' => null,
-                'badge_color' => null,  // This is causing the error
+                'badge_type' => 'urgent', 
+                'badge_color' => 'green',  
                 'posted_date' => Carbon::now()->subDays(5),
                 'application_deadline' => Carbon::now()->addDays(25),
                 'application_url' => '#',
@@ -94,22 +90,20 @@ class JobOpportunitySeeder extends Seeder
                 'title' => 'Head of Digital Transformation',
                 'slug' => Str::slug('Head of Digital Transformation'),
                 'summary' => 'Lead digital innovation initiatives across 36 African countries.',
-                'description' => "<p>Ecobank is looking for a visionary leader to drive our digital transformation agenda across the continent. This role will shape the future of banking in Africa through innovative technology solutions.</p>
-                <h4>Key Responsibilities:</h4>
-                <ul>
-                    <li>Develop and execute digital transformation strategy</li>
-                    <li>Lead implementation of new banking technologies</li>
-                    <li>Drive customer-centric digital innovation</li>
-                    <li>Manage digital product development teams</li>
-                    <li>Collaborate with fintech partners and regulators</li>
-                </ul>
-                <h4>Qualifications:</h4>
-                <ul>
-                    <li>8+ years in digital transformation, preferably in banking</li>
-                    <li>Proven track record of successful digital initiatives</li>
-                    <li>Deep understanding of African markets</li>
-                    <li>Strong leadership and change management skills</li>
-                </ul>",
+                'description' => 'Ecobank is looking for a visionary leader to drive our digital transformation agenda across the continent. This role will shape the future of banking in Africa through innovative technology solutions.
+
+Key Responsibilities:
+• Develop and execute digital transformation strategy
+• Lead implementation of new banking technologies
+• Drive customer-centric digital innovation
+• Manage digital product development teams
+• Collaborate with fintech partners and regulators
+
+Qualifications:
+• 8+ years in digital transformation, preferably in banking
+• Proven track record of successful digital initiatives
+• Deep understanding of African markets
+• Strong leadership and change management skills',
                 'company' => 'Ecobank',
                 'location' => 'Lagos, Nigeria',
                 'city' => 'Lagos',
@@ -119,7 +113,7 @@ class JobOpportunitySeeder extends Seeder
                 'category_color' => 'blue',
                 'experience_level' => 'Senior Level',
                 'salary_range' => 'Competitive',
-                'badge_type' => 'Urgent',
+                'badge_type' => 'urgent',
                 'badge_color' => 'orange',
                 'posted_date' => Carbon::now()->subDays(7),
                 'application_deadline' => Carbon::now()->addDays(21),
@@ -133,22 +127,20 @@ class JobOpportunitySeeder extends Seeder
                 'title' => 'Sustainability Consultant',
                 'slug' => Str::slug('Sustainability Consultant'),
                 'summary' => 'Advise clients on sustainable business practices and ESG strategies.',
-                'description' => "<p>McKinsey & Company is seeking a Sustainability Consultant to join our Africa practice. You will work with leading organizations across the continent to develop and implement sustainable business strategies.</p>
-                <h4>Key Responsibilities:</h4>
-                <ul>
-                    <li>Advise clients on ESG strategy and implementation</li>
-                    <li>Conduct sustainability assessments and gap analyses</li>
-                    <li>Develop carbon reduction strategies</li>
-                    <li>Support clients in sustainability reporting</li>
-                    <li>Stay current on global sustainability trends and regulations</li>
-                </ul>
-                <h4>Qualifications:</h4>
-                <ul>
-                    <li>5-7 years of consulting experience</li>
-                    <li>Strong expertise in sustainability and ESG</li>
-                    <li>MBA or advanced degree preferred</li>
-                    <li>Excellent communication and presentation skills</li>
-                </ul>",
+                'description' => 'McKinsey & Company is seeking a Sustainability Consultant to join our Africa practice. You will work with leading organizations across the continent to develop and implement sustainable business strategies.
+
+Key Responsibilities:
+• Advise clients on ESG strategy and implementation
+• Conduct sustainability assessments and gap analyses
+• Develop carbon reduction strategies
+• Support clients in sustainability reporting
+• Stay current on global sustainability trends and regulations
+
+Qualifications:
+• 5-7 years of consulting experience
+• Strong expertise in sustainability and ESG
+• MBA or advanced degree preferred
+• Excellent communication and presentation skills',
                 'company' => 'McKinsey & Company',
                 'location' => 'Johannesburg, South Africa',
                 'city' => 'Johannesburg',
@@ -158,8 +150,8 @@ class JobOpportunitySeeder extends Seeder
                 'category_color' => 'green',
                 'experience_level' => 'Senior Level',
                 'salary_range' => '$90k - $120k',
-                'badge_type' => null,
-                'badge_color' => null,  
+                'badge_type' => 'new', 
+                'badge_color' => 'pink',  
                 'posted_date' => Carbon::now()->subDays(14),
                 'application_deadline' => Carbon::now()->addDays(14),
                 'application_url' => '#',
