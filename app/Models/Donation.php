@@ -22,6 +22,8 @@ class Donation extends Model
         'payment_status',
         'payment_method',
         'currency',
+        'donation_reason',
+        'custom_reason',
         'paystack_response',
     ];
 
@@ -63,4 +65,50 @@ class Donation extends Model
             default => 'bg-gray-100 text-gray-800',
         };
     }
+
+    /**
+     * Get the donation reason badge class.
+     */
+    public function getReasonBadgeAttribute(): string
+    {
+        return match($this->donation_reason) {
+            'campaign' => 'bg-purple-100 text-purple-800',
+            'youth' => 'bg-blue-100 text-blue-800',
+            'events' => 'bg-green-100 text-green-800',
+            'advocacy' => 'bg-orange-100 text-orange-800',
+            'projects' => 'bg-indigo-100 text-indigo-800',
+            default => 'bg-gray-100 text-gray-800',
+        };
+    }
+
+    /**
+     * Get the display name for donation reason.
+     */
+ public function getReasonDisplayAttribute(): string
+{
+    if ($this->donation_reason === 'other' && $this->custom_reason) {
+        return $this->custom_reason;
+    }
+    
+    return match($this->donation_reason) {
+        'campaign' => 'Campaign Support',
+        'youth' => 'Youth Initiatives',
+        'events' => 'Events',
+        'advocacy' => 'Advocacy Work',
+        'projects' => 'Special Projects',
+        default => 'General Donation',
+    };
+}
+
+public function getReasonColorAttribute(): string
+{
+    return match($this->donation_reason) {
+        'campaign' => 'bg-purple-100 text-purple-800',
+        'youth' => 'bg-blue-100 text-blue-800',
+        'events' => 'bg-green-100 text-green-800',
+        'advocacy' => 'bg-orange-100 text-orange-800',
+        'projects' => 'bg-indigo-100 text-indigo-800',
+        default => 'bg-gray-100 text-gray-800',
+    };
+}
 }

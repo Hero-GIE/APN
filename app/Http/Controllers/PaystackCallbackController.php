@@ -65,20 +65,53 @@ class PaystackCallbackController extends Controller
 
         $data = $body['data'];
 
-        // ── 3. Prevent duplicate processing
-        if (Donation::where('transaction_id', $reference)->exists()) {
-            Log::info('Duplicate callback — already processed', ['reference' => $reference]);
-            return redirect()->route('donor.login')
-                ->with('info', 'Payment already processed. Please log in to your account.');
-        }
-
-        // ── 4. Extract details 
+        // ── 3. Extract details 
         $email    = $data['customer']['email'];
         $metadata = $data['metadata'] ?? [];
         $amount   = ($data['amount'] ?? 0) / 100;
         $currency = $data['currency'] ?? 'GHS';
 
-        // ── 5. Find or create donor
+        // ── 4. Determine payment type
+        $membershipType = $metadata['membership_type'] ?? null;
+        $isMembership = in_array($membershipType, ['monthly', 'annual']);
+        $isDonation = !$isMembership; 
+
+        // ── 5. Prevent duplicate processing
+        if ($isMembership) {
+
+            if (MemberPayment::where('transaction_id', $reference)->exists()) {
+                Log::info('Duplicate membership callback — already processed', ['reference' => $reference]);
+                
+                $donor = Donor::where('email', $email)->first();
+                if ($donor) {
+                    Auth::guard('donor')->login($donor);
+                    return redirect()->route('member.dashboard')
+                        ->with('info', 'Payment already processed. Welcome back!');
+                }
+                
+                return redirect()->route('donor.login')
+                    ->with('info', 'Payment already processed. Please log in to your account.');
+            }
+        }
+        
+        if ($isDonation) {
+            // Check if donation already exists
+            if (Donation::where('transaction_id', $reference)->exists()) {
+                Log::info('Duplicate donation callback — already processed', ['reference' => $reference]);
+                
+                $donor = Donor::where('email', $email)->first();
+                if ($donor) {
+                    Auth::guard('donor')->login($donor);
+                    return redirect()->route('donor.dashboard')
+                        ->with('info', 'Payment already processed. Thank you for your support!');
+                }
+                
+                return redirect()->route('donor.login')
+                    ->with('info', 'Payment already processed. Please log in to your account.');
+            }
+        }
+
+        // ── 6. Find or create donor
         $existingDonor = Donor::where('email', $email)->first();
         $isNewDonor    = false;
         $plainPassword = null;
@@ -87,7 +120,6 @@ class PaystackCallbackController extends Controller
             $donor = $existingDonor;
             $this->updateDonorIfNeeded($donor, $metadata);
             
-            // Check if this donor already had a membership before
             $hadMembershipBefore = Member::where('donor_id', $donor->id)->exists();
 
         } else {
@@ -118,23 +150,52 @@ class PaystackCallbackController extends Controller
             ]);
         }
 
-        // ── 6. Save donation record
-        $donation = Donation::create([
-            'donor_id'          => $donor->id,
-            'transaction_id'    => $reference,
-            'amount'            => $amount,
-            'currency'          => $currency,
-            'payment_status'    => 'success',
-            'payment_method'    => $data['authorization']['channel'] ?? null,
-            'paystack_response' => $data,
-        ]);
+        $existingMember = Member::where('donor_id', $donor->id)->first();
+        $isExistingMember = $existingMember && $existingMember->status == 'active';
 
-        // ── 7. Handle membership if applicable
-        $membershipType = $metadata['membership_type'] ?? null;
-        $isMembership = in_array($membershipType, ['monthly', 'annual']);
-        
+        // ── 7. Handle payment based on type
+        $member = null;
+        $donation = null;
+
         if ($isMembership) {
-            $member = $this->processMembership($donor, $donation, $membershipType, $amount);
+            // Process membership payment
+            $member = $this->processMembership($donor, $reference, $data, $metadata, $membershipType, $amount);
+            
+            Log::info('Membership payment processed', [
+                'donor_id' => $donor->id,
+                'member_id' => $member->id,
+                'transaction_id' => $reference,
+                'amount' => $amount,
+                'is_existing_member' => $isExistingMember
+            ]);
+        }
+        
+        if ($isDonation) {
+            // Process donation with reason
+            $donationReason = $metadata['donation_reason'] ?? null;
+            $customReason = $metadata['custom_reason'] ?? null;
+            
+            $donation = Donation::create([
+                'donor_id'          => $donor->id,
+                'transaction_id'    => $reference,
+                'amount'            => $amount,
+                'currency'          => $currency,
+                'payment_status'    => 'success',
+                'payment_method'    => $data['authorization']['channel'] ?? 'card',
+                'paystack_response' => $data,
+                'donation_reason'   => $donationReason,
+                'custom_reason'     => $customReason,
+            ]);
+            
+            Log::info('Donation processed', [
+                'donor_id' => $donor->id,
+                'donation_id' => $donation->id,
+                'transaction_id' => $reference,
+                'amount' => $amount,
+                'donation_reason' => $donationReason,
+                'custom_reason' => $customReason,
+                'donor_is_member' => $isExistingMember
+            ]);
         }
 
         // ── 8. Send emails ──
@@ -177,14 +238,14 @@ class PaystackCallbackController extends Controller
                 ]);
             }
             
-            // CASE 3: Existing donor + membership (first time becoming member) = member-welcome
+            // CASE 3: Existing donor + membership (first time becoming member)
             elseif (!$isNewDonor && $isMembership && !$hadMembershipBefore) {
                 sendEmail(
                     'emails.member-welcome',
                     [
                         'member' => $member,
                         'membership' => $member,
-                        'password' => null, // No password needed as they already have account
+                        'password' => null,
                     ],
                     $donor->email,
                     'Welcome to APN Membership — You\'re Now a Member!'
@@ -215,7 +276,7 @@ class PaystackCallbackController extends Controller
                 ]);
             }
             
-            // CASE 5: Existing donor making another donation = donor-thankyou
+            // CASE 5: Existing donor making another donation
             elseif (!$isNewDonor && !$isMembership) {
                 sendEmail(
                     'emails.donor-thankyou',
@@ -247,31 +308,23 @@ class PaystackCallbackController extends Controller
             ]);
         }
 
-        Log::info('Payment processed via Paystack callback', [
-            'donor_id'       => $donor->id,
-            'donation_id'    => $donation->id,
-            'transaction_id' => $reference,
-            'amount'         => $amount,
-            'currency'       => $currency,
-            'new_donor'      => $isNewDonor,
-            'is_membership'  => $isMembership,
-            'membership_type' => $membershipType,
-            'had_membership_before' => $hadMembershipBefore ?? false,
-        ]);
-
         Auth::guard('donor')->login($donor);
 
         // ── 10. Redirect to appropriate success page
         if ($isMembership) {
-            return redirect()->route('member.success', ['reference' => $reference])
-                ->with('success', 'Membership payment successful! Welcome to APN.');
+            return redirect()->route('member.dashboard')
+                ->with('success', $isNewDonor 
+                    ? 'Membership payment successful! Welcome to APN! Your account has been created.'
+                    : 'Membership payment successful! Thank you for your continued support.');
         } else {
-            return redirect()->route('donation.success', ['reference' => $reference])
-                ->with('success', 'Donation successful! Thank you for your support.');
+            return redirect()->route('donor.dashboard')
+                ->with('success', $isNewDonor 
+                    ? 'Donation successful! Thank you for your support! Your account has been created.'
+                    : 'Donation successful! Thank you for your generosity!');
         }
     }
 
-    private function processMembership($donor, $donation, $membershipType, $amount)
+    private function processMembership($donor, $reference, $data, $metadata, $membershipType, $amount)
     {
         $now = Carbon::now();
         
@@ -288,8 +341,11 @@ class PaystackCallbackController extends Controller
             ->first();
 
         if ($existingMember) {
+            // Renew existing membership
             $existingMember->update([
-                'end_date' => $existingMember->end_date->add($membershipType === 'annual' ? '1 year' : '1 month'),
+                'end_date' => $membershipType === 'annual' 
+                    ? $existingMember->end_date->addYear() 
+                    : $existingMember->end_date->addMonth(),
                 'renewal_count' => $existingMember->renewal_count + 1,
             ]);
             
@@ -305,24 +361,21 @@ class PaystackCallbackController extends Controller
                 'renewal_count' => 0,
             ]);
         }
-
-        // Record payment in member_payments
+        
+        // Record membership payment
         MemberPayment::create([
             'donor_id' => $donor->id,
             'member_id' => $member->id,
-            'donation_id' => $donation->id,
+            'transaction_id' => $reference,
             'membership_type' => $membershipType,
             'amount' => $amount,
+            'currency' => $data['currency'] ?? 'GHS',
+            'payment_method' => $data['authorization']['channel'] ?? 'card',
+            'payment_status' => 'success',
+            'paystack_response' => $data,
             'payment_date' => $now,
             'period_start' => $startDate,
             'period_end' => $endDate,
-        ]);
-
-        Log::info('Membership processed', [
-            'donor_id' => $donor->id,
-            'member_id' => $member->id,
-            'type' => $membershipType,
-            'end_date' => $endDate,
         ]);
 
         return $member;

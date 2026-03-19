@@ -6,7 +6,16 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\PaystackCallbackController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\DonorController;
-use App\Http\Controllers\MemberController; 
+use App\Http\Controllers\MemberController;
+use App\Http\Controllers\MemberBadgeController;
+use App\Http\Controllers\PuzzleController;
+use App\Http\Controllers\MagazineController;
+use App\Http\Controllers\JobOpportunityController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\FilterController;
+
+
 
 
 Route::get('/', function () {
@@ -28,16 +37,20 @@ Route::get('/donation/success', function (Request $request) {
 
 Route::get('/member/success', function (Request $request) {
     $reference = $request->reference;
-    $membership = \App\Models\MemberPayment::with(['donation', 'member'])
-        ->whereHas('donation', function($query) use ($reference) {
-            $query->where('transaction_id', $reference);
-        })
-        ->first();
-    
+    $membership = \App\Models\MemberPayment::with('member')
+        ->where('transaction_id', $reference)
+        ->first();    
     return view('member.success', compact('reference', 'membership'));
 })->name('member.success');
 
 Route::post('/donation/initialize', [DonationController::class, 'initialize'])->name('donation.initialize');
+
+//petition filtered image
+Route::post('/filter/apply', [FilterController::class, 'applyFilter'])->name('filter.apply');
+Route::post('/filter/apply', [FilterController::class, 'applyFilter'])->name('filter.apply');
+Route::get('/filter/images', [FilterController::class, 'getUserImages'])->name('filter.images');
+Route::get('/filter/download/{id}', [FilterController::class, 'downloadImage'])->name('filter.download');
+Route::delete('/filter/delete/{id}', [FilterController::class, 'deleteImage'])->name('filter.delete');
 
 // Donor routes (guests)
 Route::middleware('guest:donor')->prefix('donor')->name('donor.')->group(function () {
@@ -60,7 +73,7 @@ Route::middleware('auth:donor')->prefix('donor')->name('donor.')->group(function
     Route::post('/support/ticket', [DonorController::class, 'submitTicket'])->name('support.ticket');
 });
 
-// Member Routes
+// Member Routes 
 Route::middleware(['auth:donor', 'member.active'])->prefix('member')->name('member.')->group(function() {
     // Dashboard
     Route::get('/dashboard', [MemberController::class, 'dashboard'])->name('dashboard');
@@ -94,40 +107,61 @@ Route::middleware(['auth:donor', 'member.active'])->prefix('member')->name('memb
 
     // About
     Route::get('/about', [MemberController::class, 'about'])->name('about');
+    
+    // Digital Badge Management
+    Route::get('/badges', [MemberBadgeController::class, 'index'])->name('badges');
+    Route::post('/badge/regenerate', [MemberBadgeController::class, 'regenerateToken'])->name('badge.regenerate');
+    Route::get('/badge/download', [MemberBadgeController::class, 'download'])->name('badge.download');
+
+    // Magazine routes
+    Route::get('/publications', [MagazineController::class, 'getMemberPublications'])->name('publications');
+    Route::get('/download/{id}', [MagazineController::class, 'download'])->name('download');
+    Route::get('/view/{id}', [MagazineController::class, 'view'])->name('view');
+
+       // News routes
+    Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+    Route::get('/news/{slug}', [NewsController::class, 'show'])->name('news.show');
+    
+    // Events routes
+    Route::get('/events', [EventController::class, 'index'])->name('events.index');
+    Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
+    
+    // Jobs routes
+    Route::get('/jobs', [JobOpportunityController::class, 'index'])->name('jobs.index');
+    Route::get('/jobs/{slug}', [JobOpportunityController::class, 'show'])->name('jobs.show');
+});
+
+// ===== NEW PUBLIC BADGE ROUTES 
+Route::prefix('badge')->name('member.badge.')->group(function () {
+    Route::get('image/{token}', [MemberBadgeController::class, 'image'])->name('image');
+    Route::get('widget/{token}', [MemberBadgeController::class, 'widget'])->name('widget');
+    Route::get('verify/{token}', [MemberBadgeController::class, 'verify'])->name('verify');
+});
+
+Route::prefix('puzzles')->name('puzzles.')->group(function () {
+    // Public routes
+    Route::get('/', [PuzzleController::class, 'hub'])->name('hub');
+    Route::get('/all', [PuzzleController::class, 'index'])->name('index');
+    Route::get('/achievements', [PuzzleController::class, 'achievements'])->name('achievements');
+    Route::get('/{slug}', [PuzzleController::class, 'show'])->name('show');
+    Route::get('/leaderboard/{slug}', [PuzzleController::class, 'getLeaderboard'])->name('leaderboard');
+    Route::get('/leaderboard', [PuzzleController::class, 'globalLeaderboard'])->name('leaderboard');
+    
+    // Protected routes
+    Route::middleware(['auth:donor'])->group(function () {
+        Route::get('/{slug}/start', [PuzzleController::class, 'start'])->name('start');
+        Route::get('/play/{attempt}', [PuzzleController::class, 'play'])->name('play');
+        Route::post('/submit/{attempt}', [PuzzleController::class, 'submit'])->name('submit');
+        Route::get('/results/{attempt}', [PuzzleController::class, 'results'])->name('results');
+        Route::post('/{slug}/rate', [PuzzleController::class, 'rate'])->name('rate');
+        Route::post('/{slug}/comment', [PuzzleController::class, 'comment'])->name('comment');
+        Route::get('/user/stats', [PuzzleController::class, 'getUserStats'])->name('user.stats');
+    });
 });
 
 Route::get('/login', function() {
     return redirect()->route('donor.login');
 })->name('login');
 
-Route::get('/debug-logout', function() {
-    if (Auth::guard('donor')->check()) {
-        $donor = Auth::guard('donor')->user();
-        
-        Auth::guard('donor')->logout();
-        
-        $cookies = [
-            'laravel_session',
-            'XSRF-TOKEN',
-            'remember_web_' . sha1(config('app.key'))
-        ];
-        
-        foreach ($cookies as $cookie) {
-            \Illuminate\Support\Facades\Cookie::queue(\Illuminate\Support\Facades\Cookie::forget($cookie));
-        }
-        
-        // Clear session
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
-        request()->session()->flush();
-        
-        return response()->json([
-            'message' => 'Logged out',
-            'cookies_cleared' => $cookies,
-            'session_cleared' => true
-        ])->withCookie(\Illuminate\Support\Facades\Cookie::forget('laravel_session'))
-          ->withCookie(\Illuminate\Support\Facades\Cookie::forget('XSRF-TOKEN'));
-    }
-    
-    return response()->json(['message' => 'Not logged in']);
-});
+Route::get('/paystack/callback', [PaystackCallbackController::class, 'handle'])
+    ->name('paystack.callback');

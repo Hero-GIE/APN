@@ -1,0 +1,18 @@
+<?php
+require __DIR__.'/vendor/autoload.php';
+
+$app = require_once __DIR__.'/bootstrap/app.php';
+
+// Manually bind the files class
+$app->singleton('files', function ($app) {
+    return new Illuminate\Filesystem\Filesystem;
+});
+
+// Also bind the Filesystem class
+$app->alias('files', Illuminate\Filesystem\Filesystem::class);
+
+// Now bootstrap the kernel
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel->bootstrap();
+
+echo "Container fixed! Files binding added.\n";

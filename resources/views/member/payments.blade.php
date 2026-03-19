@@ -131,131 +131,141 @@
             <p class="text-gray-600 mt-2">View all your membership payments and transactions.</p>
         </div>
 
-        <!-- Stats Summary -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="p-3 bg-indigo-100 rounded-full">
-                        <svg class="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+   <!-- Stats Summary -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex items-center">
+            <div class="p-3 bg-indigo-100 rounded-full">
+                <svg class="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+            </div>
+            <div class="ml-4">
+                <p class="text-gray-500 stat-label">Total Payments</p>
+                <p class="stat-value text-gray-900">{{ $payments->total() }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex items-center">
+            <div class="p-3 bg-green-100 rounded-full">
+                <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <div class="ml-4">
+                <p class="text-gray-500 stat-label">Total Amount</p>
+                <p class="stat-value text-gray-900">${{ number_format($payments->sum('amount'), 2) }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex items-center">
+            <div class="p-3 bg-purple-100 rounded-full">
+                <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <div class="ml-4">
+                <p class="text-gray-500 stat-label">Successful Payments</p>
+                <p class="stat-value text-gray-900">{{ $payments->where('payment_status', 'success')->count() }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+     <!-- Payments Table -->
+<div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-800">All Membership Payments</h2>
+    </div>
+    
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Transaction ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Amount</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Period</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Payment Method</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Receipt</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                @forelse($payments as $payment)
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="table-date text-gray-900">{{ $payment->payment_date->format('M d, Y') }}</div>
+                        <div class="table-time text-gray-500">{{ $payment->payment_date->format('h:i A') }}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="table-transaction text-gray-600">{{ substr($payment->transaction_id, 0, 12) }}...</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="table-amount text-gray-900">${{ number_format($payment->amount, 2) }}</span>
+                        <span class="text-xs text-gray-500 block">{{ ucfirst($payment->membership_type) }}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="table-period text-gray-600">{{ $payment->period_start->format('M d, Y') }}</span><br>
+                        <span class="table-period-small text-gray-500">to {{ $payment->period_end->format('M d, Y') }}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 text-blue-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
+                                <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"></path>
+                            </svg>
+                            <span class="text-sm text-gray-600">{{ ucfirst($payment->payment_method ?? 'Card') }}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        @if($payment->payment_status == 'success')
+                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 badge-status">
+                                Success
+                            </span>
+                        @elseif($payment->payment_status == 'pending')
+                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 badge-status">
+                                Pending
+                            </span>
+                        @else
+                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 badge-status">
+                                Failed
+                            </span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <button onclick="downloadReceipt('{{ $payment->transaction_id }}', {{ $payment->amount }}, '{{ $payment->payment_date }}', '{{ $payment->payment_method ?? 'Card' }}')" 
+                                class="text-indigo-600 hover:text-indigo-900 font-medium">
+                            Download
+                        </button>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="7" class="px-6 py-12 text-center">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                         </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-gray-500 stat-label">Total Payments</p>
-                        <p class="stat-value text-gray-900">{{ $payments->total() }}</p>
-                    </div>
-                </div>
-            </div>
+                        <h3 class="mt-2 empty-state-title text-gray-900">No payment records</h3>
+                        <p class="mt-1 empty-state-text text-gray-500">Your membership payments will appear here.</p>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="p-3 bg-green-100 rounded-full">
-                        <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-gray-500 stat-label">Total Amount</p>
-                        <p class="stat-value text-gray-900">${{ number_format($payments->sum('amount'), 2) }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="p-3 bg-purple-100 rounded-full">
-                        <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-gray-500 stat-label">Successful Payments</p>
-                        <p class="stat-value text-gray-900">{{ $payments->where('donation.payment_status', 'success')->count() }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Payments Table -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-800">All Membership Payments</h2>
-            </div>
-            
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Transaction ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Period</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Payment Method</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Receipt</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($payments as $payment)
-                        <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="table-date text-gray-900">{{ $payment->payment_date->format('M d, Y') }}</div>
-                                <div class="table-time text-gray-500">{{ $payment->payment_date->format('h:i A') }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="table-transaction text-gray-600">{{ substr($payment->donation->transaction_id, 0, 12) }}...</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="table-amount text-gray-900">${{ number_format($payment->amount, 2) }}</span>
-                                <span class="text-xs text-gray-500 block">{{ ucfirst($payment->membership_type) }}</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="table-period text-gray-600">{{ $payment->period_start->format('M d, Y') }}</span><br>
-                                <span class="table-period-small text-gray-500">to {{ $payment->period_end->format('M d, Y') }}</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <svg class="w-4 h-4 text-blue-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
-                                        <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"></path>
-                                    </svg>
-                                    <span class="text-sm text-gray-600">{{ ucfirst($payment->donation->payment_method ?? 'Card') }}</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 badge-status">
-                                    Success
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                <button onclick="downloadReceipt('{{ $payment->donation->transaction_id }}', {{ $payment->amount }}, '{{ $payment->payment_date }}', '{{ $payment->donation->payment_method ?? 'Card' }}')" 
-                                        class="text-indigo-600 hover:text-indigo-900 font-medium">
-                                    Download
-                                </button>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="7" class="px-6 py-12 text-center">
-                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                                </svg>
-                                <h3 class="mt-2 empty-state-title text-gray-900">No payment records</h3>
-                                <p class="mt-1 empty-state-text text-gray-500">Your membership payments will appear here.</p>
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Pagination -->
-            @if($payments->hasPages())
-            <div class="px-6 py-4 bg-white border-t border-gray-200">
-                {{ $payments->links() }}
-            </div>
-            @endif
-        </div>
+    <!-- Pagination -->
+    @if($payments->hasPages())
+    <div class="px-6 py-4 bg-white border-t border-gray-200">
+        {{ $payments->links() }}
+    </div>
+    @endif
+</div>
     </div>
 </div>
 
@@ -277,18 +287,19 @@
                 <head>
                     <title>Payment Receipt</title>
                     <style>
-                        body { font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: #f9fafb; }
+                        body { font-family: 'Open Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: #f9fafb; }
+                        h1, h2, h3, h4, h5, h6 { font-family: 'Urbanist', sans-serif; }
                         .receipt-container { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
                         .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #e5e7eb; padding-bottom: 20px; }
-                        .logo { font-size: 24px; font-weight: bold; color: #4f46e5; }
-                        .receipt-title { font-size: 20px; margin-top: 10px; color: #1f2937; }
+                        .logo { font-size: 24px; font-weight: bold; color: #4f46e5; font-family: 'Urbanist', sans-serif; }
+                        .receipt-title { font-size: 20px; margin-top: 10px; color: #1f2937; font-family: 'Urbanist', sans-serif; }
                         .details { margin: 20px 0; }
                         .row { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 8px 0; border-bottom: 1px dashed #e5e7eb; }
-                        .label { font-weight: 600; color: #4b5563; }
+                        .label { font-weight: 600; color: #4b5563; font-family: 'Urbanist', sans-serif; }
                         .value { color: #1f2937; }
-                        .amount { font-size: 24px; font-weight: bold; color: #059669; text-align: center; margin: 20px 0; }
+                        .amount { font-size: 24px; font-weight: bold; color: #059669; text-align: center; margin: 20px 0; font-family: 'Urbanist', sans-serif; }
                         .footer { margin-top: 30px; text-align: center; color: #6b7280; font-size: 14px; border-top: 2px solid #e5e7eb; padding-top: 20px; }
-                        .thank-you { font-size: 18px; color: #4f46e5; margin-bottom: 10px; }
+                        .thank-you { font-size: 18px; color: #4f46e5; margin-bottom: 10px; font-family: 'Urbanist', sans-serif; }
                     </style>
                 </head>
                 <body>

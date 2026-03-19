@@ -1,6 +1,143 @@
 @extends('layouts.guest')
 
 @section('content')
+<style>
+    body {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    h1, h2, h3, h4, h5, h6, .heading-font, .font-urbanist, .btn, button, [class*="font-bold"] {
+        font-family: 'Urbanist', sans-serif;
+    }
+    
+    @keyframes pageReveal {
+        from { opacity: 0; transform: scale(1.02); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes patternMove {
+        from { background-position: 0 0; }
+        to { background-position: 200px 200px; }
+    }
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    .animate-page-reveal { animation: pageReveal 0.9s cubic-bezier(0.22,1,0.36,1) both; }
+    .animate-pattern { animation: patternMove 60s linear infinite; }
+    .animate-gradient { animation: gradientShift 5s ease infinite; background-size: 200% 200%; }
+
+    .apn-scrollbar::-webkit-scrollbar { width: 6px; }
+    .apn-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+    .apn-scrollbar::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
+
+    /* Text size adjustments */
+    .text-xs {
+        font-size: 0.8rem !important;
+    }
+    .text-sm {
+        font-size: 0.95rem !important;
+    }
+    .text-base {
+        font-size: 1rem !important;
+    }
+    .text-lg {
+        font-size: 1.125rem !important;
+    }
+    .text-xl {
+        font-size: 1.3rem !important;
+    }
+    .text-2xl {
+        font-size: 1.65rem !important;
+    }
+    .text-3xl {
+        font-size: 2rem !important;
+    }
+
+    /* Table styles */
+    table td, table th {
+        font-size: 0.95rem;
+    }
+    
+    th.text-xs.font-medium {
+        font-size: 0.8rem !important;
+        letter-spacing: 0.03em;
+    }
+    
+    /* Status badges */
+    .px-2.py-1.inline-flex.text-xs {
+        font-size: 0.8rem !important;
+        padding: 0.3rem 0.8rem !important;
+    }
+    
+    /* Dropdown menu items */
+    .dropdown-menu a, .dropdown-menu button,
+    .absolute.w-48 a, .absolute.w-48 button {
+        font-size: 0.95rem;
+    }
+    
+    /* Footer/security note */
+    .text-\[0\.7rem\] {
+        font-size: 0.8rem !important;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        body {
+            font-size: 15px;
+        }
+        .text-xs {
+            font-size: 0.75rem !important;
+        }
+        .text-sm {
+            font-size: 0.875rem !important;
+        }
+        h1 {
+            font-size: 1.75rem !important;
+        }
+    }
+
+    /* Card hover effects */
+    .bg-white.rounded-lg.shadow {
+        transition: all 0.3s ease;
+    }
+    .bg-white.rounded-lg.shadow:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+    }
+
+    /* Status badges */
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+    }
+    .status-badge.active {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+    .status-badge.expired {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+    .status-badge.cancelled {
+        background-color: #ffedd5;
+        color: #9a3412;
+    }
+    .status-badge.pending {
+        background-color: #fef9c3;
+        color: #854d0e;
+    }
+    .status-badge.non-member {
+        background-color: #f3f4f6;
+        color: #4b5563;
+    }
+</style>
+
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header with conditional greeting -->
@@ -234,7 +371,7 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($recentDonations as $donation)
-                        <tr>
+                        <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 {{ $donation->created_at->format('M d, Y') }}
                             </td>
@@ -277,6 +414,16 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <!-- Security Footer Note (like in member dashboard) -->
+        <div class="flex items-center justify-center gap-3 mt-8 text-xs text-gray-400">
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>256-bit encrypted</span>
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>Powered by Paystack</span>
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>Secure transactions</span>
         </div>
     </div>
 </div>
@@ -332,12 +479,12 @@
                             Cancel
                         </button>
                         
-                     <form method="POST" action="{{ route('donor.logout') }}" class="flex-1" id="logoutForm">
-    @csrf
-    <button type="button" onclick="clearCookiesAndLogout()" class="w-full px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all font-medium text-sm shadow-md">
-        Logout
-    </button>
-</form>
+                        <form method="POST" action="{{ route('donor.logout') }}" class="flex-1" id="logoutForm">
+                            @csrf
+                            <button type="button" onclick="clearCookiesAndLogout()" class="w-full px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all font-medium text-sm shadow-md">
+                                Logout
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -347,25 +494,31 @@
 
 <style>
     [x-cloak] { display: none !important; }
+    
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .animate-spin {
+        animation: spin 1s linear infinite;
+    }
 </style>
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script>
-  
-function clearCookiesAndLogout() {
-    document.cookie.split(';').forEach(function(cookie) {
-        const name = cookie.split('=')[0].trim();
-        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname + ';';
-    });
+    function clearCookiesAndLogout() {
+        document.cookie.split(';').forEach(function(cookie) {
+            const name = cookie.split('=')[0].trim();
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname + ';';
+        });
 
-    try { localStorage.clear(); } catch(e) {}
-    try { sessionStorage.clear(); } catch(e) {}
+        try { localStorage.clear(); } catch(e) {}
+        try { sessionStorage.clear(); } catch(e) {}
 
-    document.getElementById('logoutForm').submit();
-}
-
+        document.getElementById('logoutForm').submit();
+    }
 
     const donorData = {
         name: '{{ $donor->firstname }} {{ $donor->lastname }}',
@@ -389,18 +542,19 @@ function clearCookiesAndLogout() {
                 <head>
                     <title>Donation Receipt</title>
                     <style>
-                        body { font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: #f9fafb; }
+                        body { font-family: 'Open Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: #f9fafb; }
+                        h1, h2, h3, h4, h5, h6, .heading-font { font-family: 'Urbanist', sans-serif; }
                         .receipt-container { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
                         .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #e5e7eb; padding-bottom: 20px; }
-                        .logo { font-size: 24px; font-weight: bold; color: #4f46e5; }
-                        .receipt-title { font-size: 20px; margin-top: 10px; color: #1f2937; }
+                        .logo { font-size: 24px; font-weight: bold; color: #4f46e5; font-family: 'Urbanist', sans-serif; }
+                        .receipt-title { font-size: 20px; margin-top: 10px; color: #1f2937; font-family: 'Urbanist', sans-serif; }
                         .details { margin: 20px 0; }
                         .row { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 8px 0; border-bottom: 1px dashed #e5e7eb; }
-                        .label { font-weight: 600; color: #4b5563; }
+                        .label { font-weight: 600; color: #4b5563; font-family: 'Urbanist', sans-serif; }
                         .value { color: #1f2937; }
-                        .amount { font-size: 24px; font-weight: bold; color: #059669; text-align: center; margin: 20px 0; }
+                        .amount { font-size: 24px; font-weight: bold; color: #059669; text-align: center; margin: 20px 0; font-family: 'Urbanist', sans-serif; }
                         .footer { margin-top: 30px; text-align: center; color: #6b7280; font-size: 14px; border-top: 2px solid #e5e7eb; padding-top: 20px; }
-                        .thank-you { font-size: 18px; color: #4f46e5; margin-bottom: 10px; }
+                        .thank-you { font-size: 18px; color: #4f46e5; margin-bottom: 10px; font-family: 'Urbanist', sans-serif; }
                     </style>
                 </head>
                 <body>

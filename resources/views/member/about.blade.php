@@ -585,7 +585,6 @@
 </div>
 
 <script>
-    // Intersection Observer for reveal animations
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -594,10 +593,8 @@
         });
     }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
     
-    // Observe all elements with animation classes
     document.querySelectorAll('.reveal, .stagger-item').forEach(el => observer.observe(el));
     
-    // Smooth scroll for scroll indicator
     document.querySelector('.scroll-indicator')?.addEventListener('click', function() {
         document.getElementById('mission').scrollIntoView({ behavior: 'smooth' });
     });

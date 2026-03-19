@@ -9,12 +9,18 @@ class MemberPayment extends Model
 {
     use HasFactory;
 
+    protected $table = 'member_payments';
+
     protected $fillable = [
         'donor_id',
         'member_id',
-        'donation_id',
+        'transaction_id',
         'membership_type',
         'amount',
+        'currency',
+        'payment_method',
+        'payment_status',
+        'paystack_response',
         'payment_date',
         'period_start',
         'period_end',
@@ -25,6 +31,7 @@ class MemberPayment extends Model
         'period_start' => 'datetime',
         'period_end' => 'datetime',
         'amount' => 'decimal:2',
+        'paystack_response' => 'array',
     ];
 
     public function donor()
@@ -37,8 +44,18 @@ class MemberPayment extends Model
         return $this->belongsTo(Member::class);
     }
 
-    public function donation()
+    public function getFormattedAmountAttribute(): string
     {
-        return $this->belongsTo(Donation::class);
+        return '$' . number_format($this->amount, 2);
+    }
+
+    public function getStatusBadgeAttribute(): string
+    {
+        return match($this->payment_status) {
+            'success' => 'bg-green-100 text-green-800',
+            'pending' => 'bg-yellow-100 text-yellow-800',
+            'failed' => 'bg-red-100 text-red-800',
+            default => 'bg-gray-100 text-gray-800',
+        };
     }
 }

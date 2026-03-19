@@ -1,11 +1,6 @@
 @extends('layouts.guest')
 
 @section('content')
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
 <style>
     * { font-family: 'Open Sans', sans-serif; }
     h1,h2,h3,h4,h5,h6,
@@ -30,26 +25,26 @@
     .apn-scrollbar::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 3px; }
 
     .apn-layout { display: flex; width: 100%; min-height: 100vh; }
-    .left-panel { position: relative; overflow: hidden; background-size: cover; background-position: center; background-image: url('https://membership.africaprosperitynetwork.com/wp-content/uploads/2026/03/Group-600.jpg'); flex-shrink: 0; display: flex; flex-direction: column; justify-content: flex-end; }
-    .right-panel { background: #fff; overflow-y: auto; display: flex; align-items: flex-start; justify-content: center; }
+    .left-panel { background: #fff; overflow-y: auto; display: flex; align-items: flex-start; justify-content: center; }
+    .right-panel { position: relative; overflow: hidden; background-size: cover; background-position: center; background-image: url('https://membership.africaprosperitynetwork.com/wp-content/uploads/2026/03/Group-600.jpg'); flex-shrink: 0; display: flex; flex-direction: column; justify-content: flex-end; }
 
     @media (min-width: 1024px) {
         .apn-layout { flex-direction: row; height: 100vh; overflow: hidden; }
-        .left-panel { width: 50%; min-height: 100vh; }
-        .right-panel { width: 50%; height: 100vh; }
+        .left-panel { width: 50%; height: 100vh; }
+        .right-panel { width: 50%; min-height: 100vh; }
     }
     @media (min-width: 640px) and (max-width: 1023px) {
         .apn-layout { flex-direction: column; }
-        .left-panel { width: 100%; min-height: 320px; }
-        .right-panel { width: 100%; }
+        .left-panel { width: 100%; }
+        .right-panel { width: 100%; min-height: 320px; }
     }
     @media (max-width: 639px) {
         .apn-layout { flex-direction: column; }
-        .left-panel { width: 100%; min-height: 240px; }
-        .right-panel { width: 100%; }
-        .left-panel .panel-text { padding: 1.5rem 1.25rem; }
-        .left-panel .panel-heading { font-size: 1.8rem !important; }
-        .left-panel .panel-sub { display: none; }
+        .left-panel { width: 100%; }
+        .right-panel { width: 100%; min-height: 240px; }
+        .right-panel .panel-text { padding: 1.5rem 1.25rem; }
+        .right-panel .panel-heading { font-size: 1.8rem !important; }
+        .right-panel .panel-sub { display: none; }
         .back-link { display: none !important; }
         .register-btn-top { top: 1rem !important; right: 1rem !important; padding: 0.5rem 0.9rem !important; font-size: 0.75rem !important; }
         .login-card-wrap { padding: 1.5rem !important; margin-top: 1.5rem !important; }
@@ -68,52 +63,51 @@
     .field-wrap .fi { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem; pointer-events: none; }
     .field-wrap .fi-right { position: absolute; right: 0.9rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem; cursor: pointer; transition: color 0.2s ease; }
     .field-wrap .fi-right:hover { color: #4f46e5; }
+
+    /* Logo circle styles */
+    .logo-circle {
+        width: 100px;
+        height: 100px;
+        background-color: rgb(16, 16, 70);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem auto;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+        transition: transform 0.3s ease;
+    }
+    .logo-circle:hover {
+        transform: scale(1.05);
+    }
+    .logo-circle img {
+        max-width: 96px;
+        max-height: 96px;
+        filter: brightness(0) invert(1);
+    }
 </style>
 
 <div class="apn-layout animate-page-reveal">
 
-    <div class="left-panel">
-        <div class="absolute inset-0 bg-gradient-to-br from-[#0f172a]/60 via-[#1e1b4b]/50 to-[#2d1b4b]/35 z-[1]"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(212,175,55,0.15),transparent_60%)] z-[2] pointer-events-none"></div>
-        <div class="absolute inset-0 opacity-10 z-[3] pointer-events-none animate-pattern"
-             style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><path d=\"M20,20 L30,10 L40,20 L50,10 L60,20 L70,10 L80,20 L70,30 L80,40 L70,50 L80,60 L70,70 L80,80 L70,90 L60,80 L50,90 L40,80 L30,90 L20,80 L30,70 L20,60 L30,50 L20,40 L30,30 Z\" fill=\"%23D4AF37\" opacity=\"0.15\"/><circle cx=\"50\" cy=\"50\" r=\"5\" fill=\"%234f46e5\" opacity=\"0.15\"/></svg>'); background-size:100px 100px; background-repeat:repeat;"></div>
-        <div class="absolute z-[3] w-56 h-56 rounded-full bg-[#D4AF37]/5 blur-3xl top-16 left-8 animate-float pointer-events-none"></div>
-        <div class="absolute z-[3] w-44 h-44 rounded-full bg-[#4f46e5]/5 blur-3xl bottom-32 right-8 animate-float pointer-events-none" style="animation-delay:2s;"></div>
-
-        <div class="relative z-[4] px-8 md:px-14 py-12 text-white bg-gradient-to-t from-black/60 via-black/25 to-transparent panel-text">
-            <div class="flex items-center gap-3 mb-4 text-xs font-semibold tracking-[3px] uppercase" style="font-family:'Urbanist',sans-serif;">
-                <span class="w-10 h-[2px] bg-gradient-to-r from-[#D4AF37] to-transparent"></span>
-                <span class="text-[#D4AF37] animate-pulse-slow">WELCOME BACK</span>
-                <span class="w-10 h-[2px] bg-gradient-to-l from-[#D4AF37] to-transparent"></span>
-            </div>
-            <h1 class="text-4xl md:text-5xl font-extrabold leading-[1.1] mb-4 drop-shadow-lg panel-heading" style="font-family:'Urbanist',sans-serif;">
-                Reconnect with<br>
-                <span class="text-[#D4AF37] relative inline-block">
-                    Africa's Future
-                    <span class="absolute bottom-2 left-0 w-full h-3 bg-[#D4AF37]/25 -z-[1] blur-sm"></span>
-                </span>
-            </h1>
-            <p class="text-sm leading-relaxed text-white/90 max-w-[400px] font-light panel-sub">
-                Access your membership dashboard, manage your contributions, and stay connected with the Africa Prosperity Network community.
-            </p>
-        </div>
-    </div>
-
-    <div class="right-panel apn-scrollbar p-6 md:p-8 relative">
+    <!-- Left Panel  -->
+    <div class="left-panel apn-scrollbar p-6 md:p-8 relative">
 
         <div class="back-link absolute top-7 left-7 z-20">
             <a href="/" class="inline-flex items-center gap-2 text-sm text-[#64748b] hover:text-[#4f46e5] transition-colors duration-300">
-                <i class="fas fa-arrow-left text-xs"></i>
+                <i class="fas fa-chevron-left text-xs"></i>
                 <span>Back to Home</span>
             </a>
         </div>
 
         <div class="max-w-[460px] w-full mx-auto bg-white rounded-2xl p-8 md:p-10 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.18),inset_0_0_0_1px_rgba(0,0,0,0.02)] relative z-20 mt-20 md:mt-36 mb-10 login-card-wrap">
 
+            <!-- Logo in black circle -->
+            <div class="logo-circle animate-float">
+                <img src="https://res.cloudinary.com/dvsacegwf/image/upload/v1773785052/APN-LOGOS-01-e1733932773480-scaled_l1coi5.png" alt="APN Logo">
+            </div>
+
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-[#4f46e5]/10 to-[#D4AF37]/10 rounded-2xl mb-4 animate-float">
-                    <i class="fas fa-lock text-xl bg-gradient-to-r from-[#1e1b4b] to-[#4f46e5] bg-clip-text text-transparent"></i>
-                </div>
+             
                 <h2 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#1e1b4b] to-[#4f46e5] bg-clip-text text-transparent mb-1" style="font-family:'Urbanist',sans-serif;">
                     Login
                 </h2>
@@ -185,21 +179,53 @@
 
                 <button type="submit" class="btn-login w-full py-4 bg-gradient-to-r from-[#1e1b4b] via-[#2d1b4b] to-[#4f46e5] animate-gradient text-white rounded-xl text-base font-bold uppercase tracking-wide shadow-lg flex items-center justify-center gap-3" style="font-family:'Urbanist',sans-serif;">
                     <span>Sign In to Your Account</span>
-                    <i class="fas fa-arrow-right transition-transform duration-300" id="submitIcon"></i>
+                    <i class="fas fa-chevron-right transition-transform duration-300" id="submitIcon"></i>
                 </button>
 
-                <div class="flex items-center justify-center gap-3 mt-7 text-xs text-[#94a3b8] flex-wrap">
-                    <i class="fas fa-circle text-[#D4AF37] animate-pulse-slow" style="font-size:0.35rem;"></i>
-                    <span class="flex items-center gap-1"><i class="fas fa-shield-alt text-[#4f46e5]" style="font-size:0.8rem;"></i> 256-bit encrypted</span>
-                    <i class="fas fa-circle text-[#D4AF37] animate-pulse-slow" style="font-size:0.35rem;"></i>
-                    <span class="flex items-center gap-1"><i class="fas fa-lock text-[#4f46e5]" style="font-size:0.8rem;"></i> Secure login</span>
-                    <i class="fas fa-circle text-[#D4AF37] animate-pulse-slow" style="font-size:0.35rem;"></i>
+                <!-- Register prompt -->
+                <div class="text-center mt-6 pt-4 border-t-2 border-[#e2e8f0]">
+                    <p class="text-sm text-[#64748b]">
+                        Don't have an account yet?
+                        <a href="/" 
+                           class="font-semibold text-[#4f46e5] hover:text-[#3730a3] transition-colors duration-300 hover:underline ml-1">
+                            Register here
+                            <i class="fas fa-chevron-right text-xs ml-1"></i>
+                        </a>
+                    </p>
                 </div>
             </form>
         </div>
 
         <div class="absolute bottom-5 left-0 right-0 text-center text-xs text-[#94a3b8] z-20">
             <p>© {{ date('Y') }} Africa Prosperity Network. All rights reserved.</p>
+        </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+        <div class="absolute inset-0 bg-gradient-to-br from-[#0f172a]/60 via-[#1e1b4b]/50 to-[#2d1b4b]/35 z-[1]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(212,175,55,0.15),transparent_60%)] z-[2] pointer-events-none"></div>
+        <div class="absolute inset-0 opacity-10 z-[3] pointer-events-none animate-pattern"
+             style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><path d=\"M20,20 L30,10 L40,20 L50,10 L60,20 L70,10 L80,20 L70,30 L80,40 L70,50 L80,60 L70,70 L80,80 L70,90 L60,80 L50,90 L40,80 L30,90 L20,80 L30,70 L20,60 L30,50 L20,40 L30,30 Z\" fill=\"%23D4AF37\" opacity=\"0.15\"/><circle cx=\"50\" cy=\"50\" r=\"5\" fill=\"%234f46e5\" opacity=\"0.15\"/></svg>'); background-size:100px 100px; background-repeat:repeat;"></div>
+        <div class="absolute z-[3] w-56 h-56 rounded-full bg-[#D4AF37]/5 blur-3xl top-16 left-8 animate-float pointer-events-none"></div>
+        <div class="absolute z-[3] w-44 h-44 rounded-full bg-[#4f46e5]/5 blur-3xl bottom-32 right-8 animate-float pointer-events-none" style="animation-delay:2s;"></div>
+
+        <div class="relative z-[4] px-8 md:px-14 py-12 text-white bg-gradient-to-t from-black/60 via-black/25 to-transparent panel-text">
+            <div class="flex items-center gap-3 mb-4 text-xs font-semibold tracking-[3px] uppercase" style="font-family:'Urbanist',sans-serif;">
+                <span class="w-10 h-[2px] bg-gradient-to-r from-[#D4AF37] to-transparent"></span>
+                <span class="text-[#D4AF37] animate-pulse-slow">WELCOME BACK</span>
+                <span class="w-10 h-[2px] bg-gradient-to-l from-[#D4AF37] to-transparent"></span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold leading-[1.1] mb-4 drop-shadow-lg panel-heading" style="font-family:'Urbanist',sans-serif;">
+                Reconnect with<br>
+                <span class="text-[#D4AF37] relative inline-block">
+                    Africa's Future
+                    <span class="absolute bottom-2 left-0 w-full h-3 bg-[#D4AF37]/25 -z-[1] blur-sm"></span>
+                </span>
+            </h1>
+            <p class="text-sm leading-relaxed text-white/90 max-w-[400px] font-light panel-sub">
+                Access your membership dashboard, manage your contributions, and stay connected with the Africa Prosperity Network community.
+            </p>
         </div>
     </div>
 </div>

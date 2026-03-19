@@ -1,11 +1,118 @@
 @extends('layouts.guest')
 
 @section('content')
+<style>
+    body {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    h1, h2, h3, h4, h5, h6, .heading-font, .font-urbanist, .btn, button, [class*="font-bold"] {
+        font-family: 'Urbanist', sans-serif;
+    }
+    
+    @keyframes pageReveal {
+        from { opacity: 0; transform: scale(1.02); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes patternMove {
+        from { background-position: 0 0; }
+        to { background-position: 200px 200px; }
+    }
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    .animate-page-reveal { animation: pageReveal 0.9s cubic-bezier(0.22,1,0.36,1) both; }
+    .animate-pattern { animation: patternMove 60s linear infinite; }
+    .animate-gradient { animation: gradientShift 5s ease infinite; background-size: 200% 200%; }
+
+    .apn-scrollbar::-webkit-scrollbar { width: 6px; }
+    .apn-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+    .apn-scrollbar::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
+
+    /* Text size adjustments */
+    .text-xs {
+        font-size: 0.8rem !important;
+    }
+    .text-sm {
+        font-size: 0.95rem !important;
+    }
+    .text-base {
+        font-size: 1rem !important;
+    }
+    .text-lg {
+        font-size: 1.125rem !important;
+    }
+    .text-xl {
+        font-size: 1.3rem !important;
+    }
+    .text-2xl {
+        font-size: 1.65rem !important;
+    }
+    .text-3xl {
+        font-size: 2rem !important;
+    }
+
+    /* Table styles */
+    table td, table th {
+        font-size: 0.95rem;
+    }
+    
+    th.text-xs.font-medium {
+        font-size: 0.8rem !important;
+        letter-spacing: 0.03em;
+    }
+    
+    /* Status badges */
+    .px-2.py-1.inline-flex.text-xs {
+        font-size: 0.8rem !important;
+        padding: 0.3rem 0.8rem !important;
+    }
+    
+    /* Footer/security note */
+    .text-\[0\.7rem\] {
+        font-size: 0.8rem !important;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        body {
+            font-size: 15px;
+        }
+        .text-xs {
+            font-size: 0.75rem !important;
+        }
+        .text-sm {
+            font-size: 0.875rem !important;
+        }
+        h1 {
+            font-size: 1.75rem !important;
+        }
+    }
+
+    /* Card hover effects */
+    .bg-white.rounded-lg.shadow {
+        transition: all 0.3s ease;
+    }
+    .bg-white.rounded-lg.shadow:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+    }
+
+    /* Breadcrumb styling */
+    .breadcrumb-link {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 0.95rem;
+    }
+</style>
+
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Header with breadcrumb (matching edit page) -->
+        <!-- Header with breadcrumb -->
         <div class="mb-8">
-            <div class="flex items-center text-sm text-gray-500 mb-2">
+            <div class="flex items-center text-sm text-gray-500 mb-2 breadcrumb-link">
                 <a href="{{ route('donor.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
                 <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
@@ -23,9 +130,9 @@
             </div>
         @endif
 
-        <!-- Profile Content - Matching edit page style -->
+        <!-- Profile Content -->
         <div class="bg-white rounded-lg shadow overflow-hidden">
-            <!-- Profile Header - Simple like edit page (no gradient) -->
+            <!-- Profile Header -->
             <div class="px-6 py-6 border-b border-gray-200">
                 <div class="flex items-center">
                     <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center shadow-sm">
@@ -41,7 +148,7 @@
                 </div>
             </div>
 
-            <!-- Stats Cards Row (Matching edit page) -->
+            <!-- Stats Cards Row -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-gray-50 border-b border-gray-200">
                 <div class="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
                     <div class="flex items-center">
@@ -88,7 +195,7 @@
 
             <!-- Profile Information Sections -->
             <div class="p-6">
-                <!-- Header with Edit Button (matching edit page) -->
+                <!-- Header with Edit Button -->
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-lg font-semibold text-gray-800">Personal Information</h3>
                     <a href="{{ route('donor.profile.edit') }}" 
@@ -218,6 +325,16 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Security Footer Note -->
+        <div class="flex items-center justify-center gap-3 mt-8 text-xs text-gray-400">
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>256-bit encrypted</span>
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>Powered by Paystack</span>
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>Secure transactions</span>
         </div>
     </div>
 </div>

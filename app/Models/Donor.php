@@ -89,4 +89,10 @@ class Donor extends Authenticatable
             ->where('payment_status', 'success')
             ->count();
     }
+
+
+    public function membershipPayments(): HasMany
+{
+    return $this->hasMany(MemberPayment::class);
+}
 }

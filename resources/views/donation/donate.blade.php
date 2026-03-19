@@ -1,10 +1,6 @@
 @extends('layouts.guest')
 
 @section('content')
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
     * { font-family: 'Open Sans', sans-serif; }
@@ -86,31 +82,56 @@
     }
     .plan-checkbox-wrap.checked .plan-checkbox-label { color: #3b82f6; }
 
-    .left-panel { position: relative; overflow: hidden; background-size: cover; background-position: center; background-image: url('https://membership.africaprosperitynetwork.com/wp-content/uploads/2026/03/Group-598.jpg'); flex-shrink: 0; }
-    .right-panel { background: #fff; overflow-y: auto; display: flex; align-items: flex-start; justify-content: center; }
+    /* Swapped panel styles */
+    .left-panel { background: #fff; overflow-y: auto; display: flex; align-items: flex-start; justify-content: center; }
+    .right-panel { position: relative; overflow: hidden; background-size: cover; background-position: center; background-image: url('https://membership.africaprosperitynetwork.com/wp-content/uploads/2026/03/Group-598.jpg'); flex-shrink: 0; }
+    
     .apn-layout { display: flex; width: 100%; min-height: 100vh; }
 
     @media (min-width: 1024px) {
         .apn-layout { flex-direction: row; height: 100vh; overflow: hidden; }
-        .left-panel { width: 50%; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; }
-        .right-panel { width: 50%; height: 100vh; }
+        .left-panel { width: 50%; height: 100vh; }
+        .right-panel { width: 50%; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; }
     }
     @media (min-width: 640px) and (max-width: 1023px) {
         .apn-layout { flex-direction: column; }
-        .left-panel { width: 100%; min-height: 340px; display: flex; flex-direction: column; justify-content: flex-end; }
-        .right-panel { width: 100%; }
+        .left-panel { width: 100%; }
+        .right-panel { width: 100%; min-height: 340px; display: flex; flex-direction: column; justify-content: flex-end; }
     }
     @media (max-width: 639px) {
         .apn-layout { flex-direction: column; }
-        .left-panel { width: 100%; min-height: 260px; display: flex; flex-direction: column; justify-content: flex-end; }
-        .right-panel { width: 100%; }
-        .left-panel .panel-text { padding: 1.5rem 1.25rem; }
-        .left-panel .panel-heading { font-size: 1.8rem !important; }
-        .left-panel .panel-sub { display: none; }
+        .left-panel { width: 100%; }
+        .right-panel { width: 100%; min-height: 260px; display: flex; flex-direction: column; justify-content: flex-end; }
+        .right-panel .panel-text { padding: 1.5rem 1.25rem; }
+        .right-panel .panel-heading { font-size: 1.8rem !important; }
+        .right-panel .panel-sub { display: none; }
         .membership-grid { grid-template-columns: 1fr !important; }
         .form-two-col { grid-template-columns: 1fr !important; }
         .login-btn-top { display: none !important; }
         .login-mobile-note { display: block !important; }
+    }
+
+    /* Logo circle styles */
+    .logo-circle {
+        width: 100px;
+        height: 100px;
+        background-color: rgb(16, 16, 70);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem auto;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+
+        transition: transform 0.3s ease;
+    }
+    .logo-circle:hover {
+        transform: scale(1.05);
+    }
+    .logo-circle img {
+        max-width: 96px;
+        max-height: 96px;
+        filter: brightness(0) invert(1);
     }
 
     .field-apn { width: 100%; padding: 0.75rem 0.75rem 0.75rem 2.6rem; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 0.88rem; color: #1e293b; transition: all 0.2s ease; outline: none; font-family: 'Open Sans', sans-serif; }
@@ -168,40 +189,22 @@
 
 <div class="apn-layout animate-page-reveal">
 
-    <div class="left-panel">
-        <div class="absolute inset-0 bg-gradient-to-br from-[#0f172a]/60 via-[#1e1b4b]/45 to-[#2d1b4b]/30 z-[1]"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(212,175,55,0.1),transparent_70%)] z-[2] pointer-events-none"></div>
-        <div class="absolute inset-0 opacity-8 z-[3] pointer-events-none animate-pattern"
-             style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\" opacity=\"0.1\"><path d=\"M20,20 L30,10 L40,20 L50,10 L60,20 L70,10 L80,20 L70,30 L80,40 L70,50 L80,60 L70,70 L80,80 L70,90 L60,80 L50,90 L40,80 L30,90 L20,80 L30,70 L20,60 L30,50 L20,40 L30,30 Z\" fill=\"%23D4AF37\"/><circle cx=\"50\" cy=\"50\" r=\"5\" fill=\"%233b82f6\"/></svg>');"></div>
-        <div class="relative z-[4] px-8 md:px-14 py-12 text-white bg-gradient-to-t from-black/50 via-transparent to-transparent panel-text">
-            <div class="flex items-center gap-2 mb-3 text-xs font-semibold tracking-[3px] uppercase text-[#D4AF37]" style="font-family:'Urbanist',sans-serif;">
-                <span class="w-10 h-[2px] bg-gradient-to-r from-[#D4AF37] to-transparent"></span>
-                AFRICA PROSPERITY NETWORK
-            </div>
-            <h1 class="text-4xl md:text-5xl font-extrabold leading-[1.1] mb-4 drop-shadow-lg panel-heading" style="font-family:'Urbanist',sans-serif;">
-                Join the<br>
-                <span class="text-[#D4AF37] relative inline-block">
-                    Movement
-                    <span class="absolute bottom-1 left-0 w-full h-2 bg-[#D4AF37]/30 -z-[1]"></span>
-                </span><br>
-                for Prosperity
-            </h1>
-            <p class="text-sm leading-relaxed text-white/90 max-w-[420px] font-light panel-sub">
-                Choose to become a member to support Africa's economic integration and shared prosperity.
-            </p>
-        </div>
-    </div>
-
-    <div class="right-panel apn-scrollbar p-6 md:p-8 relative">
-        <div class="login-btn-top absolute top-6 right-6 z-20">
-            <a href="{{ route('donor.login') }}"
-               class="inline-flex items-center gap-2 px-5 py-2.5 bg-transparent border-2 border-[#3b82f6] rounded-xl text-[#3b82f6] text-sm font-semibold transition-all duration-300 hover:bg-[#3b82f6]/5 hover:-translate-y-1" style="font-family:'Urbanist',sans-serif;">
-                <span>Login</span>
-                <i class="fas fa-chevron-right text-xs"></i>
-            </a>
-        </div>
+    <!-- Left Panel (formerly right panel - now contains the registration form) -->
+    <div class="left-panel apn-scrollbar p-6 md:p-8 relative">
+      <div class="login-btn-top absolute top-6 right-6 z-20">
+    <a href="{{ route('donor.login') }}"
+       class="inline-flex items-center gap-2 text-sm text-[#64748b] hover:text-[#3b82f6] transition-colors duration-300">
+        <i class="fas fa-sign-in-alt text-xs"></i>
+        <span>Login</span>
+    </a>
+</div>
 
         <div class="max-w-[860px] w-full mx-auto bg-white rounded-2xl p-6 md:p-10 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15),inset_0_0_0_1px_rgba(0,0,0,0.02)] mt-14 lg:mt-10">
+
+            <!-- Logo in black circle above the form -->
+            <div class="logo-circle animate-float">
+                <img src="https://res.cloudinary.com/dvsacegwf/image/upload/v1773785052/APN-LOGOS-01-e1733932773480-scaled_l1coi5.png" alt="APN Logo">
+            </div>
 
             <div class="text-center mb-7">
                 <h2 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#1e1b4b] to-[#2d1b4b] bg-clip-text text-transparent mb-1" style="font-family:'Urbanist',sans-serif;">APN Membership Registration</h2>
@@ -363,23 +366,45 @@
             <button type="button" id="joinBtn" onclick="processMembership()"
                     class="w-full py-4 bg-gradient-to-r from-[#1e1b4b] via-[#2d1b4b] to-[#3b82f6] animate-gradient text-white border-none rounded-xl text-base font-bold tracking-wide uppercase cursor-pointer transition-all duration-300 shadow-[0_12px_22px_-6px_rgba(59,130,246,0.4)] hover:-translate-y-1 hover:shadow-[0_18px_28px_-6px_rgba(59,130,246,0.55)] flex items-center justify-center gap-3" style="font-family:'Urbanist',sans-serif;">
                 <span id="joinBtnText">REGISTER</span>
-                <i class="fas fa-arrow-right"></i>
+                <i class="fas fa-chevron-right"></i>
             </button>
 
-            <div class="login-mobile-note hidden text-center mt-6 pt-5 border-t-2 border-[#e2e8f0]">
-                <p class="text-sm text-[#64748b]">Already a member?
-                    <a href="{{ route('donor.login') }}" class="font-semibold text-[#3b82f6] hover:underline ml-1">Login here</a>
-                </p>
-            </div>
+            <div class="text-center mt-6 pt-5 border-t-2 border-[#e2e8f0]">
+    <p class="text-sm text-[#64748b]">
+        Already have an account?
+        <a href="{{ route('donor.login') }}" 
+           class="font-semibold text-[#3b82f6] hover:text-[#2563eb] transition-colors duration-300 hover:underline ml-1">
+            Sign in here
+            <i class="fas fa-arrow-right text-xs ml-1"></i>
+        </a>
+    </p>
+</div>
 
-            <div class="flex items-center justify-center gap-3 mt-5 text-xs text-[#94a3b8] flex-wrap">
-                <i class="fas fa-circle text-[#D4AF37]" style="font-size:0.35rem;"></i>
-                <span>256-bit encrypted</span>
-                <i class="fas fa-circle text-[#D4AF37]" style="font-size:0.35rem;"></i>
-                <span>Powered by Paystack</span>
-                <i class="fas fa-circle text-[#D4AF37]" style="font-size:0.35rem;"></i>
-                <span>No card data stored</span>
+        </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+        <div class="absolute inset-0 bg-gradient-to-br from-[#0f172a]/60 via-[#1e1b4b]/45 to-[#2d1b4b]/30 z-[1]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(212,175,55,0.1),transparent_70%)] z-[2] pointer-events-none"></div>
+        <div class="absolute inset-0 opacity-8 z-[3] pointer-events-none animate-pattern"
+             style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\" opacity=\"0.1\"><path d=\"M20,20 L30,10 L40,20 L50,10 L60,20 L70,10 L80,20 L70,30 L80,40 L70,50 L80,60 L70,70 L80,80 L70,90 L60,80 L50,90 L40,80 L30,90 L20,80 L30,70 L20,60 L30,50 L20,40 L30,30 Z\" fill=\"%23D4AF37\"/><circle cx=\"50\" cy=\"50\" r=\"5\" fill=\"%233b82f6\"/></svg>');"></div>
+        <div class="relative z-[4] px-8 md:px-14 py-12 text-white bg-gradient-to-t from-black/50 via-transparent to-transparent panel-text">
+            <div class="flex items-center gap-2 mb-3 text-xs font-semibold tracking-[3px] uppercase text-[#D4AF37]" style="font-family:'Urbanist',sans-serif;">
+                <span class="w-10 h-[2px] bg-gradient-to-r from-[#D4AF37] to-transparent"></span>
+                AFRICA PROSPERITY NETWORK
             </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold leading-[1.1] mb-4 drop-shadow-lg panel-heading" style="font-family:'Urbanist',sans-serif;">
+                Join the<br>
+                <span class="text-[#D4AF37] relative inline-block">
+                    Movement
+                    <span class="absolute bottom-1 left-0 w-full h-2 bg-[#D4AF37]/30 -z-[1]"></span>
+                </span><br>
+                for Prosperity
+            </h1>
+            <p class="text-sm leading-relaxed text-white/90 max-w-[420px] font-light panel-sub">
+                Choose to become a member to support Africa's economic integration and shared prosperity.
+            </p>
         </div>
     </div>
 </div>
@@ -677,5 +702,10 @@ async function processMembership() {
         showError(e.message || 'Failed to process membership. Please try again.');
     }
 }
+
+// Initialize join button text
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('joinBtnText').textContent = 'Register — Annual Plan';
+});
 </script>
 @endsection

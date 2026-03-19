@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('currency')->default('GHS');
             $table->string('payment_status')->default('pending');
             $table->string('payment_method')->nullable();
+            $table->string('donation_reason')->nullable();
+            $table->string('custom_reason')->nullable();
             $table->json('paystack_response')->nullable();
             $table->timestamps();
             
@@ -26,6 +28,7 @@ return new class extends Migration
             $table->index('transaction_id');
             $table->index('payment_status');
             $table->index('donor_id');
+            $table->index('donation_reason');
             $table->index('created_at');
         });
     }

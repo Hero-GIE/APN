@@ -12,15 +12,11 @@ use Illuminate\Support\Facades\Validator;
 class DonorController extends Controller
 {
 
-
-    /**
-     * Show support page
-     */
- /**
- * Show support page
- */
-public function support()
-{
+  /**
+  * Show support page
+  */
+  public function support()
+  {
     $donor = Auth::guard('donor')->user();
     $member = Member::where('donor_id', $donor->id)->first();
     
@@ -29,7 +25,7 @@ public function support()
         ->paginate(5);
         
     return view('donor.support', compact('donor', 'member', 'tickets'));
-}
+   }
 
     /**
      * Submit support ticket
@@ -54,7 +50,6 @@ public function support()
             $attachmentPath = $request->file('attachment')->store('support-attachments', 'public');
         }
 
-        // Create support ticket
         $ticket = SupportTicket::create([
             'donor_id' => $donor->id,
             'ticket_number' => 'TICKET-' . strtoupper(uniqid()),
@@ -79,11 +74,8 @@ public function support()
 
 
   /**
-  * Show membership page
+  * Show membership page within donor dashboard
   */
-  /**
- * Show membership page within donor dashboard
- */
 public function membership()
 {
     $donor = Auth::guard('donor')->user();

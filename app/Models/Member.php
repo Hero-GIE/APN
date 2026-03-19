@@ -1,4 +1,5 @@
 <?php
+// app/Models/Member.php
 
 namespace App\Models;
 
@@ -30,7 +31,7 @@ class Member extends Model
     {
         return $this->belongsTo(Donor::class);
     }
-
+    
     public function payments()
     {
         return $this->hasMany(MemberPayment::class);
@@ -46,7 +47,7 @@ class Member extends Model
     public function isExpired(): bool
     {
         if ($this->status === 'expired') return true;
-        if (!$this->end_date) return false; // no end date = not expired
+        if (!$this->end_date) return false;
         return $this->end_date->isPast();
     }
 
@@ -70,5 +71,13 @@ class Member extends Model
     public function getPriceAttribute(): int
     {
         return $this->membership_type === 'annual' ? 350 : 35;
+    }
+    
+    // Get total paid amount
+    public function getTotalPaidAttribute(): float
+    {
+        return $this->payments()
+            ->where('payment_status', 'success')
+            ->sum('amount');
     }
 }

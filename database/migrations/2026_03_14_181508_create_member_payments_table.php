@@ -6,22 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('member_payments', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('donor_id')->unsigned();
             $table->bigInteger('member_id')->unsigned();
-            $table->bigInteger('donation_id')->unsigned();
+            $table->string('transaction_id')->unique(); 
             $table->enum('membership_type', ['monthly', 'annual']);
             $table->decimal('amount', 10, 2);
+            $table->string('currency')->default('GHS');
+            $table->string('payment_method')->nullable();
+            $table->enum('payment_status', ['success', 'pending', 'failed'])->default('pending');
+            $table->json('paystack_response')->nullable();
             $table->timestamp('payment_date')->useCurrent();
             $table->timestamp('period_start')->nullable();
             $table->timestamp('period_end')->nullable();
-            
             $table->timestamps();
             
             $table->foreign('donor_id')
@@ -34,18 +34,13 @@ return new class extends Migration
                   ->on('members')
                   ->onDelete('cascade');
                   
-            $table->foreign('donation_id')
-                  ->references('id')
-                  ->on('donations')
-                  ->onDelete('cascade');
+            $table->index('transaction_id');
+            $table->index('payment_status');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('member_payments');
+        Schema::dropIfExists('membership_payments');
     }
 };

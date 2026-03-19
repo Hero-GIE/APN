@@ -7,6 +7,9 @@ use App\Models\Member;
 use App\Models\MemberPayment;
 use App\Models\Donation;
 use App\Models\SupportTicket;
+use App\Models\News;
+use App\Models\Event;
+use App\Models\JobOpportunity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -30,7 +33,6 @@ class MemberController extends Controller
         }
 
         $payments = MemberPayment::where('donor_id', $donor->id)
-            ->with('donation')
             ->orderBy('payment_date', 'desc')
             ->take(5)
             ->get();
@@ -40,11 +42,32 @@ class MemberController extends Controller
             ->take(5)
             ->get();
 
+        // Fetch latest news (4 items)
+        $news = News::where('is_published', true)
+                    ->orderBy('published_date', 'desc')
+                    ->take(4)
+                    ->get();
+        
+        // Fetch upcoming events (4 items)
+        $events = Event::where('is_published', true)
+                       ->where('start_date', '>=', now())
+                       ->orderBy('start_date', 'asc')
+                       ->take(4)
+                       ->get();
+        
+        // Fetch latest jobs (4 items)
+        $jobs = JobOpportunity::where('is_published', true)
+                              ->orderBy('posted_date', 'desc')
+                              ->take(4)
+                              ->get();
+
         $stats = [
             'total_payments' => MemberPayment::where('donor_id', $donor->id)->count(),
             'total_spent' => MemberPayment::where('donor_id', $donor->id)->sum('amount'),
             'days_left' => $member->daysLeft(),
             'renewals' => $member->renewal_count,
+            'total_donations' => Donation::where('donor_id', $donor->id)->count(),
+            'total_donated' => Donation::where('donor_id', $donor->id)->sum('amount'),
         ];
 
         // Prepare status configuration
@@ -60,7 +83,17 @@ class MemberController extends Controller
             'pulse' => in_array($member->status, ['active', 'pending'])
         ];
 
-        return view('member.dashboard', compact('donor', 'member', 'payments', 'donations', 'stats', 'statusConfig'));
+        return view('member.dashboard', compact(
+            'donor', 
+            'member', 
+            'payments', 
+            'donations', 
+            'stats', 
+            'statusConfig',
+            'news',
+            'events',
+            'jobs'
+        ));
     }
 
     /**
@@ -105,7 +138,6 @@ class MemberController extends Controller
         }
 
         $payments = MemberPayment::where('donor_id', $donor->id)
-            ->with('donation')
             ->orderBy('payment_date', 'desc')
             ->paginate(10);
 
@@ -120,31 +152,33 @@ class MemberController extends Controller
         $donor = Auth::guard('donor')->user();
         $member = Member::where('donor_id', $donor->id)->first();
 
+        // Get member payments
         $memberPayments = MemberPayment::where('donor_id', $donor->id)
-            ->with('donation')
+            ->orderBy('payment_date', 'desc')
             ->get()
             ->map(function($payment) {
                 return [
                     'id' => $payment->id,
                     'date' => $payment->payment_date,
-                    'transaction_id' => $payment->donation->transaction_id ?? 'N/A',
-                    'description' => ucfirst($payment->membership_type) . ' Membership',
+                    'transaction_id' => $payment->transaction_id,
+                    'description' => ucfirst($payment->membership_type) . ' Membership Payment',
                     'amount' => $payment->amount,
                     'type' => 'membership',
-                    'status' => 'success',
-                    'payment_method' => $payment->donation->payment_method ?? 'Card',
+                    'status' => $payment->payment_status,
+                    'payment_method' => $payment->payment_method ?? 'Card',
                 ];
             });
 
+        // Get donations
         $donations = Donation::where('donor_id', $donor->id)
-            ->where('payment_status', 'success')
+            ->orderBy('created_at', 'desc')
             ->get()
             ->map(function($donation) {
                 return [
                     'id' => $donation->id,
                     'date' => $donation->created_at,
                     'transaction_id' => $donation->transaction_id,
-                    'description' => 'Donation',
+                    'description' => $donation->description ?? 'General Donation',
                     'amount' => $donation->amount,
                     'type' => 'donation',
                     'status' => $donation->payment_status,
@@ -152,10 +186,12 @@ class MemberController extends Controller
                 ];
             });
 
+        // Combine and sort transactions
         $transactions = $memberPayments->concat($donations)
             ->sortByDesc('date')
             ->values();
 
+        // Paginate the combined results
         $page = request()->get('page', 1);
         $perPage = 15;
         $paginated = new \Illuminate\Pagination\LengthAwarePaginator(
@@ -166,7 +202,13 @@ class MemberController extends Controller
             ['path' => request()->url()]
         );
 
-        return view('member.transactions', compact('donor', 'member', 'transactions', 'paginated', 'memberPayments', 'donations'));
+        return view('member.transactions', compact(
+            'donor', 
+            'member', 
+            'transactions', 
+            'paginated',
+            'memberPayments' 
+        ));
     }
 
     /**
@@ -236,91 +278,87 @@ class MemberController extends Controller
             ->with('success', 'Profile updated successfully.');
     }
 
-   
-   /**
- * Show Change Password Form
- */
-public function showChangePasswordForm()
-{
-    $donor = Auth::guard('donor')->user();
-    $member = Member::where('donor_id', $donor->id)->first();
+    /**
+     * Show Change Password Form
+     */
+    public function showChangePasswordForm()
+    {
+        $donor = Auth::guard('donor')->user();
+        $member = Member::where('donor_id', $donor->id)->first();
 
-    return view('member.change-password', compact('donor', 'member'));
-}
-
- 
-  /**
- * Change Password
- */
-public function changePassword(Request $request)
-{
-
-    $validator = Validator::make($request->all(), [
-        'current_password' => 'required',
-        'new_password' => 'required|string|min:8|confirmed',
-    ]);
-
-    if ($validator->fails()) {
-        Log::warning('Password change validation failed', [
-            'errors' => $validator->errors()->toArray()
-        ]);
-        
-        return redirect()->back()
-            ->withErrors($validator)
-            ->withInput();
+        return view('member.change-password', compact('donor', 'member'));
     }
 
-    $donor = Auth::guard('donor')->user();
-    
-    if (!Hash::check($request->current_password, $donor->password)) {
-        Log::warning('Current password incorrect', [
-            'donor_id' => $donor->id,
-            'provided_password_length' => strlen($request->current_password)
-        ]);
-        
-        return redirect()->back()
-            ->with('error', 'Current password is incorrect.');
-    }
-
-    // Hash the new password
-    $newHashedPassword = Hash::make($request->new_password);
-    
-    Log::info('New password hashed', [
-        'new_hash_length' => strlen($newHashedPassword)
-    ]);
-
-    // Update password
-    try {
-        $updateResult = $donor->update([
-            'password' => $newHashedPassword
+    /**
+     * Change Password
+     */
+    public function changePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
         ]);
 
-        $updatedDonor = Donor::find($donor->id);
-        $verifyCheck = Hash::check($request->new_password, $updatedDonor->password);
-        
-        Log::info('Password update verification', [
-            'new_password_works' => $verifyCheck,
-            'updated_at' => $updatedDonor->updated_at->toDateTimeString()
-        ]);
-
-        if (!$verifyCheck) {
-            Log::error('Password update verification failed - new password does not work');
+        if ($validator->fails()) {
+            Log::warning('Password change validation failed', [
+                'errors' => $validator->errors()->toArray()
+            ]);
+            
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
-    } catch (\Exception $e) {
-        Log::error('Exception during password update', [
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
+        $donor = Auth::guard('donor')->user();
         
-        return redirect()->back()
-            ->with('error', 'An error occurred while updating your password. Please try again.');
+        if (!Hash::check($request->current_password, $donor->password)) {
+            Log::warning('Current password incorrect', [
+                'donor_id' => $donor->id,
+                'provided_password_length' => strlen($request->current_password)
+            ]);
+            
+            return redirect()->back()
+                ->with('error', 'Current password is incorrect.');
+        }
+
+        // Hash the new password
+        $newHashedPassword = Hash::make($request->new_password);
+        
+        Log::info('New password hashed', [
+            'new_hash_length' => strlen($newHashedPassword)
+        ]);
+
+        // Update password
+        try {
+            $updateResult = $donor->update([
+                'password' => $newHashedPassword
+            ]);
+
+            $updatedDonor = Donor::find($donor->id);
+            $verifyCheck = Hash::check($request->new_password, $updatedDonor->password);
+            
+            Log::info('Password update verification', [
+                'new_password_works' => $verifyCheck,
+                'updated_at' => $updatedDonor->updated_at->toDateTimeString()
+            ]);
+
+            if (!$verifyCheck) {
+                Log::error('Password update verification failed - new password does not work');
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Exception during password update', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return redirect()->back()
+                ->with('error', 'An error occurred while updating your password. Please try again.');
+        }
+
+        return redirect()->route('member.profile.show')
+            ->with('success', 'Password changed successfully.');
     }
-
-
-    return redirect()->route('member.profile.show')
-        ->with('success', 'Password changed successfully.');
-}
 
     /**
      * Support Page
@@ -435,8 +473,7 @@ public function changePassword(Request $request)
     public function downloadReceipt($paymentId)
     {
         $donor = Auth::guard('donor')->user();
-        $payment = MemberPayment::with('donation')
-            ->where('id', $paymentId)
+        $payment = MemberPayment::where('id', $paymentId)
             ->where('donor_id', $donor->id)
             ->firstOrFail();
 
@@ -444,18 +481,17 @@ public function changePassword(Request $request)
 
         return response($receipt)
             ->header('Content-Type', 'text/html')
-            ->header('Content-Disposition', 'attachment; filename="receipt-' . $payment->donation->transaction_id . '.html"');
+            ->header('Content-Disposition', 'attachment; filename="receipt-' . $payment->transaction_id . '.html"');
     }
 
-
     /**
- * Show About APN page
- */
-public function about()
-{
-    $donor = Auth::guard('donor')->user();
-    $member = Member::where('donor_id', $donor->id)->first();
-    
-    return view('member.about', compact('donor', 'member'));
-}
+     * Show About APN page
+     */
+    public function about()
+    {
+        $donor = Auth::guard('donor')->user();
+        $member = Member::where('donor_id', $donor->id)->first();
+        
+        return view('member.about', compact('donor', 'member'));
+    }
 }

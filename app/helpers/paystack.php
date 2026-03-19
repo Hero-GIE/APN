@@ -19,6 +19,7 @@ class Paystack
             return 'sandbox.';
         }
     }
+    
     private function initite($data, $state = 'live')
     {
         $amnt = (int) ceil($data['amount']);
@@ -34,57 +35,63 @@ class Paystack
         return $response;
     }
 
-  public function initiate($data)
-{
-    try {
-        $amnt = (int) ceil($data['amount']);
-        $endPoint = 'https://api.paystack.co/transaction/initialize';
-        
-        $postData = [
-            'email' => $data['email'],
-            'amount' => $amnt * 100,
-            'currency' => 'GHS',
-            'callback_url' => url('/donation/callback'),
-            'reference' => $data['order_id'],
-            'metadata' => $data['metadata'] ?? []
-        ];
+    public function initiate($data)
+    {
+        try {
+          
+            $amountInPesewas = (int) $data['amount']; 
+            
+            $endPoint = 'https://api.paystack.co/transaction/initialize';
+            
+            $postData = [
+                'email' => $data['email'],
+                'amount' => $amountInPesewas, 
+                'currency' => $data['currency'] ?? 'GHS',
+                'callback_url' => url('/donation/callback'),
+                'reference' => $data['order_id'],
+                'metadata' => $data['metadata'] ?? []
+            ];
 
-        Log::info('Paystack API request', ['url' => $endPoint, 'data' => $postData]);
+            Log::info('Paystack API request', [
+                'url' => $endPoint, 
+                'data' => $postData,
+                'amount_ghs' => $amountInPesewas / 100 
+            ]);
 
-        $ch = curl_init();
-        $headers = array(
-            'Authorization: Bearer ' . env('PAYSTACK_SECRET_KEY'),
-            'Content-Type: application/json'
-        );
-        
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_URL, $endPoint);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); 
-        
-        $result = curl_exec($ch);
-        
-        if (curl_error($ch)) {
-            Log::error('cURL error: ' . curl_error($ch));
-            return ['status' => false, 'message' => 'cURL error: ' . curl_error($ch)];
+            $ch = curl_init();
+            $headers = array(
+                'Authorization: Bearer ' . env('PAYSTACK_SECRET_KEY'),
+                'Content-Type: application/json'
+            );
+            
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_URL, $endPoint);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); 
+            
+            $result = curl_exec($ch);
+            
+            if (curl_error($ch)) {
+                Log::error('cURL error: ' . curl_error($ch));
+                return ['status' => false, 'message' => 'cURL error: ' . curl_error($ch)];
+            }
+            
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            
+            $result = json_decode($result, TRUE);
+            
+            Log::info('Paystack API response', ['http_code' => $httpCode, 'response' => $result]);
+            
+            return $result;
+            
+        } catch (\Exception $e) {
+            Log::error('Paystack helper error: ' . $e->getMessage());
+            return ['status' => false, 'message' => $e->getMessage()];
         }
-        
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-        
-        $result = json_decode($result, TRUE);
-        
-        Log::info('Paystack API response', ['http_code' => $httpCode, 'response' => $result]);
-        
-        return $result;
-        
-    } catch (\Exception $e) {
-        Log::error('Paystack helper error: ' . $e->getMessage());
-        return ['status' => false, 'message' => $e->getMessage()];
     }
-}
 
     private function ussdInitiate($data, $state = 'live')
     {
@@ -93,10 +100,9 @@ class Paystack
             'Content-Type' => "application/json"
         ])->post('https://api.paystack.co/charge', [
             'email' => $data['email'],
-            'amount' => $data['amount'] * 100,
+            'amount' => $data['amount'],
             'currency' => 'GHS',
             'reference' => $data['order_id'],
-            // 'callback_url' => env("APP_URL") . '/vote/successful',
             'mobile_money' => ['phone' => $data['phone'], 'provider' => $data['network']]
         ])->throw()->json();
 
@@ -131,7 +137,6 @@ class Paystack
             ])->get('https://api.paystack.co/transaction/verify/' . $data)->throw()->json();
         } catch (Exception $e) {
             return ['data' => ['status' => 'error', 'gateway_response' => "Transaction not found"]];
-           
         }
         return $response;
     }
@@ -144,7 +149,7 @@ class Paystack
         ])->post('https://api.paystack.co/transaction/charge_authorization', [
             'authorization_code' => $data['auth'],
             'email' => $data['email'],
-            'amount' => $data['amount'] * 100
+            'amount' => $data['amount'] 
         ])->throw()->json();
 
         return $response;
@@ -153,7 +158,6 @@ class Paystack
     public function ussdCheckout($data, $state = 'live')
     {
         $initiateRes = $this->ussdInitiate($data, $state);
-
         return $initiateRes;
     }
 }

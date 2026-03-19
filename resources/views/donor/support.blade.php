@@ -1,10 +1,171 @@
 @extends('layouts.guest')
 
 @section('content')
+<style>
+    body {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    h1, h2, h3, h4, h5, h6, .heading-font, .font-urbanist, .btn, button, [class*="font-bold"] {
+        font-family: 'Urbanist', sans-serif;
+    }
+    
+    /* Text size adjustments */
+    .text-xs {
+        font-size: 0.8rem !important;
+    }
+    .text-sm {
+        font-size: 0.95rem !important;
+    }
+    .text-base {
+        font-size: 1rem !important;
+    }
+    .text-lg {
+        font-size: 1.125rem !important;
+    }
+    .text-xl {
+        font-size: 1.3rem !important;
+    }
+    .text-2xl {
+        font-size: 1.65rem !important;
+    }
+    .text-3xl {
+        font-size: 2rem !important;
+    }
+    
+    .breadcrumb-link {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 0.95rem;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem;
+        letter-spacing: 0.02em;
+    }
+    
+    .stat-value {
+        font-size: 1.65rem;
+        font-family: 'Urbanist', sans-serif;
+        font-weight: 600;
+    }
+    
+    .table-header {
+        font-size: 0.8rem;
+        font-family: 'Urbanist', sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+    }
+    
+    .table-date {
+        font-size: 0.95rem;
+    }
+    
+    .table-time {
+        font-size: 0.8rem;
+    }
+    
+    .table-transaction {
+        font-size: 0.9rem;
+        font-family: monospace;
+    }
+    
+    .badge-status {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    
+    .empty-state-title {
+        font-family: 'Urbanist', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+    
+    .empty-state-text {
+        font-size: 0.9rem;
+    }
+    
+    /* Card styles */
+    .support-card {
+        transition: all 0.3s ease;
+    }
+    .support-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        body {
+            font-size: 15px;
+        }
+        .text-xs {
+            font-size: 0.75rem !important;
+        }
+        .text-sm {
+            font-size: 0.875rem !important;
+        }
+        h1 {
+            font-size: 1.75rem !important;
+        }
+    }
+
+    /* Modal animations */
+    #ticketModal {
+        transition: opacity 0.3s ease;
+    }
+    
+    #ticketModal .transform {
+        transition: transform 0.3s ease;
+    }
+    
+    #ticketModal.hidden {
+        display: none;
+    }
+    
+    /* Custom scrollbar for modal */
+    #ticketDetails {
+        max-height: 70vh;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e0 #f1f5f9;
+    }
+    
+    #ticketDetails::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    #ticketDetails::-webkit-scrollbar-track {
+        background: #f1f5f9;
+    }
+    
+    #ticketDetails::-webkit-scrollbar-thumb {
+        background: #cbd5e0;
+        border-radius: 3px;
+    }
+    
+    #ticketDetails::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* Form styles */
+    .form-label {
+        font-size: 0.9rem;
+        font-weight: 500;
+        font-family: 'Urbanist', sans-serif;
+    }
+    
+    .form-input {
+        font-size: 0.95rem;
+    }
+</style>
+
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header with breadcrumb -->
         <div class="mb-8">
-            <div class="flex items-center text-sm text-gray-500 mb-2">
+            <div class="flex items-center text-sm text-gray-500 mb-2 breadcrumb-link">
                 <a href="{{ route('donor.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
                 <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
@@ -15,9 +176,10 @@
             <p class="text-gray-600 mt-2">We're here to help you with any questions or issues.</p>
         </div>
 
+        <!-- Support Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <!-- Email Support Card -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <div class="bg-white rounded-lg shadow p-6 support-card">
                 <div class="flex items-center mb-4">
                     <div class="p-3 bg-blue-100 rounded-full">
                         <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -35,7 +197,8 @@
                 </a>
             </div>
 
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <!-- Live Chat Card -->
+            <div class="bg-white rounded-lg shadow p-6 support-card">
                 <div class="flex items-center mb-4">
                     <div class="p-3 bg-green-100 rounded-full">
                         <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,7 +217,7 @@
             </div>
 
             <!-- FAQ Card -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <div class="bg-white rounded-lg shadow p-6 support-card">
                 <div class="flex items-center mb-4">
                     <div class="p-3 bg-purple-100 rounded-full">
                         <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,6 +236,7 @@
             </div>
         </div>
 
+        <!-- Success Message -->
         @if(session('success'))
             <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg relative">
                 <div class="flex items-center">
@@ -84,10 +248,11 @@
             </div>
         @endif
 
+        <!-- Main Content Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Contact Form -->
             <div class="lg:col-span-2">
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-white rounded-lg shadow overflow-hidden">
                     <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
                         <h2 class="text-lg font-semibold text-gray-800">Submit a Support Ticket</h2>
                         <p class="text-gray-500 text-sm mt-1">Fill out the form below and we'll get back to you within 24 hours.</p>
@@ -98,14 +263,14 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div class="md:col-span-2">
-                                <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">
+                                <label for="subject" class="block form-label text-gray-700 mb-2">
                                     Subject <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" 
                                        name="subject" 
                                        id="subject" 
                                        value="{{ old('subject') }}"
-                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('subject') border-red-500 @enderror"
+                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 form-input @error('subject') border-red-500 @enderror"
                                        placeholder="Brief summary of your issue"
                                        required>
                                 @error('subject')
@@ -115,12 +280,12 @@
 
                             <!-- Category -->
                             <div>
-                                <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
+                                <label for="category" class="block form-label text-gray-700 mb-2">
                                     Category <span class="text-red-500">*</span>
                                 </label>
                                 <select name="category" 
                                         id="category" 
-                                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('category') border-red-500 @enderror"
+                                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 form-input @error('category') border-red-500 @enderror"
                                         required>
                                     <option value="">Select a category</option>
                                     <option value="technical" {{ old('category') == 'technical' ? 'selected' : '' }}>Technical Issue</option>
@@ -136,12 +301,12 @@
 
                             <!-- Priority -->
                             <div>
-                                <label for="priority" class="block text-sm font-medium text-gray-700 mb-2">
+                                <label for="priority" class="block form-label text-gray-700 mb-2">
                                     Priority <span class="text-red-500">*</span>
                                 </label>
                                 <select name="priority" 
                                         id="priority" 
-                                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('priority') border-red-500 @enderror"
+                                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 form-input @error('priority') border-red-500 @enderror"
                                         required>
                                     <option value="">Select priority</option>
                                     <option value="low" {{ old('priority') == 'low' ? 'selected' : '' }}>Low - General question</option>
@@ -155,13 +320,13 @@
 
                             <!-- Message -->
                             <div class="md:col-span-2">
-                                <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
+                                <label for="message" class="block form-label text-gray-700 mb-2">
                                     Message <span class="text-red-500">*</span>
                                 </label>
                                 <textarea name="message" 
                                           id="message" 
                                           rows="6" 
-                                          class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('message') border-red-500 @enderror"
+                                          class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 form-input @error('message') border-red-500 @enderror"
                                           placeholder="Please describe your issue in detail..."
                                           required>{{ old('message') }}</textarea>
                                 @error('message')
@@ -185,9 +350,10 @@
                 </div>
             </div>
 
+            <!-- Contact Info Sidebar -->
             <div class="lg:col-span-1 space-y-6">
                 <!-- Contact Info Card -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-white rounded-lg shadow overflow-hidden">
                     <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
                         <h3 class="font-semibold text-gray-800">Contact Information</h3>
                     </div>
@@ -236,37 +402,38 @@
             </div>
         </div>
 
+        <!-- Recent Support Tickets -->
         @if($tickets->count() > 0)
         <div class="mt-8">
             <h2 class="text-xl font-semibold text-gray-800 mb-4">Your Recent Support Tickets</h2>
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div class="bg-white rounded-lg shadow overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ticket #</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Ticket #</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Subject</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Category</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Priority</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach($tickets as $ticket)
                             <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">
-                                    {{ $ticket->ticket_number }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ Str::limit($ticket->subject, 30) }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                    {{ ucfirst($ticket->category) }}
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="table-transaction text-gray-600">{{ $ticket->ticket_number }}</span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    <div class="table-date text-gray-900">{{ Str::limit($ticket->subject, 30) }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="table-date text-gray-600">{{ ucfirst($ticket->category) }}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full badge-status
                                         @if($ticket->priority == 'low') bg-green-100 text-green-800
                                         @elseif($ticket->priority == 'medium') bg-yellow-100 text-yellow-800
                                         @else bg-red-100 text-red-800 @endif">
@@ -274,7 +441,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full badge-status
                                         @if($ticket->status == 'open') bg-blue-100 text-blue-800
                                         @elseif($ticket->status == 'in_progress') bg-yellow-100 text-yellow-800
                                         @elseif($ticket->status == 'resolved') bg-green-100 text-green-800
@@ -282,8 +449,9 @@
                                         {{ ucfirst(str_replace('_', ' ', $ticket->status)) }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $ticket->created_at->format('M d, Y') }}
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="table-date text-gray-500">{{ $ticket->created_at->format('M d, Y') }}</div>
+                                    <div class="table-time text-gray-400">{{ $ticket->created_at->format('h:i A') }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     <button onclick="openTicketModal({{ $ticket->id }})" 
@@ -309,7 +477,7 @@
         <div id="faqs" class="mt-8">
             <h2 class="text-xl font-semibold text-gray-800 mb-4">Frequently Asked Questions</h2>
             
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div class="bg-white rounded-lg shadow overflow-hidden">
                 <div class="divide-y divide-gray-200">
                     <!-- FAQ 1 -->
                     <div class="p-6" x-data="{ open: false }">
@@ -384,13 +552,13 @@
 <!-- Ticket Details Modal -->
 <div id="ticketModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <!-- Background overlay -->
+
         <div id="modalOverlay" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
 
         <!-- Modal panel -->
         <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <!-- Modal Header -->
+         
                 <div class="flex justify-between items-center border-b border-gray-200 pb-4">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900" id="modal-title">Ticket Details</h3>
@@ -403,9 +571,8 @@
                     </button>
                 </div>
 
-                <!-- Ticket Details Content -->
                 <div class="mt-4" id="ticketDetails">
-                    <!-- Loading State -->
+     
                     <div id="modalLoading" class="text-center py-8">
                         <svg class="animate-spin h-8 w-8 text-indigo-600 mx-auto" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -414,17 +581,16 @@
                         <p class="mt-2 text-sm text-gray-500">Loading ticket details...</p>
                     </div>
 
-                    <!-- Ticket Content (populated by JavaScript) -->
                     <div id="ticketContent" class="hidden">
-                        <!-- Status and Priority Badges -->
+
                         <div class="flex justify-between items-center mb-6">
                             <div>
                                 <span class="text-xs text-gray-500 block mb-1">Status</span>
-                                <span id="statusBadge" class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full"></span>
+                                <span id="statusBadge" class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full badge-status"></span>
                             </div>
                             <div>
                                 <span class="text-xs text-gray-500 block mb-1">Priority</span>
-                                <span id="priorityBadge" class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full"></span>
+                                <span id="priorityBadge" class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full badge-status"></span>
                             </div>
                             <div>
                                 <span class="text-xs text-gray-500 block mb-1">Category</span>
@@ -505,13 +671,11 @@
     </div>
 </div>
 
-<!-- Hidden div to store tickets data -->
 <div id="ticketsData" style="display: none;">{{ json_encode($tickets->items()) }}</div>
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script>
-    // Store tickets data
     const tickets = @json($tickets->items());
     
     function openTicketModal(ticketId) {
@@ -522,33 +686,30 @@
             return;
         }
 
-        // Show modal
+
         document.getElementById('ticketModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
         
-        // Show loading
         document.getElementById('modalLoading').classList.remove('hidden');
         document.getElementById('ticketContent').classList.add('hidden');
         
-        // Simulate loading
         setTimeout(() => {
-            // Hide loading
+
             document.getElementById('modalLoading').classList.add('hidden');
             document.getElementById('ticketContent').classList.remove('hidden');
             
-            // Populate data
             populateTicketModal(ticket);
         }, 500);
     }
 
     function populateTicketModal(ticket) {
-        // Set ticket number
+      
         document.getElementById('ticketNumber').textContent = ticket.ticket_number;
 
-        // Set status badge
+
         const statusBadge = document.getElementById('statusBadge');
         statusBadge.textContent = ticket.status.replace('_', ' ').charAt(0).toUpperCase() + ticket.status.replace('_', ' ').slice(1);
-        statusBadge.className = 'px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full';
+        statusBadge.className = 'px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full badge-status';
         
         if (ticket.status === 'open') {
             statusBadge.classList.add('bg-blue-100', 'text-blue-800');
@@ -560,10 +721,9 @@
             statusBadge.classList.add('bg-gray-100', 'text-gray-800');
         }
 
-        // Set priority badge
         const priorityBadge = document.getElementById('priorityBadge');
         priorityBadge.textContent = ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1);
-        priorityBadge.className = 'px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full';
+        priorityBadge.className = 'px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full badge-status';
         
         if (ticket.priority === 'low') {
             priorityBadge.classList.add('bg-green-100', 'text-green-800');
@@ -573,14 +733,11 @@
             priorityBadge.classList.add('bg-red-100', 'text-red-800');
         }
 
-        // Set category
         document.getElementById('category').textContent = ticket.category.charAt(0).toUpperCase() + ticket.category.slice(1);
 
-        // Set subject and message
         document.getElementById('ticketSubject').textContent = ticket.subject;
         document.getElementById('ticketMessage').textContent = ticket.message;
 
-        // Handle attachment
         if (ticket.attachment) {
             document.getElementById('attachmentSection').classList.remove('hidden');
             document.getElementById('attachmentName').textContent = ticket.attachment.split('/').pop();
@@ -590,7 +747,6 @@
             document.getElementById('attachmentSection').classList.add('hidden');
         }
 
-        // Set dates
         const createdDate = new Date(ticket.created_at);
         document.getElementById('createdAt').textContent = createdDate.toLocaleDateString('en-US', { 
             month: 'long', 
@@ -620,57 +776,15 @@
         document.body.style.overflow = 'auto';
     }
 
-    // Close modal when clicking outside
     document.getElementById('modalOverlay').addEventListener('click', function() {
         closeTicketModal();
     });
 
-    // Close modal with Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeTicketModal();
         }
     });
 </script>
-
-<style>
-    /* Modal animations */
-    #ticketModal {
-        transition: opacity 0.3s ease;
-    }
-    
-    #ticketModal .transform {
-        transition: transform 0.3s ease;
-    }
-    
-    #ticketModal.hidden {
-        display: none;
-    }
-    
-    /* Custom scrollbar for modal */
-    #ticketDetails {
-        max-height: 70vh;
-        overflow-y: auto;
-        scrollbar-width: thin;
-        scrollbar-color: #cbd5e0 #f1f5f9;
-    }
-    
-    #ticketDetails::-webkit-scrollbar {
-        width: 6px;
-    }
-    
-    #ticketDetails::-webkit-scrollbar-track {
-        background: #f1f5f9;
-    }
-    
-    #ticketDetails::-webkit-scrollbar-thumb {
-        background: #cbd5e0;
-        border-radius: 3px;
-    }
-    
-    #ticketDetails::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-    }
-</style>
 @endpush
 @endsection
