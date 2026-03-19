@@ -2588,15 +2588,12 @@ async function processFilterUpload() {
             closeFilterUploadModal();
             
             document.getElementById('filteredResultImage').src = data.image_url;
-            
-            const shareText = 'I just signed the petition to MABN! ✍️';
-            const shareUrl = encodeURIComponent(window.location.href);
-            
-            document.getElementById('linkedinShareFilter').href = 
-                `https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`;
-            
-            document.getElementById('twitterShareFilter').href = 
-                `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${shareUrl}`;
+
+    if (data.share_links) {
+    document.getElementById('linkedinShareFilter').href  = data.share_links.linkedin;
+    document.getElementById('twitterShareFilter').href   = data.share_links.twitter;
+    document.getElementById('instagramShareFilter').href = data.share_links.facebook;
+   }
             
             window.filteredImageUrl = data.image_url;
             

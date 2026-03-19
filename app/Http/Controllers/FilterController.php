@@ -58,7 +58,7 @@ class FilterController extends Controller
 
             $scaleW = $filterWidth  / $origW;
             $scaleH = $filterHeight / $origH;
-            $scale  = max($scaleW, $scaleH);  
+            $scale  = max($scaleW, $scaleH);
 
             $scaledW = (int) round($origW * $scale);
             $scaledH = (int) round($origH * $scale);
@@ -68,13 +68,6 @@ class FilterController extends Controller
             $cropX = (int) round(($scaledW - $filterWidth)  / 2);
             $cropY = (int) round(($scaledH - $filterHeight) / 2);
             $userImage->crop($filterWidth, $filterHeight, $cropX, $cropY);
-
-            Log::info('User photo after cover-fit', [
-                'w'     => $userImage->width(),
-                'h'     => $userImage->height(),
-                'cropX' => $cropX,
-                'cropY' => $cropY,
-            ]);
 
             $userImage->place($filter, 'top-left', 0, 0);
 
@@ -90,11 +83,26 @@ class FilterController extends Controller
                 'filter_type'    => $request->filter_type,
             ]);
 
+            $imageUrl   = url("storage/filters/filtered/{$filteredFileName}");
+            $shareText  = $request->filter_type === 'ceremony'
+                ? 'I attended the APN Ceremony! Join me in supporting Africa Prosperity Network.'
+                : 'I signed the MABN Petition! Support Africa Prosperity Network.';
+
+            $encodedText = urlencode($shareText);
+            $encodedUrl  = urlencode($imageUrl);
+
             return response()->json([
                 'success'   => true,
-                'image_url' => asset("storage/filters/filtered/{$filteredFileName}"),
+                'image_url' => $imageUrl,
                 'image_id'  => $filteredImage->id,
                 'message'   => 'Filter applied successfully!',
+                'share_links' => [
+                    'twitter'   => "https://twitter.com/intent/tweet?text={$encodedText}&url={$encodedUrl}",
+                    'linkedin'  => "https://www.linkedin.com/sharing/share-offsite/?url={$encodedUrl}",
+                    'facebook'  => "https://www.facebook.com/sharer/sharer.php?u={$encodedUrl}",
+                    'whatsapp'  => "https://api.whatsapp.com/send?text={$encodedText}%20{$encodedUrl}",
+                    'telegram'  => "https://t.me/share/url?url={$encodedUrl}&text={$encodedText}",
+                ],
             ]);
 
         } catch (\Exception $e) {
@@ -123,8 +131,8 @@ class FilterController extends Controller
                 ->get()
                 ->map(fn($image) => [
                     'id'                   => $image->id,
-                    'filtered_image_url'   => asset("storage/{$image->filtered_image}"),
-                    'original_image_url'   => asset("storage/{$image->original_image}"),
+                    'filtered_image_url'   => url("storage/{$image->filtered_image}"),
+                    'original_image_url'   => url("storage/{$image->original_image}"),
                     'filter_type'          => $image->filter_type,
                     'created_at'           => $image->created_at->format('Y-m-d H:i:s'),
                     'created_at_formatted' => $image->created_at->diffForHumans(),
@@ -195,8 +203,8 @@ class FilterController extends Controller
                     'success' => true,
                     'image'   => [
                         'id'                 => $image->id,
-                        'filtered_image_url' => asset("storage/{$image->filtered_image}"),
-                        'original_image_url' => asset("storage/{$image->original_image}"),
+                        'filtered_image_url' => url("storage/{$image->filtered_image}"),
+                        'original_image_url' => url("storage/{$image->original_image}"),
                         'filter_type'        => $image->filter_type,
                         'created_at'         => $image->created_at->format('Y-m-d H:i:s'),
                     ],
@@ -238,7 +246,7 @@ class FilterController extends Controller
                 return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
             }
 
-            $imageUrl    = asset("storage/{$image->filtered_image}");
+            $imageUrl    = url("storage/{$image->filtered_image}");
             $encodedUrl  = urlencode($imageUrl);
             $shareText   = $image->filter_type == 'ceremony'
                 ? 'I attended the APN Ceremony! Join me in supporting Africa Prosperity Network.'
