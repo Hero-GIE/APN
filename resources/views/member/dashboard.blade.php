@@ -2031,7 +2031,7 @@
         <!-- Preview of the filter -->
         <div class="text-center mb-8 p-4 bg-gray-50 rounded-xl">
             <div class="relative inline-block">
-               <img src="{{ asset('images/filtered-image.jpeg') }}" 
+               <img src="{{ asset('images/filtered-image.png') }}" 
                 alt="Filter Preview" 
                 class="block mx-auto object-cover rounded-lg shadow-md max-h-48">
                 <p class="text-sm text-gray-600 mt-2">Your image will be placed inside this frame</p>
