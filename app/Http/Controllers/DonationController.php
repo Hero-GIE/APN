@@ -20,7 +20,6 @@ class DonationController extends Controller
     public function initialize(Request $request)
     {
         try {
-  
             $authenticatedDonor = Auth::guard('donor')->user();
             
             $rules = [
@@ -29,12 +28,12 @@ class DonationController extends Controller
 
             if (!$authenticatedDonor) {
                 $rules['email'] = 'required|email|unique:donors,email';
-                $rules['firstname'] = 'required|string';
-                $rules['lastname'] = 'required|string';
-                $rules['phone'] = 'nullable|string';
-                $rules['country'] = 'nullable|string';
-                $rules['city'] = 'nullable|string';
-                $rules['region'] = 'nullable|string';
+                $rules['firstname'] = 'required|string|min:2';
+                $rules['lastname'] = 'required|string|min:2';
+                $rules['phone'] = 'nullable|string|max:20';
+                $rules['country'] = 'nullable|string|max:100';
+                $rules['city'] = 'nullable|string|max:100';
+                $rules['region'] = 'nullable|string|max:100';
                 $rules['email_updates'] = 'sometimes|boolean';
                 $rules['text_updates'] = 'sometimes|boolean';
             }
@@ -46,6 +45,11 @@ class DonationController extends Controller
             $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
+                $errorMessages = [];
+                foreach ($validator->errors()->all() as $error) {
+                    $errorMessages[] = $error;
+                }
+                
                 Log::warning('Donation validation failed', [
                     'errors' => $validator->errors()->toArray(),
                     'input' => $request->except(['_token']),
@@ -54,15 +58,34 @@ class DonationController extends Controller
                 
                 return response()->json([
                     'status' => false,
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors()
+                    'message' => 'Validation failed: ' . implode(', ', $errorMessages),
+                    'errors' => $validator->errors()->toArray()
                 ], 422);
             }
 
             $isMembership = in_array($request->membership_type, ['monthly', 'annual']);
             
+            // For membership, validate the amount matches the plan
+            if ($isMembership) {
+                $expectedAmount = $request->membership_type === 'monthly' ? 10 : 100;
+                
+                if ($request->amount != $expectedAmount) {
+                    Log::warning('Membership amount mismatch', [
+                        'received' => $request->amount,
+                        'expected' => $expectedAmount,
+                        'type' => $request->membership_type
+                    ]);
+                    
+                    return response()->json([
+                        'status' => false,
+                        'message' => "Invalid amount for {$request->membership_type} membership. Expected \${$expectedAmount}.",
+                    ], 422);
+                }
+            }
+            
             $orderId = 'APN_' . time() . '_' . uniqid();
             
+            // Convert USD to GHS
             $amountInGHS = round($request->amount * self::USD_TO_GHS_RATE, 2);
             $amountInPesewas = (int) ($amountInGHS * 100);
             
@@ -100,6 +123,21 @@ class DonationController extends Controller
 
                 $email = $authenticatedDonor->email;
             } else {
+                // Validate required fields for new donor
+                if (empty($request->firstname)) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'First name is required',
+                    ], 422);
+                }
+                
+                if (empty($request->lastname)) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Last name is required',
+                    ], 422);
+                }
+                
                 $metadata = [
                     'firstname' => $request->firstname,
                     'lastname' => $request->lastname,
@@ -135,12 +173,24 @@ class DonationController extends Controller
             $response = $paystack->initiate($paystackData);
 
             if ($response && isset($response['status']) && $response['status'] === true) {
+                Log::info('Payment initialized successfully', [
+                    'order_id' => $orderId,
+                    'amount' => $request->amount,
+                    'membership_type' => $request->membership_type,
+                    'authorization_url' => $response['data']['authorization_url'] ?? 'N/A'
+                ]);
+                
                 return response()->json([
                     'status' => true,
                     'data' => $response['data']
                 ]);
             } else {
                 $message = $response['message'] ?? 'Payment initialization failed';
+                Log::error('Paystack initialization failed', [
+                    'response' => $response,
+                    'message' => $message
+                ]);
+                
                 return response()->json([
                     'status' => false,
                     'message' => $message

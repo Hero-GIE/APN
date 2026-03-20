@@ -68,13 +68,22 @@ class PaystackCallbackController extends Controller
         // ── 3. Extract details 
         $email    = $data['customer']['email'];
         $metadata = $data['metadata'] ?? [];
-        $amount   = ($data['amount'] ?? 0) / 100;
-        $currency = $data['currency'] ?? 'GHS';
+        $amount   = ($data['amount'] ?? 0) / 100; // Amount in USD (converted from GHS if applicable)
+        $currency = $data['currency'] ?? 'USD';
 
         // ── 4. Determine payment type
         $membershipType = $metadata['membership_type'] ?? null;
         $isMembership = in_array($membershipType, ['monthly', 'annual']);
         $isDonation = !$isMembership; 
+
+        Log::info('Payment callback received', [
+            'reference' => $reference,
+            'email' => $email,
+            'amount' => $amount,
+            'currency' => $currency,
+            'membership_type' => $membershipType,
+            'is_membership' => $isMembership
+        ]);
 
         // ── 5. Prevent duplicate processing
         if ($isMembership) {
@@ -121,13 +130,39 @@ class PaystackCallbackController extends Controller
             $this->updateDonorIfNeeded($donor, $metadata);
             
             $hadMembershipBefore = Member::where('donor_id', $donor->id)->exists();
+            
+            Log::info('Existing donor found', [
+                'donor_id' => $donor->id,
+                'email' => $donor->email
+            ]);
 
         } else {
             $plainPassword = $this->generateDefaultPassword();
 
+            // Get values from metadata with fallbacks
+            $firstname = $metadata['firstname'] ?? '';
+            $lastname = $metadata['lastname'] ?? '';
+            
+            // If firstname or lastname are empty, use parts from email
+            if (empty($firstname)) {
+                $firstname = explode('@', $email)[0];
+            }
+            if (empty($lastname)) {
+                $lastname = 'Member';
+            }
+            
+            Log::info('Creating new donor', [
+                'email' => $email,
+                'firstname' => $firstname,
+                'lastname' => $lastname,
+                'membership_type' => $membershipType,
+                'amount' => $amount
+            ]);
+
+            // Create donor WITHOUT email_verified_at (it's not in fillable)
             $donor = Donor::create([
-                'firstname'         => $metadata['firstname']   ?? explode('@', $email)[0],
-                'lastname'          => $metadata['lastname']    ?? '',
+                'firstname'         => $firstname,
+                'lastname'          => $lastname,
                 'email'             => $email,
                 'phone'             => $metadata['phone']       ?? null,
                 'country'           => $metadata['country']     ?? null,
@@ -138,15 +173,19 @@ class PaystackCallbackController extends Controller
                 'email_updates'     => filter_var($metadata['email_updates'] ?? true,  FILTER_VALIDATE_BOOLEAN),
                 'text_updates'      => filter_var($metadata['text_updates']  ?? false, FILTER_VALIDATE_BOOLEAN),
                 'password'          => Hash::make($plainPassword),
-                'email_verified_at' => now(),
             ]);
+
+            // Set email_verified_at separately (not mass assignable)
+            $donor->email_verified_at = now();
+            $donor->save();
 
             $isNewDonor = true;
             $hadMembershipBefore = false;
 
-            Log::info('New donor created via Paystack callback', [
+            Log::info('✅ New donor created via Paystack callback', [
                 'donor_id' => $donor->id,
                 'email'    => $donor->email,
+                'has_password' => !is_null($plainPassword)
             ]);
         }
 
@@ -166,6 +205,7 @@ class PaystackCallbackController extends Controller
                 'member_id' => $member->id,
                 'transaction_id' => $reference,
                 'amount' => $amount,
+                'membership_type' => $membershipType,
                 'is_existing_member' => $isExistingMember
             ]);
         }
@@ -208,12 +248,13 @@ class PaystackCallbackController extends Controller
                         'member' => $member,
                         'membership' => $member,
                         'password' => $plainPassword,
+                        'donor' => $donor,
                     ],
                     $donor->email,
                     'Welcome to APN Membership — Your Account is Ready'
                 );
                 
-                Log::info('New member welcome email sent', [
+                Log::info('✅ New member welcome email sent', [
                     'donor_id' => $donor->id,
                     'email' => $donor->email
                 ]);
@@ -232,7 +273,7 @@ class PaystackCallbackController extends Controller
                     'Welcome to APN — Thank You for Your Donation'
                 );
                 
-                Log::info('New donor welcome email sent', [
+                Log::info('✅ New donor welcome email sent', [
                     'donor_id' => $donor->id,
                     'email' => $donor->email
                 ]);
@@ -246,12 +287,13 @@ class PaystackCallbackController extends Controller
                         'member' => $member,
                         'membership' => $member,
                         'password' => null,
+                        'donor' => $donor,
                     ],
                     $donor->email,
                     'Welcome to APN Membership — You\'re Now a Member!'
                 );
                 
-                Log::info('Existing donor became member - welcome email sent', [
+                Log::info('✅ Existing donor became member - welcome email sent', [
                     'donor_id' => $donor->id,
                     'email' => $donor->email
                 ]);
@@ -265,12 +307,13 @@ class PaystackCallbackController extends Controller
                         'member' => $member,
                         'donation' => $donation,
                         'membership_type' => $membershipType,
+                        'donor' => $donor,
                     ],
                     $donor->email,
                     'APN Membership — Thank You for Your Renewal'
                 );
                 
-                Log::info('Member renewal email sent', [
+                Log::info('✅ Member renewal email sent', [
                     'donor_id' => $donor->id,
                     'email' => $donor->email
                 ]);
@@ -288,11 +331,16 @@ class PaystackCallbackController extends Controller
                     'APN — Thank You for Your Donation'
                 );
                 
-                Log::info('Donor thank you email sent', [
+                Log::info('✅ Donor thank you email sent', [
                     'donor_id' => $donor->id,
                     'email' => $donor->email
                 ]);
             }
+        } else {
+            Log::warning('⚠️ sendEmail function not available - emails not sent', [
+                'donor_id' => $donor->id,
+                'email' => $donor->email
+            ]);
         }
 
         // ── 9. Admin notification (optional)
@@ -303,7 +351,7 @@ class PaystackCallbackController extends Controller
                 'message'   => "A new {$type} account was created after a successful payment.",
                 'user_info' => $donor->firstname . ' ' . $donor->lastname
                              . ' — ' . $donor->email
-                             . ($isMembership ? " ({$membershipType} membership)" : ' (Donation)'),
+                         . ($isMembership ? " ({$membershipType} membership - $" . $amount . ")" : " (Donation - $" . $amount . ")"),
                 'time'      => now()->format('d M Y, h:i A'),
             ]);
         }
@@ -311,13 +359,13 @@ class PaystackCallbackController extends Controller
         Auth::guard('donor')->login($donor);
 
         // ── 10. Redirect to appropriate success page
-     if ($isMembership) {
-    return redirect()->route('member.success', ['reference' => $reference])
-        ->with('success', 'Membership payment successful!');
-     } else {
-    return redirect()->route('donation.success', ['reference' => $reference])
-        ->with('success', 'Donation successful! Thank you!');
-    }
+        if ($isMembership) {
+            return redirect()->route('member.success', ['reference' => $reference])
+                ->with('success', 'Membership payment successful! Welcome to APN!');
+        } else {
+            return redirect()->route('donation.success', ['reference' => $reference])
+                ->with('success', 'Donation successful! Thank you for your support!');
+        }
     }
 
     private function processMembership($donor, $reference, $data, $metadata, $membershipType, $amount)
@@ -346,6 +394,13 @@ class PaystackCallbackController extends Controller
             ]);
             
             $member = $existingMember;
+            
+            Log::info('Membership renewed', [
+                'donor_id' => $donor->id,
+                'member_id' => $member->id,
+                'new_end_date' => $member->end_date,
+                'renewal_count' => $member->renewal_count
+            ]);
         } else {
             // Create new membership
             $member = Member::create([
@@ -356,6 +411,14 @@ class PaystackCallbackController extends Controller
                 'end_date' => $endDate,
                 'renewal_count' => 0,
             ]);
+            
+            Log::info('New membership created', [
+                'donor_id' => $donor->id,
+                'member_id' => $member->id,
+                'membership_type' => $membershipType,
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]);
         }
         
         // Record membership payment
@@ -365,7 +428,7 @@ class PaystackCallbackController extends Controller
             'transaction_id' => $reference,
             'membership_type' => $membershipType,
             'amount' => $amount,
-            'currency' => $data['currency'] ?? 'GHS',
+            'currency' => $data['currency'] ?? 'USD',
             'payment_method' => $data['authorization']['channel'] ?? 'card',
             'payment_status' => 'success',
             'paystack_response' => $data,

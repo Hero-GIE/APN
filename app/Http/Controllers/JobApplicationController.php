@@ -36,7 +36,7 @@ class JobApplicationController extends Controller
 
         $validator = Validator::make($request->all(), [
             'cover_letter' => 'nullable|string|max:5000',
-            'resume' => 'nullable|file|mimes:pdf,doc,docx|max:2048', // 2MB max
+            'resume' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
             'notes' => 'nullable|string|max:1000'
         ]);
 

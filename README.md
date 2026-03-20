@@ -88,4 +88,13 @@ SupportTicket
 
 
 
+Run a specific seeder
+php artisan db:seed --class=NewsSeeder
 
+
+✅ Run all seeders (from DatabaseSeeder)
+php artisan db:seed
+
+
+✅ Run migrations + seed together
+php artisan migrate --seed

@@ -820,7 +820,7 @@ class PuzzleController extends Controller
     }
 
     /**
-     * Get user statistics (AJAX)
+     * Get user statistics
      */
     public function getUserStats()
     {

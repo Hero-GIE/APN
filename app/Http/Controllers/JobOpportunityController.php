@@ -11,17 +11,14 @@ class JobOpportunityController extends Controller
     {
         $query = JobOpportunity::where('is_published', true);
 
-        // Filter by category
         if ($request->filled('category')) {
             $query->where('category', $request->category);
         }
 
-        // Filter by job type
         if ($request->filled('job_type')) {
             $query->where('job_type', $request->job_type);
         }
 
-        // Filter by experience level
         if ($request->filled('experience_level')) {
             $query->where('experience_level', $request->experience_level);
         }

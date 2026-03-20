@@ -4,174 +4,459 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to APN Membership</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         
         body {
-            font-family: 'Open Sans', sans-serif;
+            font-family: 'Open Sans', Arial, sans-serif;
+            background-color: #f9fafb;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            color: #1f2937;
         }
-        h1, h2, h3, h4, h5, h6, .font-urbanist {
-            font-family: 'Urbanist', sans-serif !important;
+        
+        /* Headings */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Urbanist', 'Segoe UI', sans-serif;
+            font-weight: 700;
+            line-height: 1.2;
+            margin: 0 0 10px 0;
         }
+        
+        /* Container */
         .email-container {
             max-width: 600px;
             margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .animate-pulse-slow {
-            animation: pulse 4s ease-in-out infinite;
-        }
-        .animate-rotate {
-            animation: rotate 20s linear infinite;
-        }
-        .bg-gradient-primary {
+        
+        /* Header */
+        .header {
             background: linear-gradient(135deg, #2563eb 0%, #3b82f6 60%, #60a5fa 100%);
+            padding: 40px 30px;
+            text-align: center;
         }
-        .bg-gradient-card {
+        
+        .header-brand {
+            color: #dbeafe;
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .header-title {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0;
+        }
+        
+        .header-sub {
+            color: #dbeafe;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        /* Content */
+        .content {
+            padding: 40px 35px;
+            background: #ffffff;
+        }
+        
+        /* Greeting */
+        .greeting {
+            font-size: 24px;
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+        
+        .message {
+            color: #6b7280;
+            font-size: 15px;
+            margin-bottom: 30px;
+        }
+        
+        /* Membership Card */
+        .membership-card {
             background: linear-gradient(135deg, #f0f9ff, #e6f0fa);
+            border: 2px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 30px;
         }
-        .bg-gradient-credentials {
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .card-title {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #2563eb;
+            margin-bottom: 5px;
+        }
+        
+        .plan-name {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1f2937;
+        }
+        
+        .status-badge {
+            background: #2563eb;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .info-box {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        
+        .info-label {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        
+        .info-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        
+        .info-value small {
+            font-size: 12px;
+            font-weight: normal;
+            color: #6b7280;
+        }
+        
+        /* Credentials Card */
+        .credentials-card {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .credentials-title {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        
+        .credentials-sub {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 25px;
+        }
+        
+        .credential-box {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+        }
+        
+        .credential-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+        
+        .credential-value {
+            font-family: monospace;
+            font-size: 16px;
+            word-break: break-all;
+        }
+        
+        .credential-password {
+            letter-spacing: 2px;
+            font-size: 18px;
+        }
+        
+        /* Button */
+        .button {
+            display: inline-block;
+            background: white;
+            color: #2563eb;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-top: 20px;
+            transition: transform 0.2s ease;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Security Notice */
+        .security-notice {
+            background: #eff6ff;
+            border: 2px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 30px;
+        }
+        
+        .security-text {
+            font-size: 13px;
+            color: #1e40af;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #f9fafb;
+            border-top: 2px solid #e5e7eb;
+            padding: 30px 35px;
+            text-align: center;
+        }
+        
+        .footer-copyright {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+        
+        .footer-email {
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        
+        .footer-email a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        
+        .footer-note {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+        
+        /* Impact Quote */
+        .impact-quote {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+        }
+        
+        .quote-text {
+            color: #6b7280;
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+        
+        .quote-author {
+            color: #3b82f6;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        /* Responsive */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .content {
+                padding: 25px 20px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .plan-name {
+                font-size: 24px;
+            }
+            
+            .membership-card {
+                padding: 20px;
+            }
+            
+            .credentials-card {
+                padding: 20px;
+            }
         }
     </style>
 </head>
-<body class="bg-slate-50 p-5 m-0">
+<body>
     <div class="email-container">
-
-        <!-- Header with gradient -->
-        <div class="bg-gradient-primary px-8 py-10 text-center relative overflow-hidden rounded-t-2xl">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2)_0%,transparent_50%)] animate-pulse-slow"></div>
-            <div class="relative">
-                <p class="text-blue-100 text-xs tracking-[3px] uppercase font-bold mb-2">✦ APN MEMBERSHIP ✦</p>
-                <h1 class="text-white text-3xl font-urbanist font-extrabold tracking-tight mb-1">Africa Prosperity Network</h1>
-                <p class="text-blue-100 text-sm font-['Open_Sans']">Your membership is building a prosperous Africa</p>
-            </div>
+        
+        <!-- Header -->
+        <div class="header">
+            <div class="header-brand">✦ APN MEMBERSHIP ✦</div>
+            <h1 class="header-title">Africa Prosperity Network</h1>
+            <p class="header-sub">Your membership is building a prosperous Africa</p>
         </div>
-
-        <!-- Body -->
-        <div class="bg-white px-8 py-10">
-
-            <h2 class="font-urbanist text-2xl font-bold text-slate-800 mb-4">Welcome, {{ $member->firstname }}! 🎉</h2>
+        
+        <!-- Content -->
+        <div class="content">
             
-            <p class="text-slate-500 text-[15px] mb-8 leading-relaxed font-['Open_Sans']">
+            <h2 class="greeting">Welcome, {{ $member->firstname ?? $member->donor->firstname ?? 'Member' }}! 🎉</h2>
+            
+            <p class="message">
                 @if(isset($password) && $password)
-                    Thank you for becoming an APN Member! Your membership has been successfully activated and you now have access to exclusive member benefits. Below is a summary of your membership and your secure login credentials.
+                    Thank you for becoming an APN Member! Your membership has been successfully activated and you now have access to exclusive member benefits.
                 @else
                     Thank you for your continued membership with APN. Your support is helping build a prosperous Africa.
                 @endif
             </p>
-
+            
             @if(isset($membership) && $membership)
             <!-- Membership Card -->
-            <div class="bg-gradient-card border-2 border-blue-200 rounded-xl p-7 mb-8 transition-all hover:border-blue-500">
-                <div class="flex items-center justify-between mb-5">
+            <div class="membership-card">
+                <div class="card-header">
                     <div>
-                        <div class="text-xs font-bold tracking-wider uppercase text-blue-600 mb-1">Membership Activated</div>
-                        <div class="font-urbanist text-3xl font-extrabold text-slate-800">{{ ucfirst($membership->membership_type) }} Plan</div>
+                        <div class="card-title">Membership Activated</div>
+                        <div class="plan-name">{{ ucfirst($membership->membership_type) }} Plan</div>
                     </div>
-                    <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                        <span class="w-2 h-2 bg-green-400 rounded-full inline-block mr-1"></span>
+                    <div class="status-badge">
+                        <span class="status-dot"></span>
                         ACTIVE
                     </div>
                 </div>
-
-                <!-- Info Grid -->
-                <div class="grid grid-cols-2 gap-4 mt-5">
-                    <div class="bg-white border-2 border-slate-200 rounded-lg p-3">
-                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Amount</div>
-                        <div class="font-urbanist text-lg font-bold text-slate-800">${{ number_format($membership->amount, 2) }}</div>
+                
+                <div class="info-grid">
+                    <div class="info-box">
+                        <div class="info-label">Amount</div>
+                        <div class="info-value">${{ number_format($membership->amount ?? 350, 2) }}</div>
                     </div>
-                    <div class="bg-white border-2 border-slate-200 rounded-lg p-3">
-                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Valid Until</div>
-                        <div class="font-urbanist text-lg font-bold text-slate-800">{{ \Carbon\Carbon::parse($membership->end_date)->format('M d, Y') }}</div>
+                    <div class="info-box">
+                        <div class="info-label">Valid Until</div>
+                        <div class="info-value">{{ \Carbon\Carbon::parse($membership->end_date)->format('M d, Y') }}</div>
                     </div>
-                    <div class="bg-white border-2 border-slate-200 rounded-lg p-3">
-                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Member Since</div>
-                        <div class="font-urbanist text-lg font-bold text-slate-800">{{ \Carbon\Carbon::parse($membership->start_date)->format('M d, Y') }}</div>
+                    <div class="info-box">
+                        <div class="info-label">Member Since</div>
+                        <div class="info-value">{{ \Carbon\Carbon::parse($membership->start_date)->format('M d, Y') }}</div>
                     </div>
-                    <div class="bg-white border-2 border-slate-200 rounded-lg p-3">
-                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Days Remaining</div>
-                        <div class="font-urbanist text-lg font-bold text-slate-800">{{ $membership->daysLeft() }} <span class="text-sm font-normal text-slate-500">days</span></div>
+                    <div class="info-box">
+                        <div class="info-label">Days Remaining</div>
+                        <div class="info-value">{{ $membership->daysLeft() }} <small>days</small></div>
                     </div>
                 </div>
-
+                
                 @if(isset($membership->transaction_id))
-                <div class="mt-4 pt-4 border-t-2 border-slate-200">
-                    <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Transaction Reference</div>
-                    <div class="font-mono text-sm text-slate-800">{{ $membership->transaction_id }}</div>
+                <div style="margin-top: 20px; padding-top: 15px; border-top: 2px solid #e5e7eb;">
+                    <div class="info-label">Transaction Reference</div>
+                    <div style="font-family: monospace; font-size: 13px; color: #1f2937;">{{ $membership->transaction_id }}</div>
                 </div>
-                @endif 
+                @endif
             </div>
             @endif
-
-            <!-- Login Credentials Card -->
+            
             @if(isset($password) && $password)
-            <div class="bg-gradient-credentials rounded-xl p-8 mb-8 relative overflow-hidden">
-                <div class="absolute top-[-50%] right-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(255,255,255,0.15)_0%,transparent_70%)] animate-rotate"></div>
-                <div class="relative">
-                    <div class="font-urbanist text-blue-100 text-base font-bold tracking-wider uppercase mb-2">🔐 Your Secure Login Credentials</div>
-                    <p class="text-blue-100 text-sm mb-6 opacity-90">Use these details to access your member dashboard</p>
-
-                    <div class="bg-white/15 border-2 border-white/25 rounded-lg p-4 mb-3 backdrop-blur-sm">
-                        <div class="text-blue-100 text-xs uppercase tracking-wider mb-1">Email Address</div>
-                        <div class="text-white font-mono text-base">{{ $member->email }}</div>
-                    </div>
-
-                    <div class="bg-white/15 border-2 border-white/25 rounded-lg p-4 mb-3 backdrop-blur-sm">
-                        <div class="text-blue-100 text-xs uppercase tracking-wider mb-1">Temporary Password</div>
-                        <div class="text-white font-mono text-lg tracking-[3px]">{{ $password }}</div>
-                    </div>
-
-                    <div class="text-center mt-6">
-                        <a href="{{ route('donor.login') }}" class="inline-block bg-white text-blue-600 px-10 py-3 rounded-lg font-urbanist font-bold text-sm shadow-lg hover:-translate-y-0.5 hover:shadow-blue-300/30 transition-all">
-                            LOGIN TO YOUR ACCOUNT →
-                        </a>
-                    </div>
+            <!-- Login Credentials -->
+            <div class="credentials-card">
+                <div class="credentials-title">🔐 Your Secure Login Credentials</div>
+                <p class="credentials-sub">Use these details to access your member dashboard</p>
+                
+                <div class="credential-box">
+                    <div class="credential-label">Email Address</div>
+                    <div class="credential-value">{{ $member->email ?? $member->donor->email }}</div>
+                </div>
+                
+                <div class="credential-box">
+                    <div class="credential-label">Temporary Password</div>
+                    <div class="credential-value credential-password">{{ $password }}</div>
+                </div>
+                
+                <div style="text-align: center;">
+                    <a href="{{ route('donor.login') }}" class="button">
+                        Login to Your Account →
+                    </a>
                 </div>
             </div>
-
-            <!-- Security notice -->
-            <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-5 mb-8">
-                <p class="text-sm text-blue-900 m-0 flex items-center gap-3">
-                    <span class="text-lg">🔒</span>
-                    <span><strong class="font-urbanist">Security tip:</strong> For your safety, please log in and change your password immediately. Never share your credentials with anyone.</span>
-                </p>
+            
+            <!-- Security Notice -->
+            <div class="security-notice">
+                <div class="security-text">
+                    <span style="font-size: 18px;">🔒</span>
+                    <span><strong>Security tip:</strong> For your safety, please log in and change your password immediately. Never share your credentials with anyone.</span>
+                </div>
             </div>
             @endif
-
-            <!-- Impact Message -->
-            <div class="text-center mt-8 pt-5 border-t-2 border-slate-200">
-                <p class="text-slate-500 text-sm mb-1 italic">
-                    "Alone we can do so little; together we can do so much."
-                </p>
-                <p class="text-blue-600 text-xs font-urbanist font-semibold m-0">
-                    — Building Africa's Prosperity, Together —
-                </p>
+            
+            <!-- Impact Quote -->
+            <div class="impact-quote">
+                <p class="quote-text">"Alone we can do so little; together we can do so much."</p>
+                <p class="quote-author">— Building Africa's Prosperity, Together —</p>
             </div>
         </div>
-
+        
         <!-- Footer -->
-        <div class="bg-slate-50 border-t-2 border-slate-200 px-8 py-6 text-center rounded-b-2xl">
-            <p class="text-xs text-slate-500 mb-2">© {{ date('Y') }} Africa Prosperity Network · All rights reserved</p>
-            <p class="text-sm mb-2">
-                <a href="mailto:membership@africaprosperitynetwork.com" class="text-blue-600 font-medium no-underline hover:underline">membership@africaprosperitynetwork.com</a>
+        <div class="footer">
+            <p class="footer-copyright">© {{ date('Y') }} Africa Prosperity Network · All rights reserved</p>
+            <p class="footer-email">
+                <a href="mailto:membership@africaprosperitynetwork.com">membership@africaprosperitynetwork.com</a>
             </p>
-            <p class="text-[11px] text-slate-400 m-0">
-                <span class="text-blue-600">✦</span> This is an automated email. Please do not reply directly. <span class="text-blue-600">✦</span>
+            <p class="footer-note">
+                ✦ This is an automated email. Please do not reply directly. ✦
             </p>
         </div>
-
+        
     </div>
 </body>
 </html>

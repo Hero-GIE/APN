@@ -189,7 +189,7 @@
 
 <div class="apn-layout animate-page-reveal">
 
-    <!-- Left Panel (formerly right panel - now contains the registration form) -->
+    <!-- Left Panel -->
     <div class="left-panel apn-scrollbar p-6 md:p-8 relative">
       <div class="login-btn-top absolute top-6 right-6 z-20">
     <a href="{{ route('donor.login') }}"
@@ -217,49 +217,58 @@
             </div>
 
             <div class="grid gap-5 mb-7 membership-grid" style="grid-template-columns: repeat(2, 1fr);">
-                <div class="membership-card bg-white border-2 border-[#e2e8f0] rounded-2xl p-6 flex flex-col relative" onclick="selectPlan('monthly',35,this)">
-                    <div class="mb-5">
-                        <h3 class="text-xl font-bold text-[#1e1b4b] mb-1" style="font-family:'Urbanist',sans-serif;">Monthly</h3>
-                        <div class="flex items-baseline gap-1"><span class="price-tag">$35</span><span class="price-period">/month</span></div>
-                        <p class="text-xs text-[#64748b] mt-1.5">Flexible month-to-month access to all APN benefits.</p>
-                    </div>
-                    <ul class="feature-list flex-grow">
-                        <li><i class="fas fa-check-circle"></i> Full APN membership access</li>
-                        <li><i class="fas fa-check-circle"></i> 10% discount on events & merch</li>
-                        <li><i class="fas fa-check-circle"></i> Monthly newsletters</li>
-                        <li><i class="fas fa-check-circle"></i> Borderless campaign enrollment</li>
-                        <li><i class="fas fa-check-circle"></i> APN Magazine digital access</li>
-                    </ul>
-                    <div class="plan-checkbox-wrap" id="checkbox-monthly">
-                        <div class="plan-checkbox"><i class="fas fa-check"></i></div>
-                        <span class="plan-checkbox-label">Select Monthly Plan</span>
-                    </div>
-                </div>
-
-                <div class="membership-card bg-gradient-to-br from-[#f8fafc] to-white border-2 border-[#3b82f6] rounded-2xl p-6 flex flex-col relative overflow-hidden selected" onclick="selectPlan('annual',350,this)">
-                    <div class="popular-badge">POPULAR</div>
-                    <div class="mb-5">
-                        <h3 class="text-xl font-bold text-[#1e1b4b] mb-1" style="font-family:'Urbanist',sans-serif;">Annual</h3>
-                        <div class="flex items-baseline gap-1"><span class="price-tag">$350</span><span class="price-period">/year</span></div>
-                        <p class="text-xs text-[#64748b] mt-1.5">Best value — save with an annual commitment.</p>
-                    </div>
-                    <ul class="feature-list flex-grow">
-                        <li><i class="fas fa-check-circle"></i> Everything in Monthly</li>
-                        <li><i class="fas fa-check-circle"></i> Priority event registration</li>
-                        <li><i class="fas fa-check-circle"></i> Exclusive member directory listing</li>
-                        <li><i class="fas fa-check-circle"></i> Awards & recognition eligibility</li>
-                        <li><i class="fas fa-check-circle"></i> APD conference discounts</li>
-                        <li><i class="fas fa-check-circle" style="color:#D4AF37;"></i> <span class="font-semibold">2 months free</span></li>
-                    </ul>
-                    <div class="plan-checkbox-wrap checked" id="checkbox-annual">
-                        <div class="plan-checkbox"><i class="fas fa-check"></i></div>
-                        <span class="plan-checkbox-label">Annual Plan Selected</span>
-                    </div>
-                </div>
+    <!-- Monthly Plan -->
+    <div class="membership-card bg-white border-2 border-[#e2e8f0] rounded-2xl p-6 flex flex-col relative" onclick="selectPlan('monthly',10,this)">
+        <div class="mb-5">
+            <h3 class="text-xl font-bold text-[#1e1b4b] mb-1" style="font-family:'Urbanist',sans-serif;">Monthly</h3>
+            <div class="flex items-baseline gap-1">
+                <span class="price-tag">$10</span>
+                <span class="price-period">/month</span>
             </div>
+            <p class="text-xs text-[#64748b] mt-1.5">Flexible month-to-month access to all APN benefits.</p>
+        </div>
+        <ul class="feature-list flex-grow">
+            <li><i class="fas fa-check-circle"></i> Full APN membership access</li>
+            <li><i class="fas fa-check-circle"></i> 10% discount on events & merch</li>
+            <li><i class="fas fa-check-circle"></i> Monthly newsletters</li>
+            <li><i class="fas fa-check-circle"></i> Borderless campaign enrollment</li>
+            <li><i class="fas fa-check-circle"></i> APN Magazine digital access</li>
+        </ul>
+        <div class="plan-checkbox-wrap" id="checkbox-monthly">
+            <div class="plan-checkbox"><i class="fas fa-check"></i></div>
+            <span class="plan-checkbox-label">Select Monthly Plan</span>
+        </div>
+    </div>
 
-            <input type="hidden" id="membershipAmount" value="350">
-            <input type="hidden" id="membershipType" value="annual">
+    <!-- Annual Plan -->
+    <div class="membership-card bg-gradient-to-br from-[#f8fafc] to-white border-2 border-[#3b82f6] rounded-2xl p-6 flex flex-col relative overflow-hidden selected" onclick="selectPlan('annual',100,this)">
+        <div class="popular-badge">POPULAR</div>
+        <div class="mb-5">
+            <h3 class="text-xl font-bold text-[#1e1b4b] mb-1" style="font-family:'Urbanist',sans-serif;">Annual</h3>
+            <div class="flex items-baseline gap-1">
+                <span class="price-tag">$100</span>
+                <span class="price-period">/year</span>
+            </div>
+            <p class="text-xs text-[#64748b] mt-1.5">Best value — save with an annual commitment.</p>
+        </div>
+        <ul class="feature-list flex-grow">
+            <li><i class="fas fa-check-circle"></i> Everything in Monthly</li>
+            <li><i class="fas fa-check-circle"></i> Priority event registration</li>
+            <li><i class="fas fa-check-circle"></i> Exclusive member directory listing</li>
+            <li><i class="fas fa-check-circle"></i> Awards & recognition eligibility</li>
+            <li><i class="fas fa-check-circle"></i> APD conference discounts</li>
+            <li><i class="fas fa-check-circle" style="color:#D4AF37;"></i> <span class="font-semibold">Save $20 compared to monthly</span></li>
+        </ul>
+        <div class="plan-checkbox-wrap checked" id="checkbox-annual">
+            <div class="plan-checkbox"><i class="fas fa-check"></i></div>
+            <span class="plan-checkbox-label">Annual Plan Selected</span>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="membershipAmount" value="100">
+<input type="hidden" id="membershipType" value="annual">
+
             <input type="hidden" id="country" value="">
 
             <div class="flex items-center gap-3 my-6">
