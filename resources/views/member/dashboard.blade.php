@@ -67,7 +67,7 @@
     .popular-badge {
         position: absolute;
         top: 12px; right: -30px;
-        background: linear-gradient(135deg, #D4AF37, #B8860B);
+        background: linear-gradient(135deg, #3b82f6, #1d61ce);
         color: white;
         padding: 8px 40px;
         font-size: 0.8rem;
@@ -110,139 +110,362 @@
         visibility: visible;
     }
 
-    /* Carousel Styles */
+/* ── CAROUSEL ──────────────────────────────────────────────────────── */
+
+/* Kente-inspired geometric pattern (SVG data URI) */
+.carousel-kente-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='none'/%3E%3Cpath d='M0 30h60M30 0v60' stroke='%23D4AF37' stroke-width='0.4' opacity='0.25'/%3E%3Cpath d='M0 0l60 60M60 0L0 60' stroke='%23D4AF37' stroke-width='0.3' opacity='0.12'/%3E%3Crect x='22' y='22' width='16' height='16' fill='none' stroke='%23D4AF37' stroke-width='0.5' opacity='0.18'/%3E%3Ccircle cx='30' cy='30' r='4' fill='none' stroke='%23D4AF37' stroke-width='0.4' opacity='0.15'/%3E%3C/svg%3E");
+    background-size: 70px 70px;
+    pointer-events: none;
+    z-index: 2;
+    animation: patternDrift 70s linear infinite;
+}
+@keyframes patternDrift {
+    from { background-position: 0 0; }
+    to   { background-position: 120px 120px; }
+}
+
 .featured-carousel {
     position: relative;
     margin-bottom: 2rem;
-    border-radius: 1rem;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-shadow:
+        0 25px 50px -12px rgba(0,0,0,0.35),
+        0 0 0 1px rgba(212,175,55,0.15);
 }
 
 .carousel-container {
     position: relative;
     width: 100%;
-    height: 500px;
+    height: 520px;
     overflow: hidden;
 }
 
+/* Each slide */
 .carousel-slide {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     opacity: 0;
-    transition: opacity 0.8s ease-in-out;
+    transition: opacity 1s ease-in-out;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    transform: scale(1.04);
+    transition: opacity 1s ease-in-out, transform 8s ease-in-out;
 }
-
 .carousel-slide.active {
     opacity: 1;
+    transform: scale(1);
 }
 
+/* Multi-layer overlay — dark base + gold radial + gradient */
 .carousel-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.2) 100%);
+    inset: 0;
+    background:
+        linear-gradient(to top,  rgba(2,6,23,0.92) 0%, rgba(2,6,23,0.5) 45%, rgba(2,6,23,0.15) 100%),
+        linear-gradient(to right, rgba(2,6,23,0.6) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 60% at 5% 90%, rgba(55, 73, 212, 0.18) 0%, transparent 55%);
     display: flex;
     align-items: flex-end;
-    padding: 3rem;
+    padding: 3rem 3.5rem;
+    z-index: 3;
+}
+
+/* Gold accent bar — left edge */
+.carousel-overlay::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 15%; bottom: 15%;
+    width: 3px;
+    background: linear-gradient(to bottom, transparent, #3b82f6 30%, #1d61ce 70%, transparent);
+    border-radius: 2px;
+    opacity: 0.7;
+}
+
+/* Top-right corner ornament */
+.carousel-overlay::after {
+    content: '';
+    position: absolute;
+    top: 1.5rem; right: 1.5rem;
+    width: 60px; height: 60px;
+    border-top: 2px solid rgba(55, 63, 212, 0.35);
+    border-right: 2px solid rgba(55, 63, 212, 0.35);
+    border-radius: 0 8px 0 0;
 }
 
 .carousel-content {
     color: white;
-    max-width: 800px;
-    transform: translateY(0);
-    animation: slideUp 0.8s ease-out;
+    max-width: 740px;
+    position: relative;
+    z-index: 1;
 }
 
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* Slide-up on active */
+.carousel-slide.active .carousel-content {
+    animation: slideUpIn 0.8s cubic-bezier(0.2,0,0,1) both;
+}
+@keyframes slideUpIn {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
+/* Category tag */
 .carousel-category {
-    display: inline-block;
-    padding: 0.5rem 1.5rem;
-    background: rgba(255,255,255,0.2);
-    backdrop-filter: blur(10px);
-    border-radius: 10px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    margin-bottom: 1rem;
-    border: 1px solid rgba(255,255,255,0.3);
-    font-family: 'Urbanist', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 1rem;
+    background: rgba(202, 201, 224, 0.15);
+    border: 1px solid white;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-}
-
-.carousel-title {
-    font-size: 2.8rem;
-    font-weight: 800;
+    color: white;
     margin-bottom: 1rem;
-    line-height: 1.2;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    backdrop-filter: blur(8px);
+}
+.carousel-category::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 10%;
+    background: white;
+    animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.6)} }
+
+/* Title */
+.carousel-title {
+    font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+    font-weight: 900;
+    margin-bottom: 0.85rem;
+    line-height: 1.15;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.4);
     font-family: 'Urbanist', sans-serif;
+    letter-spacing: -0.02em;
 }
 
+/* Gold underline accent on title */
+.carousel-title::after {
+    content: '';
+    display: block;
+    width: 48px; height: 3px;
+    background: linear-gradient(90deg, white, transparent);
+    border-radius: 2px;
+    margin-top: 0.65rem;
+}
+
+/* Excerpt */
 .carousel-excerpt {
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
-    opacity: 0.9;
-    line-height: 1.6;
-    max-width: 600px;
+    font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+    margin-bottom: 1.25rem;
+    opacity: 0.8;
+    line-height: 1.65;
+    max-width: 560px;
     font-family: 'Open Sans', sans-serif;
 }
 
+/* Meta row */
 .carousel-meta {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    font-size: 1rem;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    font-size: 0.82rem;
     font-family: 'Open Sans', sans-serif;
+    color: white;
+    margin-bottom: 1.5rem;
 }
-
 .carousel-meta-item {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
 }
+.carousel-meta-item i { color: white; font-size: 0.78rem; }
 
-.carousel-meta-item i {
-    color: rgba(255,255,255,0.8);
-}
-
+/* CTA button */
 .carousel-button {
-    display: inline-block;
-    padding: 0.8rem 2rem;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1.75rem;
+    background: #3b82f6;
     color: white;
     border-radius: 10px;
-    font-weight: 500;
+    font-weight: 700;
+    font-size: 0.88rem;
     text-decoration: none;
-    margin-top: 1.5rem;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.25s ease;
     font-family: 'Urbanist', sans-serif;
+    letter-spacing: 0.02em;
+    position: relative;
+    overflow: hidden;
 }
-
+.carousel-button::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), transparent);
+    opacity: 0;
+    transition: opacity 0.25s;
+}
 .carousel-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.5);
-    background: linear-gradient(135deg, #4338ca, #6d28d9);
+    box-shadow: 0 10px 28px rgba(18, 28, 219, 0.45);
+    color: #000;
 }
+.carousel-button:hover::before { opacity: 1; }
+
+/* Progress bar at bottom */
+/* .carousel-progress {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    z-index: 10;
+    overflow: hidden;
+} */
+/* .carousel-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #D4AF37, #F0D060);
+    width: 0%;
+    transition: width linear;
+    border-radius: 0 2px 2px 0;
+} */
+
+/* Slide counter top-right */
+.carousel-counter {
+    position: absolute;
+    top: 1.5rem; right: 5rem;
+    z-index: 10;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.08em;
+}
+.carousel-counter .current { color: white; font-size: 1.1rem; }
+
+/* Nav dots */
+.carousel-nav {
+    position: absolute;
+    bottom: 1.5rem; right: 2rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 10;
+    align-items: center;
+}
+.carousel-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+.carousel-dot.active {
+    background: white;
+    width: 22px;
+    border-radius: 1px;
+    box-shadow: 0 0 8px rgba(55, 55, 212, 0.5);
+    border-color: #3b82f6;
+}
+
+/* Arrows */
+.carousel-arrow {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    z-index: 10;
+    color: white;
+    font-size: 1rem;
+}
+.carousel-arrow:hover {
+    background: rgba(212,175,55,0.2);
+    border-color: white;
+    transform: translateY(-50%) scale(1.08);
+    color: white;
+}
+.carousel-arrow.prev { left: 1.5rem; }
+.carousel-arrow.next { right: 1.5rem; }
+
+/* Thumbnail strip at bottom-left */
+.carousel-thumbs {
+    position: absolute;
+    bottom: 1.25rem; left: 3.5rem;
+    z-index: 10;
+    display: flex;
+    gap: 0.5rem;
+}
+.carousel-thumb {
+    width: 48px; height: 32px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    opacity: 0.45;
+    transition: all 0.25s ease;
+    overflow: hidden;
+}
+.carousel-thumb.active,
+.carousel-thumb:hover {
+    opacity: 1;
+    border-color: white;
+    box-shadow: 0 0 0 2px rgba(212,175,55,0.3);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .carousel-container { height: 460px; }
+    .carousel-title { font-size: 2rem; }
+    .carousel-thumbs { display: none; }
+}
+@media (max-width: 768px) {
+    .featured-carousel { border-radius: 12px; }
+    .carousel-container { height: 380px; }
+    .carousel-overlay { padding: 2rem 1.75rem; }
+    .carousel-title { font-size: 1.6rem; }
+    .carousel-excerpt { font-size: 0.88rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .carousel-meta { gap: 0.75rem; font-size: 0.78rem; margin-bottom: 1rem; }
+    .carousel-arrow { width: 38px; height: 38px; font-size: 0.85rem; }
+    .carousel-arrow.prev { left: 0.75rem; }
+    .carousel-arrow.next { right: 0.75rem; }
+    .carousel-counter { display: none; }
+}
+@media (max-width: 640px) {
+    .carousel-container { height: 340px; }
+    .carousel-overlay { padding: 1.5rem; }
+    .carousel-title { font-size: 1.35rem; }
+    .carousel-excerpt { -webkit-line-clamp: 2; }
+    .carousel-arrow { display: none; }
+    .carousel-nav { right: 1rem; bottom: 1rem; }
+}
+@media (max-width: 480px) {
+    .carousel-container { height: 300px; }
+    .carousel-overlay { padding: 1.25rem; }
+    .carousel-title { font-size: 1.15rem; }
+    .carousel-category { font-size: 0.65rem; padding: 0.25rem 0.75rem; }
+    .carousel-button { padding: 0.6rem 1.25rem; font-size: 0.8rem; }
+}
+
+
+
+
+
+
+
 
 /* File extension badge */
 .bg-gray-200.text-gray-700.text-xs.rounded-full.uppercase {
@@ -776,6 +999,8 @@
         right: 0.5rem;
     }
 }   
+
+
     th.text-xs.font-medium {
         font-size: 0.8rem !important;
         letter-spacing: 0.03em;
@@ -1062,142 +1287,110 @@
 </div>
 
 
-<!-- Featured Content Carousel -->
+{{-- ══════════════════════════════════════════════════════════
+     CAROUSEL — drop-in replacement for the entire
+     <!-- Featured Content Carousel --> block
+     ══════════════════════════════════════════════════════════ --}}
+
 <div class="featured-carousel mb-6 md:mb-8">
     <div class="carousel-container">
+
+        {{-- Kente geometric pattern layer --}}
+        <div class="carousel-kente-pattern"></div>
+
+        {{-- Slide counter --}}
+        <div class="carousel-counter">
+            <span class="current" id="carouselCurrent">01</span>
+            <span> / </span>
+            <span id="carouselTotal">01</span>
+        </div>
+
         @php
             $featuredItems = collect();
-            
-            // Add featured news
+
             $featuredNews = $news->where('is_featured', true)->take(2);
             foreach($featuredNews as $newsItem) {
                 $featuredItems->push([
-                    'type' => 'news',
-                    'id' => $newsItem->id,
-                    'title' => $newsItem->title,
-                    'excerpt' => $newsItem->excerpt,
-                    'image' => $newsItem->featured_image ?? 'https://images.unsplash.com/photo-1585829365295-ab7cd400c4c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80',
-                    'category' => $newsItem->category,
+                    'type'           => 'news',
+                    'id'             => $newsItem->id,
+                    'title'          => $newsItem->title,
+                    'excerpt'        => $newsItem->excerpt,
+                    'image'          => $newsItem->featured_image ?? 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=1600&q=80',
+                    'category'       => $newsItem->category,
                     'category_color' => $newsItem->category_color,
-                    'date' => $newsItem->published_date->format('M d, Y'),
-                    'slug' => $newsItem->slug,
-                    'route' => route('member.news.show', $newsItem->slug),
-                    'icon' => 'fa-newspaper'
+                    'date'           => $newsItem->published_date->format('M d, Y'),
+                    'slug'           => $newsItem->slug,
+                    'route'          => route('member.news.show', $newsItem->slug),
+                    'icon'           => 'fa-newspaper'
                 ]);
             }
-            
-            // Add featured events
+
             $featuredEvents = $events->where('is_featured', true)->take(2);
             foreach($featuredEvents as $event) {
                 $featuredItems->push([
-                    'type' => 'event',
-                    'id' => $event->id,
-                    'title' => $event->title,
-                    'excerpt' => $event->description,
-                    'image' => $event->featured_image ?? 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80',
-                    'category' => $event->category,
+                    'type'           => 'event',
+                    'id'             => $event->id,
+                    'title'          => $event->title,
+                    'excerpt'        => $event->description,
+                    'image'          => $event->featured_image ?? 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80',
+                    'category'       => $event->category,
                     'category_color' => $event->badge_color ?? 'indigo',
-                    'date' => $event->start_date->format('M d, Y'),
-                    'location' => $event->location,
-                    'slug' => $event->slug,
-                    'route' => route('member.events.show', $event->slug),
-                    'icon' => 'fa-calendar-alt'
+                    'date'           => $event->start_date->format('M d, Y'),
+                    'location'       => $event->location,
+                    'slug'           => $event->slug,
+                    'route'          => route('member.events.show', $event->slug),
+                    'icon'           => 'fa-calendar-alt'
                 ]);
             }
-            
-            // Add featured jobs
+
             $featuredJobs = $jobs->where('is_featured', true)->take(2);
             foreach($featuredJobs as $job) {
                 $featuredItems->push([
-                    'type' => 'job',
-                    'id' => $job->id,
-                    'title' => $job->title,
-                    'excerpt' => $job->summary,
-                    'image' => $job->company_logo ?? 'https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80',
-                    'category' => $job->category,
+                    'type'           => 'job',
+                    'id'             => $job->id,
+                    'title'          => $job->title,
+                    'excerpt'        => $job->summary,
+                    'image'          => $job->company_logo ?? 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80',
+                    'category'       => $job->category,
                     'category_color' => $job->category_color,
-                    'date' => $job->posted_date->format('M d, Y'),
-                    'company' => $job->company,
-                    'location' => $job->location,
-                    'slug' => $job->slug,
-                    'route' => route('member.jobs.show', $job->slug),
-                    'icon' => 'fa-briefcase'
+                    'date'           => $job->posted_date->format('M d, Y'),
+                    'company'        => $job->company,
+                    'location'       => $job->location,
+                    'slug'           => $job->slug,
+                    'route'          => route('member.jobs.show', $job->slug),
+                    'icon'           => 'fa-briefcase'
                 ]);
             }
-            
-            // If no featured items, use some regular items
-            if($featuredItems->isEmpty()) {
-                // Add first news item
-                if($news->isNotEmpty()) {
+
+            if ($featuredItems->isEmpty()) {
+                if ($news->isNotEmpty()) {
                     $newsItem = $news->first();
-                    $featuredItems->push([
-                        'type' => 'news',
-                        'id' => $newsItem->id,
-                        'title' => $newsItem->title,
-                        'excerpt' => $newsItem->excerpt,
-                        'image' => $newsItem->featured_image ?? 'https://images.unsplash.com/photo-1585829365295-ab7cd400c4c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80',
-                        'category' => $newsItem->category,
-                        'category_color' => $newsItem->category_color,
-                        'date' => $newsItem->published_date->format('M d, Y'),
-                        'slug' => $newsItem->slug,
-                        'route' => route('member.news.show', $newsItem->slug),
-                        'icon' => 'fa-newspaper'
-                    ]);
+                    $featuredItems->push(['type'=>'news','id'=>$newsItem->id,'title'=>$newsItem->title,'excerpt'=>$newsItem->excerpt,'image'=>$newsItem->featured_image ?? 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=1600&q=80','category'=>$newsItem->category,'category_color'=>$newsItem->category_color,'date'=>$newsItem->published_date->format('M d, Y'),'slug'=>$newsItem->slug,'route'=>route('member.news.show', $newsItem->slug),'icon'=>'fa-newspaper']);
                 }
-                
-                // Add first event
-                if($events->isNotEmpty()) {
+                if ($events->isNotEmpty()) {
                     $event = $events->first();
-                    $featuredItems->push([
-                        'type' => 'event',
-                        'id' => $event->id,
-                        'title' => $event->title,
-                        'excerpt' => $event->description,
-                        'image' => $event->featured_image ?? 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80',
-                        'category' => $event->category,
-                        'category_color' => $event->badge_color ?? 'indigo',
-                        'date' => $event->start_date->format('M d, Y'),
-                        'location' => $event->location,
-                        'slug' => $event->slug,
-                        'route' => route('member.events.show', $event->slug),
-                        'icon' => 'fa-calendar-alt'
-                    ]);
+                    $featuredItems->push(['type'=>'event','id'=>$event->id,'title'=>$event->title,'excerpt'=>$event->description,'image'=>$event->featured_image ?? 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80','category'=>$event->category,'category_color'=>$event->badge_color ?? 'indigo','date'=>$event->start_date->format('M d, Y'),'location'=>$event->location,'slug'=>$event->slug,'route'=>route('member.events.show', $event->slug),'icon'=>'fa-calendar-alt']);
                 }
-                
-                // Add first job
-                if($jobs->isNotEmpty()) {
+                if ($jobs->isNotEmpty()) {
                     $job = $jobs->first();
-                    $featuredItems->push([
-                        'type' => 'job',
-                        'id' => $job->id,
-                        'title' => $job->title,
-                        'excerpt' => $job->summary,
-                        'image' => $job->company_logo ?? 'https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80',
-                        'category' => $job->category,
-                        'category_color' => $job->category_color,
-                        'date' => $job->posted_date->format('M d, Y'),
-                        'company' => $job->company,
-                        'location' => $job->location,
-                        'slug' => $job->slug,
-                        'route' => route('member.jobs.show', $job->slug),
-                        'icon' => 'fa-briefcase'
-                    ]);
+                    $featuredItems->push(['type'=>'job','id'=>$job->id,'title'=>$job->title,'excerpt'=>$job->summary,'image'=>$job->company_logo ?? 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80','category'=>$job->category,'category_color'=>$job->category_color,'date'=>$job->posted_date->format('M d, Y'),'company'=>$job->company,'location'=>$job->location,'slug'=>$job->slug,'route'=>route('member.jobs.show', $job->slug),'icon'=>'fa-briefcase']);
                 }
             }
         @endphp
 
+        {{-- Slides --}}
         @foreach($featuredItems as $index => $item)
-        <div class="carousel-slide {{ $index === 0 ? 'active' : '' }}" 
+        <div class="carousel-slide {{ $index === 0 ? 'active' : '' }}"
              style="background-image: url('{{ $item['image'] }}');"
              data-index="{{ $index }}">
             <div class="carousel-overlay">
                 <div class="carousel-content">
-                    <span class="carousel-category">
-                        <i class="fas {{ $item['icon'] }} mr-2"></i>
+                    <div class="carousel-category">
+                        <i class="fas {{ $item['icon'] }}"></i>
                         {{ $item['category'] }}
-                    </span>
+                    </div>
                     <h2 class="carousel-title">{{ $item['title'] }}</h2>
-                    <p class="carousel-excerpt">{{ Str::limit($item['excerpt'], 120) }}</p>
+                    <p class="carousel-excerpt">{{ Str::limit($item['excerpt'], 130) }}</p>
                     <div class="carousel-meta">
                         <span class="carousel-meta-item">
                             <i class="far fa-calendar-alt"></i>
@@ -1217,14 +1410,15 @@
                         @endif
                     </div>
                     <a href="{{ $item['route'] }}#from-dashboard-{{ $item['type'] }}" class="carousel-button">
-                        Learn More <i class="fas fa-arrow-right ml-2"></i>
+                        Learn More
+                        <i class="fas fa-arrow-right text-xs"></i>
                     </a>
                 </div>
             </div>
         </div>
         @endforeach
 
-        <!-- Navigation Arrows - Hidden on very small screens -->
+        {{-- Arrows --}}
         <div class="carousel-arrow prev hidden sm:flex" onclick="prevSlide()">
             <i class="fas fa-chevron-left"></i>
         </div>
@@ -1232,14 +1426,30 @@
             <i class="fas fa-chevron-right"></i>
         </div>
 
-        <!-- Dots Navigation -->
+        {{-- Dot navigation --}}
         <div class="carousel-nav">
             @foreach($featuredItems as $index => $item)
-            <div class="carousel-dot {{ $index === 0 ? 'active' : '' }}" 
+            <div class="carousel-dot {{ $index === 0 ? 'active' : '' }}"
                  onclick="goToSlide({{ $index }})"
                  data-index="{{ $index }}"></div>
             @endforeach
         </div>
+
+        {{-- Thumbnail strip --}}
+        <div class="carousel-thumbs hidden md:flex">
+            @foreach($featuredItems as $index => $item)
+            <div class="carousel-thumb {{ $index === 0 ? 'active' : '' }}"
+                 style="background-image: url('{{ $item['image'] }}');"
+                 onclick="goToSlide({{ $index }})"
+                 data-thumb="{{ $index }}"></div>
+            @endforeach
+        </div>
+
+        {{-- Progress bar --}}
+        {{-- <div class="carousel-progress">
+            <div class="carousel-progress-fill" id="carouselProgressFill"></div>
+        </div> --}}
+
     </div>
 </div>
 
@@ -2356,75 +2566,88 @@
 }
 
 
-    // Carousel functionality
 let currentSlide = 0;
 const slides = document.querySelectorAll('.carousel-slide');
-const dots = document.querySelectorAll('.carousel-dot');
+const dots   = document.querySelectorAll('.carousel-dot');
+const thumbs = document.querySelectorAll('.carousel-thumb');
 const totalSlides = slides.length;
+const SLIDE_DURATION = 6000; // ms
+
+// Update counter
+const counterCurrent = document.getElementById('carouselCurrent');
+const counterTotal   = document.getElementById('carouselTotal');
+// const progressFill   = document.getElementById('carouselProgressFill');
+
+if (counterTotal) counterTotal.textContent = String(totalSlides).padStart(2, '0');
+
+// let progressTimer = null;
 
 function showSlide(index) {
     if (index < 0) index = totalSlides - 1;
     if (index >= totalSlides) index = 0;
-    
-    slides.forEach(slide => slide.classList.remove('active'));
-    dots.forEach(dot => dot.classList.remove('active'));
-    
+
+    slides.forEach(s => s.classList.remove('active'));
+    dots.forEach(d => d.classList.remove('active'));
+    thumbs.forEach(t => t.classList.remove('active'));
+
     slides[index].classList.add('active');
-    dots[index].classList.add('active');
+    if (dots[index])   dots[index].classList.add('active');
+    if (thumbs[index]) thumbs[index].classList.add('active');
+
+    if (counterCurrent) counterCurrent.textContent = String(index + 1).padStart(2, '0');
+
     currentSlide = index;
+    // startProgress();
 }
 
-function nextSlide() {
-    showSlide(currentSlide + 1);
-}
+// function startProgress() {
+//     if (!progressFill) return;
+//     clearTimeout(progressTimer);
+//     progressFill.style.transition = 'none';
+//     progressFill.style.width = '0%';
 
-function prevSlide() {
-    showSlide(currentSlide - 1);
-}
+//     // Force reflow
+//     progressFill.getBoundingClientRect();
 
-function goToSlide(index) {
-    showSlide(index);
-}
+//     progressFill.style.transition = `width ${SLIDE_DURATION}ms linear`;
+//     progressFill.style.width = '100%';
 
-let carouselInterval = setInterval(nextSlide, 5000);
+//     progressTimer = setTimeout(() => nextSlide(), SLIDE_DURATION);
+// }
 
-const carousel = document.querySelector('.carousel-container');
-if (carousel) {
-    carousel.addEventListener('mouseenter', () => {
-        clearInterval(carouselInterval);
+function nextSlide() { showSlide(currentSlide + 1); }
+function prevSlide()  { showSlide(currentSlide - 1); }
+function goToSlide(i) { showSlide(i); }
+
+// Pause on hover
+const carouselEl = document.querySelector('.carousel-container');
+if (carouselEl) {
+    carouselEl.addEventListener('mouseenter', () => {
+ 
+        // if (progressFill) {
+        //     const computed = window.getComputedStyle(progressFill).width;
+        //     const parent   = progressFill.parentElement.offsetWidth;
+        //     const pct      = (parseFloat(computed) / parent) * 100;
+        //     progressFill.style.transition = 'none';
+        //     progressFill.style.width = pct + '%';
+        // }
     });
-    
-    carousel.addEventListener('mouseleave', () => {
-        carouselInterval = setInterval(nextSlide, 5000);
+    carouselEl.addEventListener('mouseleave', () => {
+        // Restart from current position
+        // startProgress();
+    });
+
+    // Touch swipe
+    let touchStartX = 0;
+    carouselEl.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    carouselEl.addEventListener('touchend', e => {
+        const diff = touchStartX - e.changedTouches[0].screenX;
+        if (Math.abs(diff) > 50) diff > 0 ? nextSlide() : prevSlide();
     });
 }
 
-let touchStartX = 0;
-let touchEndX = 0;
-
-if (carousel) {
-    carousel.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    });
-    
-    carousel.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    });
-}
-
-function handleSwipe() {
-    const swipeThreshold = 50;
-    const diff = touchStartX - touchEndX;
-    
-    if (Math.abs(diff) > swipeThreshold) {
-        if (diff > 0) {
-            nextSlide(); 
-        } else {
-            prevSlide(); 
-        }
-    }
-}
+// Kick off
+showSlide(0);
     // Tab switching function
     function switchTab(tabName) {
         document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
