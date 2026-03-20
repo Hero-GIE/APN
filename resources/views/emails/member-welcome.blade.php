@@ -6,358 +6,65 @@
     <title>Welcome to APN Membership</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Lora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap');
+        
         body {
-            font-family: 'Inter', 'Lora', Arial, sans-serif;
-            line-height: 1.7;
-            color: #1e293b;
-            background: #f8fafc;
-            margin: 0;
-            padding: 20px;
+            font-family: 'Open Sans', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6, .font-urbanist {
+            font-family: 'Urbanist', sans-serif !important;
         }
         .email-container {
             max-width: 600px;
             margin: 0 auto;
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
-        }
-        .header {
-            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 60%, #60a5fa 100%);
-            padding: 40px 30px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.2) 0%, transparent 50%);
-            animation: pulse 4s ease-in-out infinite;
         }
         @keyframes pulse {
             0%, 100% { opacity: 0.5; }
             50% { opacity: 1; }
         }
-        .header-brand {
-            margin: 0 0 10px;
-            font-size: 11px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: #dbeafe;
-            font-weight: 700;
-            position: relative;
-        }
-        .header-title {
-            color: white;
-            margin: 0;
-            font-family: 'Syne', sans-serif;
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            position: relative;
-        }
-        .header-sub {
-            color: #dbeafe;
-            margin: 8px 0 0;
-            font-size: 14px;
-            font-family: 'Lora', serif;
-            position: relative;
-        }
-        .content {
-            padding: 40px 35px;
-            background: white;
-        }
-        .greeting {
-            font-family: 'Syne', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: #1e293b;
-            margin: 0 0 15px;
-        }
-        .greeting-message {
-            color: #64748b;
-            font-size: 15px;
-            margin: 0 0 30px;
-            line-height: 1.7;
-            font-family: 'Lora', sans-serif;
-        }
-        .membership-card {
-            background: linear-gradient(135deg, #f0f9ff, #e6f0fa);
-            border: 2px solid #b8d6f0;
-            border-radius: 12px;
-            padding: 28px;
-            margin-bottom: 30px;
-            transition: all 0.3s ease;
-        }
-        .membership-card:hover {
-            border-color: #3b82f6;
-        }
-        .membership-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .membership-badge {
-            background: #3b82f6;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        .membership-label {
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #3b82f6;
-            margin: 0 0 5px;
-        }
-        .membership-type {
-            font-family: 'Syne', sans-serif;
-            font-size: 32px;
-            font-weight: 800;
-            color: #1e293b;
-            line-height: 1;
-            margin: 0;
-        }
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .info-box {
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 12px;
-        }
-        .info-label {
-            font-size: 11px;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 0 0 4px;
-        }
-        .info-value {
-            font-family: 'Syne', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: #1e293b;
-            margin: 0;
-        }
-        .info-value small {
-            font-size: 12px;
-            color: #64748b;
-            font-weight: normal;
-        }
-        .credentials-card {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-        .credentials-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-        }
         @keyframes rotate {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-        .credentials-title {
-            color: #dbeafe;
-            font-family: 'Syne', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin: 0 0 10px;
-            position: relative;
+        .animate-pulse-slow {
+            animation: pulse 4s ease-in-out infinite;
         }
-        .credentials-sub {
-            color: #dbeafe;
-            font-size: 14px;
-            margin: 0 0 25px;
-            opacity: 0.9;
-            position: relative;
+        .animate-rotate {
+            animation: rotate 20s linear infinite;
         }
-        .credential-box {
-            background: rgba(255,255,255,0.15);
-            border: 2px solid rgba(255,255,255,0.25);
-            border-radius: 10px;
-            padding: 12px 16px;
-            margin-bottom: 12px;
-            position: relative;
-            backdrop-filter: blur(10px);
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 60%, #60a5fa 100%);
         }
-        .credential-label {
-            color: #dbeafe;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 0 0 4px;
+        .bg-gradient-card {
+            background: linear-gradient(135deg, #f0f9ff, #e6f0fa);
         }
-        .credential-value {
-            color: white !important;
-            font-size: 16px;
-            font-family: monospace;
-            margin: 0;
-            font-weight: 500;
-            word-break: break-all;
-        }
-        .credential-value.password {
-            letter-spacing: 3px;
-            font-size: 18px;
-        }
-        .login-button {
-            display: inline-block;
-            background: white !important;
-            color: #2563eb !important;
-            padding: 14px 40px;
-            text-decoration: none;
-            border-radius: 10px;
-            font-family: 'Syne', sans-serif;
-            font-weight: 700;
-            font-size: 15px;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        .login-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.3);
-        }
-        .security-notice {
-            background: #eff6ff;
-            border: 2px solid #bfdbfe;
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-bottom: 30px;
-        }
-        .security-notice p {
-            font-size: 13px;
-            color: #1e3a8a;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .security-notice i {
-            font-style: normal;
-            font-size: 16px;
-        }
-        .benefits-preview {
-            margin: 30px 0;
-        }
-        .benefits-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: #1e293b;
-            margin: 0 0 15px;
-        }
-        .benefits-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        .benefit-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .benefit-icon {
-            background: #eff6ff;
-            border-radius: 8px;
-            padding: 6px;
-            display: inline-flex;
-        }
-        .benefit-icon svg {
-            width: 16px;
-            height: 16px;
-            color: #3b82f6;
-        }
-        .benefit-text {
-            font-size: 13px;
-            color: #1e293b;
-            margin: 0;
-        }
-        .benefit-text small {
-            font-size: 11px;
-            color: #64748b;
-            display: block;
-        }
-        .footer {
-            background: #f8fafc;
-            border-top: 2px solid #e2e8f0;
-            padding: 30px 35px;
-            text-align: center;
-        }
-        .footer-copyright {
-            font-size: 12px;
-            color: #64748b;
-            margin: 0 0 8px;
-        }
-        .footer-email {
-            font-size: 13px;
-            margin: 0 0 8px;
-        }
-        .footer-email a {
-            color: #3b82f6;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .footer-email a:hover {
-            text-decoration: underline;
-        }
-        .footer-auto {
-            font-size: 11px;
-            color: #94a3b8;
-            margin: 0;
-        }
-        .footer-auto i {
-            font-style: normal;
-            color: #3b82f6;
-            margin: 0 4px;
+        .bg-gradient-credentials {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 p-5 m-0">
     <div class="email-container">
 
-        <div class="header">
-            <div class="header-brand">✦ APN MEMBERSHIP ✦</div>
-            <h1 class="header-title">Africa Prosperity Network</h1>
-            <p class="header-sub">Your membership is building a prosperous Africa</p>
+        <!-- Header with gradient -->
+        <div class="bg-gradient-primary px-8 py-10 text-center relative overflow-hidden rounded-t-2xl">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2)_0%,transparent_50%)] animate-pulse-slow"></div>
+            <div class="relative">
+                <p class="text-blue-100 text-xs tracking-[3px] uppercase font-bold mb-2">✦ APN MEMBERSHIP ✦</p>
+                <h1 class="text-white text-3xl font-urbanist font-extrabold tracking-tight mb-1">Africa Prosperity Network</h1>
+                <p class="text-blue-100 text-sm font-['Open_Sans']">Your membership is building a prosperous Africa</p>
+            </div>
         </div>
 
         <!-- Body -->
-        <div class="content">
+        <div class="bg-white px-8 py-10">
 
-            <h2 class="greeting">Welcome, {{ $member->firstname }}! 🎉</h2>
+            <h2 class="font-urbanist text-2xl font-bold text-slate-800 mb-4">Welcome, {{ $member->firstname }}! 🎉</h2>
             
-            <p class="greeting-message">
+            <p class="text-slate-500 text-[15px] mb-8 leading-relaxed font-['Open_Sans']">
                 @if(isset($password) && $password)
                     Thank you for becoming an APN Member! Your membership has been successfully activated and you now have access to exclusive member benefits. Below is a summary of your membership and your secure login credentials.
                 @else
@@ -366,97 +73,102 @@
             </p>
 
             @if(isset($membership) && $membership)
-            <div class="membership-card">
-                <div class="membership-header">
+            <!-- Membership Card -->
+            <div class="bg-gradient-card border-2 border-blue-200 rounded-xl p-7 mb-8 transition-all hover:border-blue-500">
+                <div class="flex items-center justify-between mb-5">
                     <div>
-                        <div class="membership-label">Membership Activated</div>
-                        <div class="membership-type">{{ ucfirst($membership->membership_type) }} Plan</div>
+                        <div class="text-xs font-bold tracking-wider uppercase text-blue-600 mb-1">Membership Activated</div>
+                        <div class="font-urbanist text-3xl font-extrabold text-slate-800">{{ ucfirst($membership->membership_type) }} Plan</div>
                     </div>
-                    <div class="membership-badge">
-                        <span style="background: #4ade80; width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px;"></span>
+                    <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                        <span class="w-2 h-2 bg-green-400 rounded-full inline-block mr-1"></span>
                         ACTIVE
                     </div>
                 </div>
 
-                <div class="info-grid">
-                    <div class="info-box">
-                        <div class="info-label">Amount</div>
-                        <div class="info-value">${{ number_format($membership->amount, 2) }}</div>
+                <!-- Info Grid -->
+                <div class="grid grid-cols-2 gap-4 mt-5">
+                    <div class="bg-white border-2 border-slate-200 rounded-lg p-3">
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Amount</div>
+                        <div class="font-urbanist text-lg font-bold text-slate-800">${{ number_format($membership->amount, 2) }}</div>
                     </div>
-                    <div class="info-box">
-                        <div class="info-label">Valid Until</div>
-                        <div class="info-value">{{ \Carbon\Carbon::parse($membership->end_date)->format('M d, Y') }}</div>
+                    <div class="bg-white border-2 border-slate-200 rounded-lg p-3">
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Valid Until</div>
+                        <div class="font-urbanist text-lg font-bold text-slate-800">{{ \Carbon\Carbon::parse($membership->end_date)->format('M d, Y') }}</div>
                     </div>
-                    <div class="info-box">
-                        <div class="info-label">Member Since</div>
-                        <div class="info-value">{{ \Carbon\Carbon::parse($membership->start_date)->format('M d, Y') }}</div>
+                    <div class="bg-white border-2 border-slate-200 rounded-lg p-3">
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Member Since</div>
+                        <div class="font-urbanist text-lg font-bold text-slate-800">{{ \Carbon\Carbon::parse($membership->start_date)->format('M d, Y') }}</div>
                     </div>
-                    <div class="info-box">
-                        <div class="info-label">Days Remaining</div>
-                        <div class="info-value">{{ $membership->daysLeft() }} <small>days</small></div>
+                    <div class="bg-white border-2 border-slate-200 rounded-lg p-3">
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Days Remaining</div>
+                        <div class="font-urbanist text-lg font-bold text-slate-800">{{ $membership->daysLeft() }} <span class="text-sm font-normal text-slate-500">days</span></div>
                     </div>
                 </div>
 
                 @if(isset($membership->transaction_id))
-                <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #e2e8f0;">
-                    <div class="info-label">Transaction Reference</div>
-                    <div style="font-family: monospace; font-size: 13px; color: #1e293b;">{{ $membership->transaction_id }}</div>
+                <div class="mt-4 pt-4 border-t-2 border-slate-200">
+                    <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Transaction Reference</div>
+                    <div class="font-mono text-sm text-slate-800">{{ $membership->transaction_id }}</div>
                 </div>
                 @endif 
             </div>
             @endif
 
-            <!-- Login Credentials Card-->
+            <!-- Login Credentials Card -->
             @if(isset($password) && $password)
-            <div class="credentials-card">
-                <div class="credentials-title">🔐 Your Secure Login Credentials</div>
-                <p class="credentials-sub">Use these details to access your member dashboard</p>
+            <div class="bg-gradient-credentials rounded-xl p-8 mb-8 relative overflow-hidden">
+                <div class="absolute top-[-50%] right-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(255,255,255,0.15)_0%,transparent_70%)] animate-rotate"></div>
+                <div class="relative">
+                    <div class="font-urbanist text-blue-100 text-base font-bold tracking-wider uppercase mb-2">🔐 Your Secure Login Credentials</div>
+                    <p class="text-blue-100 text-sm mb-6 opacity-90">Use these details to access your member dashboard</p>
 
-                <div class="credential-box">
-                    <div class="credential-label">Email Address</div>
-                    <div class="credential-value">{{ $member->email }}</div>
-                </div>
+                    <div class="bg-white/15 border-2 border-white/25 rounded-lg p-4 mb-3 backdrop-blur-sm">
+                        <div class="text-blue-100 text-xs uppercase tracking-wider mb-1">Email Address</div>
+                        <div class="text-white font-mono text-base">{{ $member->email }}</div>
+                    </div>
 
-                <div class="credential-box">
-                    <div class="credential-label">Temporary Password</div>
-                    <div class="credential-value password">{{ $password }}</div>
-                </div>
+                    <div class="bg-white/15 border-2 border-white/25 rounded-lg p-4 mb-3 backdrop-blur-sm">
+                        <div class="text-blue-100 text-xs uppercase tracking-wider mb-1">Temporary Password</div>
+                        <div class="text-white font-mono text-lg tracking-[3px]">{{ $password }}</div>
+                    </div>
 
-                <div style="text-align: center;">
-                    <a href="{{ route('donor.login') }}" class="login-button">
-                       LOGIN TO YOUR ACCOUNT →
-                    </a>
+                    <div class="text-center mt-6">
+                        <a href="{{ route('donor.login') }}" class="inline-block bg-white text-blue-600 px-10 py-3 rounded-lg font-urbanist font-bold text-sm shadow-lg hover:-translate-y-0.5 hover:shadow-blue-300/30 transition-all">
+                            LOGIN TO YOUR ACCOUNT →
+                        </a>
+                    </div>
                 </div>
             </div>
 
             <!-- Security notice -->
-            <div class="security-notice">
-                <p>
-                    <span style="font-size: 16px;">🔒</span>
-                    <span><strong>Security tip:</strong> For your safety, please log in and change your password immediately. Never share your credentials with anyone.</span>
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-5 mb-8">
+                <p class="text-sm text-blue-900 m-0 flex items-center gap-3">
+                    <span class="text-lg">🔒</span>
+                    <span><strong class="font-urbanist">Security tip:</strong> For your safety, please log in and change your password immediately. Never share your credentials with anyone.</span>
                 </p>
             </div>
             @endif
 
             <!-- Impact Message -->
-            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #e2e8f0;">
-                <p style="color: #64748b; font-size: 14px; margin: 0 0 5px; font-style: italic;">
+            <div class="text-center mt-8 pt-5 border-t-2 border-slate-200">
+                <p class="text-slate-500 text-sm mb-1 italic">
                     "Alone we can do so little; together we can do so much."
                 </p>
-                <p style="color: #3b82f6; font-size: 12px; font-weight: 600; margin: 0;">
+                <p class="text-blue-600 text-xs font-urbanist font-semibold m-0">
                     — Building Africa's Prosperity, Together —
                 </p>
             </div>
         </div>
 
         <!-- Footer -->
-        <div class="footer">
-            <p class="footer-copyright">© {{ date('Y') }} Africa Prosperity Network · All rights reserved</p>
-            <p class="footer-email">
-                <a href="mailto:membership@africaprosperitynetwork.com">membership@africaprosperitynetwork.com</a>
+        <div class="bg-slate-50 border-t-2 border-slate-200 px-8 py-6 text-center rounded-b-2xl">
+            <p class="text-xs text-slate-500 mb-2">© {{ date('Y') }} Africa Prosperity Network · All rights reserved</p>
+            <p class="text-sm mb-2">
+                <a href="mailto:membership@africaprosperitynetwork.com" class="text-blue-600 font-medium no-underline hover:underline">membership@africaprosperitynetwork.com</a>
             </p>
-            <p class="footer-auto">
-                <span style="color: #3b82f6;">✦</span> This is an automated email. Please do not reply directly. <span style="color: #3b82f6;">✦</span>
+            <p class="text-[11px] text-slate-400 m-0">
+                <span class="text-blue-600">✦</span> This is an automated email. Please do not reply directly. <span class="text-blue-600">✦</span>
             </p>
         </div>
 

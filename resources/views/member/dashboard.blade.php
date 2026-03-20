@@ -993,7 +993,7 @@
     }
 </style>
 
-<div class="min-h-screen bg-gray-50 py-8">
+    <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
@@ -1004,11 +1004,17 @@
                 <!-- User Dropdown Menu -->
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open" class="flex items-center space-x-3 focus:outline-none">
-                        <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                            <span class="text-indigo-600 font-semibold text-lg">
-                                {{ strtoupper(substr($donor->firstname, 0, 1)) }}{{ strtoupper(substr($donor->lastname, 0, 1)) }}
-                            </span>
-                        </div>
+                      <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden flex-shrink-0" id="navAvatar">
+                      @if(isset($latestFilteredImage) && $latestFilteredImage)
+                     <img src="{{ url('storage/' . $latestFilteredImage->filtered_image) }}"
+             alt="{{ $donor->firstname }}"
+             class="w-full h-full object-cover rounded-full">
+                  @else
+              <span class="text-indigo-600 font-semibold text-lg">
+                {{ strtoupper(substr($donor->firstname, 0, 1)) }}{{ strtoupper(substr($donor->lastname, 0, 1)) }}
+        </span>
+    @endif
+    </div>
                         <span class="text-gray-700 font-medium">{{ $donor->firstname }} {{ $donor->lastname }}</span>
                         <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -1711,7 +1717,6 @@
         </div>
     </div>
 </div>
-
 <!-- Tab Content - Job Opportunities -->
 <div id="content-jobs" class="tab-content">
     <div class="flex justify-between items-center mb-6">
@@ -1765,42 +1770,81 @@
             </div>
             <div class="mt-4 flex items-center justify-between">
                 <a href="{{ route('member.jobs.show', $job->slug) }}#from-dashboard-jobs" class="text-sm text-indigo-600 hover:text-indigo-900">View Details →</a>
-                <a href="{{ $job->application_url ?: '#' }}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">Apply Now</a>
+                
+                {{-- INTERNAL APPLICATION SYSTEM --}}
+                @php
+                    $hasApplied = $job->hasApplied(Auth::guard('donor')->id());
+                @endphp
+                
+                @if($hasApplied)
+                    <span class="px-4 py-2 bg-green-100 text-green-700 rounded-lg text-sm font-medium flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        Application Submitted
+                    </span>
+                @else
+                    <a href="{{ route('member.jobs.apply', $job->slug) }}?from=dashboard" 
+                       class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-sm hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-md flex items-center gap-2">
+                        <i class="fas fa-paper-plane"></i>
+                        Apply Now
+                    </a>
+                @endif
             </div>
+            
+            {{-- Show deadline if approaching --}}
+            @if($job->application_deadline && $job->application_deadline->diffInDays(now()) < 7)
+            <div class="mt-3 text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-1 inline-block">
+                <i class="far fa-clock mr-1"></i> Deadline: {{ $job->application_deadline->format('M d, Y') }}
+            </div>
+            @endif
         </div>
         @empty
-        <div class="text-center py-8">
-            <p class="text-gray-500">No job opportunities available at the moment.</p>
+        <div class="text-center py-12">
+            <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No jobs available</h3>
+            <p class="text-gray-500">Check back soon for new opportunities.</p>
         </div>
         @endforelse
     </div>
 
     @if($jobs->count() > 0)
     <div class="text-center mt-8">
-        <a href="{{ route('member.jobs.index') }}" class="inline-block px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
-            Browse All Jobs
+        <a href="{{ route('member.jobs.index') }}" class="inline-block px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-md font-medium">
+            Browse All Job Opportunities
+            <i class="fas fa-arrow-right ml-2"></i>
         </a>
     </div>
     @endif
 
-    <!-- Career Resources -->
-    <div class="mt-8 p-6 bg-blue-50 rounded-lg">
-        <h3 class="text-lg font-bold text-gray-900 mb-2">Career Resources</h3>
-        <p class="text-sm text-gray-600 mb-4">Access exclusive career development resources for members</p>
+    {{-- Career Resources Section --}}
+    <div class="mt-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+        <div class="flex items-center gap-4 mb-4">
+            <div class="bg-white rounded-full p-3 shadow-sm">
+                <i class="fas fa-briefcase text-indigo-600 text-xl"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-gray-900">Career Resources</h3>
+                <p class="text-sm text-gray-600">Exclusive resources for APN members</p>
+            </div>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a href="#" class="text-sm text-indigo-600 hover:text-indigo-900 flex items-center">
-                <i class="fas fa-file-pdf mr-2"></i> Resume Template
+            <a href="#" class="flex items-center gap-3 p-3 bg-white rounded-lg hover:shadow-md transition-all">
+                <i class="fas fa-file-pdf text-red-500"></i>
+                <span class="text-sm text-gray-700">Resume Template</span>
             </a>
-            <a href="#" class="text-sm text-indigo-600 hover:text-indigo-900 flex items-center">
-                <i class="fas fa-video mr-2"></i> Interview Tips
+            <a href="#" class="flex items-center gap-3 p-3 bg-white rounded-lg hover:shadow-md transition-all">
+                <i class="fas fa-video text-blue-500"></i>
+                <span class="text-sm text-gray-700">Interview Guide</span>
             </a>
-            <a href="#" class="text-sm text-indigo-600 hover:text-indigo-900 flex items-center">
-                <i class="fas fa-users mr-2"></i> Mentorship Program
+            <a href="#" class="flex items-center gap-3 p-3 bg-white rounded-lg hover:shadow-md transition-all">
+                <i class="fas fa-users text-green-500"></i>
+                <span class="text-sm text-gray-700">Mentorship Program</span>
             </a>
         </div>
     </div>
-
-
 </div>
 
 <!-- Tab Content - Resources -->

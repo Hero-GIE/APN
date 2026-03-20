@@ -14,6 +14,8 @@ use App\Http\Controllers\JobOpportunityController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\FilterController;
+use App\Http\Controllers\JobApplicationController;
+
 
 
 
@@ -129,6 +131,11 @@ Route::middleware(['auth:donor', 'member.active'])->prefix('member')->name('memb
     // Jobs routes
     Route::get('/jobs', [JobOpportunityController::class, 'index'])->name('jobs.index');
     Route::get('/jobs/{slug}', [JobOpportunityController::class, 'show'])->name('jobs.show');
+
+    // New application routes
+    Route::get('/jobs/apply/{slug}', [JobApplicationController::class, 'create'])->name('jobs.apply');
+    Route::post('/jobs/apply/{slug}', [JobApplicationController::class, 'store'])->name('jobs.apply.submit');
+    Route::get('/my-applications', [JobApplicationController::class, 'myApplications'])->name('jobs.applications');
 });
 
 // ===== NEW PUBLIC BADGE ROUTES 

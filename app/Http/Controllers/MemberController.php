@@ -16,85 +16,88 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use App\Models\FilteredImage;
 
 class MemberController extends Controller
 {
     /**
      * Member Dashboard
      */
-    public function dashboard()
-    {
-        $donor = Auth::guard('donor')->user();
-        $member = Member::where('donor_id', $donor->id)->first();
-        
-        if (!$member) {
-            return redirect()->route('donor.membership')
-                ->with('error', 'You are not a member yet. Please purchase a membership.');
-        }
-
-        $payments = MemberPayment::where('donor_id', $donor->id)
-            ->orderBy('payment_date', 'desc')
-            ->take(5)
-            ->get();
-
-        $donations = Donation::where('donor_id', $donor->id)
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get();
-
-        // Fetch latest news (4 items)
-        $news = News::where('is_published', true)
-                    ->orderBy('published_date', 'desc')
-                    ->take(4)
-                    ->get();
-        
-        // Fetch upcoming events (4 items)
-        $events = Event::where('is_published', true)
-                       ->where('start_date', '>=', now())
-                       ->orderBy('start_date', 'asc')
-                       ->take(4)
-                       ->get();
-        
-        // Fetch latest jobs (4 items)
-        $jobs = JobOpportunity::where('is_published', true)
-                              ->orderBy('posted_date', 'desc')
-                              ->take(4)
-                              ->get();
-
-        $stats = [
-            'total_payments' => MemberPayment::where('donor_id', $donor->id)->count(),
-            'total_spent' => MemberPayment::where('donor_id', $donor->id)->sum('amount'),
-            'days_left' => $member->daysLeft(),
-            'renewals' => $member->renewal_count,
-            'total_donations' => Donation::where('donor_id', $donor->id)->count(),
-            'total_donated' => Donation::where('donor_id', $donor->id)->sum('amount'),
-        ];
-
-        // Prepare status configuration
-        $statusConfig = [
-            'color' => match($member->status) {
-                'active' => 'green',
-                'expired' => 'red',
-                'cancelled' => 'orange',
-                'pending' => 'yellow',
-                default => 'gray'
-            },
-            'text' => strtoupper($member->status),
-            'pulse' => in_array($member->status, ['active', 'pending'])
-        ];
-
-        return view('member.dashboard', compact(
-            'donor', 
-            'member', 
-            'payments', 
-            'donations', 
-            'stats', 
-            'statusConfig',
-            'news',
-            'events',
-            'jobs'
-        ));
+ public function dashboard()
+{
+    $donor = Auth::guard('donor')->user();
+    $member = Member::where('donor_id', $donor->id)->first();
+ 
+    if (!$member) {
+        return redirect()->route('donor.membership')
+            ->with('error', 'You are not a member yet. Please purchase a membership.');
     }
+ 
+    $payments = MemberPayment::where('donor_id', $donor->id)
+        ->orderBy('payment_date', 'desc')
+        ->take(5)
+        ->get();
+ 
+    $donations = Donation::where('donor_id', $donor->id)
+        ->orderBy('created_at', 'desc')
+        ->take(5)
+        ->get();
+ 
+    $news = News::where('is_published', true)
+                ->orderBy('published_date', 'desc')
+                ->take(4)
+                ->get();
+ 
+    $events = Event::where('is_published', true)
+                   ->where('start_date', '>=', now())
+                   ->orderBy('start_date', 'asc')
+                   ->take(4)
+                   ->get();
+ 
+    $jobs = JobOpportunity::where('is_published', true)
+                          ->orderBy('posted_date', 'desc')
+                          ->take(4)
+                          ->get();
+ 
+    $stats = [
+        'total_payments'  => MemberPayment::where('donor_id', $donor->id)->count(),
+        'total_spent'     => MemberPayment::where('donor_id', $donor->id)->sum('amount'),
+        'days_left'       => $member->daysLeft(),
+        'renewals'        => $member->renewal_count,
+        'total_donations' => Donation::where('donor_id', $donor->id)->count(),
+        'total_donated'   => Donation::where('donor_id', $donor->id)->sum('amount'),
+    ];
+ 
+    $statusConfig = [
+        'color' => match($member->status) {
+            'active'    => 'green',
+            'expired'   => 'red',
+            'cancelled' => 'orange',
+            'pending'   => 'yellow',
+            default     => 'gray'
+        },
+        'text'  => strtoupper($member->status),
+        'pulse' => in_array($member->status, ['active', 'pending'])
+    ];
+ 
+    // Latest filtered image for avatar
+    $latestFilteredImage = FilteredImage::where('user_id', $donor->id)
+        ->latest()
+        ->first();
+ 
+    return view('member.dashboard', compact(
+        'donor',
+        'member',
+        'payments',
+        'donations',
+        'stats',
+        'statusConfig',
+        'news',
+        'events',
+        'jobs',
+        'latestFilteredImage'
+    ));
+}
 
     /**
      * Member Benefits Page

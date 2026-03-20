@@ -311,17 +311,13 @@ class PaystackCallbackController extends Controller
         Auth::guard('donor')->login($donor);
 
         // ── 10. Redirect to appropriate success page
-        if ($isMembership) {
-            return redirect()->route('member.dashboard')
-                ->with('success', $isNewDonor 
-                    ? 'Membership payment successful! Welcome to APN! Your account has been created.'
-                    : 'Membership payment successful! Thank you for your continued support.');
-        } else {
-            return redirect()->route('donor.dashboard')
-                ->with('success', $isNewDonor 
-                    ? 'Donation successful! Thank you for your support! Your account has been created.'
-                    : 'Donation successful! Thank you for your generosity!');
-        }
+     if ($isMembership) {
+    return redirect()->route('member.success', ['reference' => $reference])
+        ->with('success', 'Membership payment successful!');
+     } else {
+    return redirect()->route('donation.success', ['reference' => $reference])
+        ->with('success', 'Donation successful! Thank you!');
+    }
     }
 
     private function processMembership($donor, $reference, $data, $metadata, $membershipType, $amount)

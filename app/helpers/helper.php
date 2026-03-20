@@ -31,7 +31,7 @@ if (! function_exists('messageAdmin')) {
             'emails.admin-message',
             $data,
             'rowusu@wowlogbook.com', 
-            'New Notifcation'
+            'New Notification'
         );
     }
 }

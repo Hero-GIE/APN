@@ -54,11 +54,11 @@ class AuthController extends Controller
     return view('donor.profile', compact('donor', 'member'));
 }
 
-  /**
+ /**
  * Handle donor login
  */
-    public function login(Request $request)
-    {
+public function login(Request $request)
+{
     $validator = Validator::make($request->all(), [
         'email'    => 'required|email',
         'password' => 'required|string',
@@ -72,14 +72,23 @@ class AuthController extends Controller
     
     $donor = Donor::where('email', $credentials['email'])->first();
     
+    // Check if email exists
     if (!$donor) {
         Log::error('Login failed: Donor not found', ['email' => $credentials['email']]);
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'We could not find an account with this email address.',
         ])->withInput($request->only('email'));
     }
     
+    // Check if password is correct
+    if (!Hash::check($credentials['password'], $donor->password)) {
+        Log::error('Login failed: Incorrect password', ['email' => $credentials['email']]);
+        return back()->withErrors([
+            'password' => 'The password you entered is incorrect.',
+        ])->withInput($request->only('email'));
+    }
 
+    // Attempt login with Auth guard
     if (Auth::guard('donor')->attempt($credentials, $request->filled('remember'))) {
         $request->session()->regenerate();
      
@@ -97,11 +106,12 @@ class AuthController extends Controller
         
         return redirect()->intended(route('donor.dashboard'))->with('login_success', $message);
     }
-
+    // Fallback error 
     return back()->withErrors([
-        'email' => 'The provided credentials do not match our records.',
+        'email' => 'Unable to login. Please try again.',
     ])->withInput($request->only('email'));
 }
+
 
 
 public function logout(Request $request)

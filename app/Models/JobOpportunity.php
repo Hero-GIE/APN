@@ -78,4 +78,14 @@ class JobOpportunity extends Model
         ];
         return $colors[$this->category_color] ?? 'bg-indigo-100 text-indigo-700';
     }
+
+    public function applications()
+{
+    return $this->hasMany(JobApplication::class, 'job_id');
+}
+
+public function hasApplied($donorId)
+{
+    return $this->applications()->where('donor_id', $donorId)->exists();
+}
 }

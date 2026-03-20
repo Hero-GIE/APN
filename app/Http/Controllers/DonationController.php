@@ -94,7 +94,6 @@ class DonationController extends Controller
                     'email_updates' => $authenticatedDonor->email_updates,
                     'text_updates' => $authenticatedDonor->text_updates,
                     'is_authenticated' => true,
-                    // Add donation reason to metadata
                     'donation_reason' => $request->donation_reason,
                     'custom_reason' => $request->custom_reason
                 ];
