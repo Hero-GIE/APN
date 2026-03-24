@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to APN Membership</title>
     <style>
@@ -30,7 +31,7 @@
         
         /* Container */
         .email-container {
-            max-width: 600px;
+            max-width: 400px;
             margin: 0 auto;
             background: #ffffff;
             border-radius: 16px;
@@ -40,7 +41,7 @@
         
         /* Header */
         .header {
-            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 60%, #60a5fa 100%);
+            background: #000;
             padding: 40px 30px;
             text-align: center;
         }
@@ -347,7 +348,8 @@
         
         <!-- Header -->
         <div class="header">
-            <div class="header-brand">✦ APN MEMBERSHIP ✦</div>
+            <img src="{{asset('images/logo/APN-Logo-01-white.png')}}" width="100" class="img-fluid my-2" alt="">
+            {{-- <h1 class="header-title">Africa Prosperity Network</h1> --}}
             <h1 class="header-title">Africa Prosperity Network</h1>
             <p class="header-sub">Your membership is building a prosperous Africa</p>
         </div>

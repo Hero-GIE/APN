@@ -6,7 +6,8 @@
     <title>APN Membership Renewal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Lora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;200;300;400;500;600;700;800&family=Lora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', 'Lora', Arial, sans-serif;
@@ -17,7 +18,7 @@
             padding: 20px;
         }
         .email-container {
-            max-width: 600px;
+            max-width: 420px;
             margin: 0 auto;
             background: white;
             border-radius: 12px;
@@ -25,12 +26,17 @@
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
         }
         .header {
-            background: linear-gradient(135deg, #3730a3 0%, #4f46e5 60%, #6366f1 100%);
-            padding: 40px 30px;
+            /* background: linear-gradient(135deg, #3730a3 0%, #4f46e5 60%, #6366f1 100%); */
+            background: url('images/backgrounds/interoperability-1.webp');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: top center;
+            padding: 20px 10px;
             text-align: center;
             position: relative;
             overflow: hidden;
         }
+
         .header::before {
             content: '';
             position: absolute;
@@ -47,17 +53,17 @@
         }
         .header-brand {
             margin: 0 0 10px;
-            font-size: 11px;
+            font-size: 13px;
             letter-spacing: 3px;
             text-transform: uppercase;
-            color: #c7d2fe;
-            font-weight: 700;
+            color: #ffffff;
+            font-weight: 400;
             position: relative;
         }
         .header-title {
             color: white;
             margin: 0;
-            font-family: 'Syne', sans-serif;
+            font-family: 'Urbanist', sans-serif;
             font-size: 28px;
             font-weight: 800;
             letter-spacing: -0.5px;
@@ -66,16 +72,22 @@
         .header-sub {
             color: #c7d2fe;
             margin: 8px 0 0;
-            font-size: 14px;
-            font-family: 'Lora', serif;
+            font-size: 18px;
+            letter-spacing: 0.7px;
+            font-family: 'Urbanist', serif;
             position: relative;
         }
+
+        .header img{
+            width: 90px;
+        }
+
         .content {
             padding: 40px 35px;
             background: white;
         }
         .greeting {
-            font-family: 'Syne', sans-serif;
+            font-family: 'Urbanist', sans-serif;
             font-size: 22px;
             font-weight: 700;
             color: #1a1f36;
@@ -96,17 +108,17 @@
             text-align: center;
         }
         .renewal-badge {
-            background: #4f46e5;
-            color: white;
-            padding: 8px 16px;
+            background: #4e46e513;
+            color: #3f32b7;
+            padding: 4px 8px;
             border-radius: 30px;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
             display: inline-block;
             margin-bottom: 20px;
         }
         .renewal-amount {
-            font-family: 'Syne', sans-serif;
+            font-family: 'Urbanist', sans-serif;
             font-size: 48px;
             font-weight: 800;
             color: #1a1f36;
@@ -114,7 +126,8 @@
             margin: 0 0 10px;
         }
         .renewal-amount small {
-            font-size: 24px;
+            font-size: 16px;
+            font-weight: 300;
             color: #64748b;
         }
         .renewal-ref {
@@ -149,7 +162,7 @@
             margin: 0 0 4px;
         }
         .info-value {
-            font-family: 'Syne', sans-serif;
+            font-family: 'Urbanist', sans-serif;
             font-size: 16px;
             font-weight: 700;
             color: #1a1f36;
@@ -171,7 +184,7 @@
             margin: 0 0 5px;
         }
         .date-value {
-            font-family: 'Syne', sans-serif;
+            font-family: 'Urbanist', sans-serif;
             font-size: 18px;
             font-weight: 700;
             color: #1a1f36;
@@ -184,7 +197,7 @@
             padding: 14px 40px;
             text-decoration: none;
             border-radius: 40px;
-            font-family: 'Syne', sans-serif;
+            font-family: 'Urbanist', sans-serif;
             font-weight: 700;
             font-size: 15px;
             margin: 20px 0;
@@ -235,9 +248,10 @@
 
         {{-- Header with gradient and orb effect --}}
         <div class="header">
-            <div class="header-brand">✦ APN MEMBERSHIP RENEWAL ✦</div>
-            <h1 class="header-title">Africa Prosperity Network</h1>
-            <p class="header-sub">Thank you for renewing your membership</p>
+            <img src="{{asset('images/logo/APN-Logo-01-white.png')}}" class="img-fluid" alt="">
+            {{-- <h1 class="header-title">Africa Prosperity Network</h1> --}}
+            <div class="header-brand mt-3">MEMBERSHIP RENEWAL</div>
+            {{-- <p class="header-sub">Thank you for renewing your membership</p> --}}
         </div>
 
         {{-- Body --}}
@@ -255,7 +269,7 @@
                 <div class="renewal-badge">✓ RENEWAL COMPLETE</div>
                 <div class="renewal-amount">
                     {{ $donation->currency ?? 'GHS' }} {{ number_format($donation->amount ?? 0, 2) }}
-                    <small>{{ ucfirst($membership_type ?? $member->membership_type ?? 'monthly') }} plan</small>
+                    <br><small>{{ ucfirst($membership_type ?? $member->membership_type ?? 'monthly') }} plan</small>
                 </div>
                 <div class="renewal-ref">
                     Ref: {{ $donation->transaction_id ?? 'N/A' }}
@@ -308,7 +322,7 @@
                 <a href="mailto:membership@africaprosperitynetwork.com">membership@africaprosperitynetwork.com</a>
             </p>
             <p class="footer-auto">
-                <i>✦</i> This is an automated email. Please do not reply directly. <i>✦</i>
+                 This is an automated email. Please do not reply directly. 
             </p>
         </div>
 

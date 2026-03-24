@@ -169,5 +169,10 @@ Route::get('/login', function() {
     return redirect()->route('donor.login');
 })->name('login');
 
+// view email templates
+Route::get('/email-templates', function(){
+    return view('emails.member-welcome');
+});
+
 Route::get('/paystack/callback', [PaystackCallbackController::class, 'handle'])
     ->name('paystack.callback');
