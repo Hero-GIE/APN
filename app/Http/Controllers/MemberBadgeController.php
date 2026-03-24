@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/MemberBadgeController.php
 
 namespace App\Http\Controllers;
 

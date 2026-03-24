@@ -9,6 +9,13 @@
     h1, h2, h3, h4, h5, h6, .font-urbanist {
         font-family: 'Urbanist', sans-serif;
     }
+    
+    /* Breadcrumb styling matching other pages */
+    .breadcrumb-link {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 0.95rem;
+    }
+    
     .status-badge {
         padding: 0.25rem 0.75rem;
         border-radius: 9999px;
@@ -24,16 +31,27 @@
 
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Header -->
+        <!-- Breadcrumb - Updated to match other pages -->
         <div class="mb-8">
-            <div class="flex items-center text-sm text-gray-500 mb-2">
-                <a href="{{ route('member.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
+            <div class="flex items-center text-sm text-gray-500 mb-2 breadcrumb-link">
+                @php
+                    $donor = Auth::guard('donor')->user();
+                @endphp
+                @if($donor && \App\Models\Member::where('donor_id', $donor->id)->exists())
+                    <a href="{{ route('member.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
+                @else
+                    <a href="{{ route('donor.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
+                @endif
+                <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <a href="{{ route('member.jobs.index') }}" class="hover:text-indigo-600">Job Opportunities</a>
                 <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                 </svg>
                 <span class="text-gray-700">My Applications</span>
             </div>
-            <h1 class="text-2xl font-bold text-gray-900">My Job Applications</h1>
+            <h1 class="text-3xl font-bold text-gray-900 font-urbanist">My Job Applications</h1>
             <p class="text-gray-600 mt-2">Track your job applications and their status.</p>
         </div>
 
@@ -43,8 +61,8 @@
             <div class="border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors p-6">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-2">
-                            <h3 class="text-lg font-bold text-gray-900">{{ $application->job->title }}</h3>
+                        <div class="flex items-center gap-3 mb-2 flex-wrap">
+                            <h3 class="text-lg font-bold text-gray-900 font-urbanist">{{ $application->job->title }}</h3>
                             <span class="status-badge status-{{ $application->status }}">
                                 {{ ucfirst($application->status) }}
                             </span>
@@ -64,14 +82,14 @@
                     </div>
                     <div class="flex flex-col gap-2 md:text-right">
                         <a href="{{ route('member.jobs.show', $application->job->slug) }}" 
-                           class="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm">
+                           class="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium transition-colors">
                             View Job
                         </a>
                         @if($application->resume_path)
                         <a href="{{ asset('storage/' . $application->resume_path) }}" 
                            target="_blank"
-                           class="inline-flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">
-                            <i class="fas fa-download mr-2"></i> Resume
+                           class="inline-flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium transition-colors">
+                            <i class="fas fa-download mr-2"></i> Download Resume
                         </a>
                         @endif
                     </div>
@@ -84,10 +102,10 @@
                         <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                     </svg>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">No applications yet</h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-2 font-urbanist">No applications yet</h3>
                 <p class="text-gray-500 mb-6">Start exploring job opportunities and submit your first application.</p>
                 <a href="{{ route('member.jobs.index') }}" 
-                   class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                   class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium">
                     Browse Jobs
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
@@ -103,6 +121,16 @@
             {{ $applications->links() }}
         </div>
         @endif
+
+        <!-- Security Footer Note -->
+        <div class="flex items-center justify-center gap-3 mt-8 text-xs text-gray-400">
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>256-bit encrypted</span>
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>Powered by Paystack</span>
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>Secure transactions</span>
+        </div>
     </div>
 </div>
 @endsection

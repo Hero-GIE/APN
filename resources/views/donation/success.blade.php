@@ -1,5 +1,6 @@
 @extends('layouts.guest')
 
+@section('content')
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -461,19 +462,33 @@ h1, h2, h3, h4, .font-serif {
         <i class="fas fa-envelope-open-text"></i>
         <div class="info-content">
             <strong>Check your email</strong>
-            <p>We've sent your donation receipt and account login credentials to your email address. Use them to log in and manage your donations.</p>
+            <p>We've sent your donation receipt to your email address.</p>
         </div>
     </div>
 
     <!-- Actions -->
-    <a href="{{ route('donor.login') }}" class="btn-primary">
-        <span>Login to Dashboard</span>
-        <i class="fas fa-arrow-right"></i>
-    </a>
-    <a href="{{ url('/') }}" class="btn-secondary">
-        <i class="fas fa-home"></i>
-        <span>Return to Homepage</span>
-    </a>
+    @if(Auth::guard('donor')->check())
+        @php
+            $member = Auth::guard('donor')->user() ? \App\Models\Member::where('donor_id', Auth::guard('donor')->id())->first() : null;
+        @endphp
+        
+        @if($member && $member->status == 'active')
+            <a href="{{ route('member.dashboard') }}" class="btn-primary">
+                <span>Go to Member Dashboard</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        @else
+            <a href="{{ route('donor.dashboard') }}" class="btn-primary">
+                <span>Go to Donor Dashboard</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        @endif
+    @else
+        <a href="{{ route('donor.login') }}" class="btn-primary">
+            <span>Login to Dashboard</span>
+            <i class="fas fa-arrow-right"></i>
+        </a>
+    @endif
 
     <!-- Security Note -->
     <div class="security-note">
@@ -488,7 +503,6 @@ h1, h2, h3, h4, .font-serif {
 </div>
 
 <script>
-// Create floating particles
 function createParticles() {
     const scene = document.querySelector('.bg-scene');
     for (let i = 0; i < 20; i++) {

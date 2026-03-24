@@ -30,25 +30,39 @@
     .badge-orange { background: #fed7aa; color: #9a3412; }
     .badge-blue { background: #dbeafe; color: #1e40af; }
     .badge-purple { background: #ede9fe; color: #5b21b6; }
+    
+    /* Breadcrumb styles matching other pages */
+    .breadcrumb-link {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 0.95rem;
+    }
 </style>
 
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <!-- Breadcrumb -->
+        <!-- Breadcrumb - Updated to match other pages -->
         <div class="mb-6">
-            <div class="flex items-center text-sm text-gray-500 mb-2">
-                <a href="{{ route('member.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
+            <div class="flex items-center text-sm text-gray-500 mb-2 breadcrumb-link">
+                @php
+                    $donor = Auth::guard('donor')->user();
+                @endphp
+                @if($donor && \App\Models\Member::where('donor_id', $donor->id)->exists())
+                    <a href="{{ route('member.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
+                @else
+                    <a href="{{ route('donor.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
+                @endif
                 <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                 </svg>
-                <a href="{{ route('member.jobs.index') }}" class="hover:text-indigo-600">Jobs</a>
+                <a href="{{ route('member.jobs.index') }}" class="hover:text-indigo-600">Job Opportunities</a>
                 <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                 </svg>
                 <span class="text-gray-700">{{ $job->title }}</span>
             </div>
-            <h1 class="text-2xl font-bold text-gray-900">Job Details</h1>
+            <h1 class="text-3xl font-bold text-gray-900 font-urbanist">{{ $job->title }}</h1>
+            <p class="text-gray-600 mt-2">View job details and apply for this opportunity</p>
         </div>
 
         <!-- Main Job Card -->
@@ -56,7 +70,7 @@
             
             <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
                 <div>
-                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900">{{ $job->title }}</h2>
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 font-urbanist">{{ $job->title }}</h2>
                     <p class="text-gray-600 mt-2 text-lg">{{ $job->company }}</p>
                 </div>
                 @if($job->badge_type)
@@ -93,7 +107,7 @@
 
             <!-- Job Summary/Description -->
             <div class="mb-8">
-                <h3 class="text-lg font-bold text-gray-900 mb-4">Job Description</h3>
+                <h3 class="text-lg font-bold text-gray-900 mb-4 font-urbanist">Job Description</h3>
                 <div class="prose max-w-none text-gray-700 leading-relaxed">
                     {!! nl2br(e($job->description)) !!}
                 </div>
@@ -101,7 +115,7 @@
 
             <!-- Requirements Section -->
             <div class="mb-8">
-                <h3 class="text-lg font-bold text-gray-900 mb-4">Requirements</h3>
+                <h3 class="text-lg font-bold text-gray-900 mb-4 font-urbanist">Requirements</h3>
                 <div class="bg-gray-50 rounded-lg p-6">
                     <p class="text-gray-700">{{ $job->requirements }}</p>
                 </div>
@@ -110,7 +124,7 @@
             <!-- Benefits Section -->
             @if($job->benefits)
             <div class="mb-8">
-                <h3 class="text-lg font-bold text-gray-900 mb-4">Benefits</h3>
+                <h3 class="text-lg font-bold text-gray-900 mb-4 font-urbanist">Benefits</h3>
                 <div class="bg-gray-50 rounded-lg p-6">
                     <p class="text-gray-700">{{ $job->benefits }}</p>
                 </div>
@@ -171,12 +185,12 @@
         <!-- Similar Jobs Section -->
         @if(isset($similarJobs) && $similarJobs->count() > 0)
         <div class="mt-8">
-            <h3 class="text-xl font-bold text-gray-900 mb-4">Similar Opportunities</h3>
+            <h3 class="text-xl font-bold text-gray-900 mb-4 font-urbanist">Similar Opportunities</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 @foreach($similarJobs as $similar)
                 <a href="{{ route('member.jobs.show', $similar->slug) }}" 
                    class="block bg-white rounded-lg p-4 border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all">
-                    <h4 class="font-bold text-gray-900">{{ $similar->title }}</h4>
+                    <h4 class="font-bold text-gray-900 font-urbanist">{{ $similar->title }}</h4>
                     <p class="text-sm text-gray-600 mt-1">{{ $similar->company }} • {{ $similar->location }}</p>
                     <div class="flex items-center justify-between mt-3">
                         <span class="text-xs text-gray-500">{{ $similar->job_type }}</span>
@@ -188,6 +202,15 @@
         </div>
         @endif
 
+        <!-- Security Footer Note -->
+        <div class="flex items-center justify-center gap-3 mt-8 text-xs text-gray-400">
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>256-bit encrypted</span>
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>Powered by Paystack</span>
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>Secure transactions</span>
+        </div>
     </div>
 </div>
 @endsection

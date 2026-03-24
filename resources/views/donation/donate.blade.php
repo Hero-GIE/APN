@@ -189,6 +189,34 @@
 
 <div class="apn-layout animate-page-reveal">
 
+    <!-- Right Panel -->
+    <div class="right-panel">
+        <div class="absolute inset-0 bg-gradient-to-br from-[#0f172a]/60 via-[#1e1b4b]/45 to-[#2d1b4b]/30 z-[1]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(212,175,55,0.1),transparent_70%)] z-[2] pointer-events-none"></div>
+        <div class="absolute inset-0 opacity-8 z-[3] pointer-events-none animate-pattern"
+             style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\" opacity=\"0.1\"><path d=\"M20,20 L30,10 L40,20 L50,10 L60,20 L70,10 L80,20 L70,30 L80,40 L70,50 L80,60 L70,70 L80,80 L70,90 L60,80 L50,90 L40,80 L30,90 L20,80 L30,70 L20,60 L30,50 L20,40 L30,30 Z\" fill=\"%23D4AF37\"/><circle cx=\"50\" cy=\"50\" r=\"5\" fill=\"%233b82f6\"/></svg>')</div>
+        <div class="relative z-[4] px-8 md:px-14 py-12 text-white bg-gradient-to-t from-black/50 via-transparent to-transparent panel-text">
+            <div class="flex items-center gap-2 mb-3 text-xs font-semibold tracking-[3px] uppercase text-[#D4AF37]" style="font-family:'Urbanist',sans-serif;">
+                <span class="w-10 h-[2px] bg-gradient-to-r from-[#D4AF37] to-transparent"></span>
+                AFRICA PROSPERITY NETWORK
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold leading-[1.1] mb-4 drop-shadow-lg panel-heading" style="font-family:'Urbanist',sans-serif;">
+                Join the<br>
+                <span class="text-[#D4AF37] relative inline-block">
+                    Movement
+                    <span class="absolute bottom-1 left-0 w-full h-2 bg-[#D4AF37]/30 -z-[1]"></span>
+                </span><br>
+                for Prosperity
+            </h1>
+            <p class="text-sm leading-relaxed text-white/90 max-w-[420px] font-light panel-sub">
+                Choose to become a member to support Africa's economic integration and shared prosperity.
+            </p>
+        </div>
+    </div>
+
+
+
+
     <!-- Left Panel -->
     <div class="left-panel apn-scrollbar p-6 md:p-8 relative">
       <div class="login-btn-top absolute top-6 right-6 z-20">
@@ -389,31 +417,6 @@
     </p>
 </div>
 
-        </div>
-    </div>
-
-    <!-- Right Panel -->
-    <div class="right-panel">
-        <div class="absolute inset-0 bg-gradient-to-br from-[#0f172a]/60 via-[#1e1b4b]/45 to-[#2d1b4b]/30 z-[1]"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(212,175,55,0.1),transparent_70%)] z-[2] pointer-events-none"></div>
-        <div class="absolute inset-0 opacity-8 z-[3] pointer-events-none animate-pattern"
-             style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\" opacity=\"0.1\"><path d=\"M20,20 L30,10 L40,20 L50,10 L60,20 L70,10 L80,20 L70,30 L80,40 L70,50 L80,60 L70,70 L80,80 L70,90 L60,80 L50,90 L40,80 L30,90 L20,80 L30,70 L20,60 L30,50 L20,40 L30,30 Z\" fill=\"%23D4AF37\"/><circle cx=\"50\" cy=\"50\" r=\"5\" fill=\"%233b82f6\"/></svg>')</div>
-        <div class="relative z-[4] px-8 md:px-14 py-12 text-white bg-gradient-to-t from-black/50 via-transparent to-transparent panel-text">
-            <div class="flex items-center gap-2 mb-3 text-xs font-semibold tracking-[3px] uppercase text-[#D4AF37]" style="font-family:'Urbanist',sans-serif;">
-                <span class="w-10 h-[2px] bg-gradient-to-r from-[#D4AF37] to-transparent"></span>
-                AFRICA PROSPERITY NETWORK
-            </div>
-            <h1 class="text-4xl md:text-5xl font-extrabold leading-[1.1] mb-4 drop-shadow-lg panel-heading" style="font-family:'Urbanist',sans-serif;">
-                Join the<br>
-                <span class="text-[#D4AF37] relative inline-block">
-                    Movement
-                    <span class="absolute bottom-1 left-0 w-full h-2 bg-[#D4AF37]/30 -z-[1]"></span>
-                </span><br>
-                for Prosperity
-            </h1>
-            <p class="text-sm leading-relaxed text-white/90 max-w-[420px] font-light panel-sub">
-                Choose to become a member to support Africa's economic integration and shared prosperity.
-            </p>
         </div>
     </div>
 </div>

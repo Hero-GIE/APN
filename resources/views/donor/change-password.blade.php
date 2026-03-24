@@ -1,22 +1,80 @@
 @extends('layouts.guest')
 
 @section('content')
+<style>
+    body {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        background-color: #f9fafb;
+    }
+    h1, h2, h3, h4, h5, h6, .font-urbanist, button, .btn {
+        font-family: 'Urbanist', sans-serif;
+    }
+    
+    /* Breadcrumb styles matching other pages */
+    .breadcrumb-link {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 0.95rem;
+    }
+    
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .animate-spin {
+        animation: spin 1s linear infinite;
+    }
+    .border-green-500 {
+        border-color: #10b981 !important;
+    }
+    .bg-green-50 {
+        background-color: #f0fdf4 !important;
+    }
+    .border-red-500 {
+        border-color: #ef4444 !important;
+    }
+    .bg-red-50 {
+        background-color: #fef2f2 !important;
+    }
+    button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    /* Smooth transitions */
+    input, button, a {
+        transition: all 0.2s ease-in-out;
+    }
+    /* Focus styles */
+    input:focus {
+        outline: none;
+        ring: 2px solid #4f46e5;
+    }
+</style>
+
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Header with breadcrumb -->
+        <!-- Header with breadcrumb - Updated to match other pages -->
         <div class="mb-8">
-            <div class="flex items-center text-sm text-gray-500 mb-2">
-                <a href="{{ route('donor.dashboard') }}" class="hover:text-indigo-600 transition-colors">Dashboard</a>
+            <div class="flex items-center text-sm text-gray-500 mb-2 breadcrumb-link">
+                @php
+                    $donor = Auth::guard('donor')->user();
+                @endphp
+                @if($donor && \App\Models\Member::where('donor_id', $donor->id)->exists())
+                    <a href="{{ route('member.dashboard') }}" class="hover:text-indigo-600 transition-colors">Dashboard</a>
+                @else
+                    <a href="{{ route('donor.dashboard') }}" class="hover:text-indigo-600 transition-colors">Dashboard</a>
+                @endif
                 <svg class="w-4 h-4 mx-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                 </svg>
-                <a href="{{ route('donor.profile.show') }}" class="hover:text-indigo-600 transition-colors">Profile</a>
+                <a href="{{ route('donor.profile.show') }}" class="hover:text-indigo-600 transition-colors">My Profile</a>
                 <svg class="w-4 h-4 mx-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                 </svg>
                 <span class="text-gray-700 font-medium">Change Password</span>
             </div>
-            <h1 class="text-3xl font-bold text-gray-900">Change Password</h1>
+            <h1 class="text-3xl font-bold text-gray-900 font-urbanist">Change Password</h1>
             <p class="text-gray-600 mt-2">Update your password to keep your account secure.</p>
         </div>
 
@@ -47,7 +105,7 @@
         <!-- Change Password Form -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                <h2 class="text-lg font-semibold text-gray-800">Change Your Password</h2>
+                <h2 class="text-lg font-semibold text-gray-800 font-urbanist">Change Your Password</h2>
                 <p class="text-gray-500 text-sm mt-1">Fill in the form below to update your password</p>
             </div>
 
@@ -206,7 +264,7 @@
 
         <!-- Recent Activity -->
         <div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Account Activity</h3>
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 font-urbanist">Recent Account Activity</h3>
             <div class="space-y-3">
                 <div class="flex items-center text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
                     <div class="bg-blue-100 rounded-full p-1 mr-3">
@@ -226,43 +284,18 @@
                 </div>
             </div>
         </div>
+
+        <!-- Security Footer Note -->
+        <div class="flex items-center justify-center gap-3 mt-8 text-xs text-gray-400">
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>256-bit encrypted</span>
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>Powered by Paystack</span>
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>Secure transactions</span>
+        </div>
     </div>
 </div>
-
-<style>
-    @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-    .animate-spin {
-        animation: spin 1s linear infinite;
-    }
-    .border-green-500 {
-        border-color: #10b981 !important;
-    }
-    .bg-green-50 {
-        background-color: #f0fdf4 !important;
-    }
-    .border-red-500 {
-        border-color: #ef4444 !important;
-    }
-    .bg-red-50 {
-        background-color: #fef2f2 !important;
-    }
-    button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-    /* Smooth transitions */
-    input, button, a {
-        transition: all 0.2s ease-in-out;
-    }
-    /* Focus styles */
-    input:focus {
-        outline: none;
-        ring: 2px solid #4f46e5;
-    }
-</style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -308,7 +341,6 @@
                 newPassword.classList.remove('border-red-500', 'bg-red-50', 'border-green-500', 'bg-green-50');
             }
             
-            // Style confirm password field
             if (confirmVal.length > 0) {
                 if (!doMatch) {
                     confirmPassword.classList.add('border-red-500', 'bg-red-50');
@@ -322,7 +354,6 @@
             }
         }
 
-        // Update the match message based on validation
         function updateMatchMessage(isValidLength, doMatch, newVal, confirmVal) {
             if (newVal.length === 0 && confirmVal.length === 0) {
                 matchMessage.innerHTML = '<span class="text-gray-600">Use a strong password with at least 8 characters</span>';
@@ -376,25 +407,18 @@
                 
                 if (newVal !== confirmVal) {
                     e.preventDefault();
-                    
                     matchMessage.innerHTML = '<span class="text-red-600 font-medium">❌ Passwords do not match! Please check both fields.</span>';
                     newPassword.classList.add('border-red-500', 'bg-red-50');
                     confirmPassword.classList.add('border-red-500', 'bg-red-50');
-                    
                     matchMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    
                     return;
                 }
                 
                 if (newVal.length < 8) {
                     e.preventDefault();
-                    
                     matchMessage.innerHTML = '<span class="text-red-600 font-medium">❌ Password must be at least 8 characters long.</span>';
-                    
                     newPassword.classList.add('border-red-500', 'bg-red-50');
-                
                     matchMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    
                     return;
                 }
                 
@@ -414,6 +438,7 @@
                 console.log('Password change form submitting...');
             });
         }
+        
         if (currentPassword) {
             currentPassword.addEventListener('focus', function() {
                 this.classList.remove('border-red-500', 'bg-red-50');

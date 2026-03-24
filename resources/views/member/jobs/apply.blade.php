@@ -11,6 +11,13 @@
     h1, h2, h3, h4, h5, h6, .font-urbanist, button, .btn {
         font-family: 'Urbanist', sans-serif;
     }
+    
+    /* Breadcrumb styling matching other pages */
+    .breadcrumb-link {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 0.95rem;
+    }
+    
     .application-card {
         background: white;
         border-radius: 1rem;
@@ -107,20 +114,32 @@
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <!-- Breadcrumb -->
-        <div class="mb-6">
-            <div class="flex items-center text-sm text-gray-500 mb-2">
-                <a href="{{ route('member.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
+        <!-- Breadcrumb - Updated to match other pages -->
+        <div class="mb-8">
+            <div class="flex items-center text-sm text-gray-500 mb-2 breadcrumb-link">
+                @php
+                    $donor = Auth::guard('donor')->user();
+                @endphp
+                @if($donor && \App\Models\Member::where('donor_id', $donor->id)->exists())
+                    <a href="{{ route('member.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
+                @else
+                    <a href="{{ route('donor.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
+                @endif
                 <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                 </svg>
-                <a href="{{ route('member.jobs.index') }}" class="hover:text-indigo-600">Jobs</a>
+                <a href="{{ route('member.jobs.index') }}" class="hover:text-indigo-600">Job Opportunities</a>
                 <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                 </svg>
-                <span class="text-gray-700">Apply for {{ $job->title }}</span>
+                <a href="{{ route('member.jobs.show', $job->slug) }}" class="hover:text-indigo-600">{{ $job->title }}</a>
+                <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700">Apply</span>
             </div>
-            <h1 class="text-2xl font-bold text-gray-900">Submit Your Application</h1>
+            <h1 class="text-3xl font-bold text-gray-900 font-urbanist">Submit Your Application</h1>
+            <p class="text-gray-600 mt-2">Complete the form below to apply for {{ $job->title }}</p>
         </div>
 
         @if(isset($hasApplied) && $hasApplied)
@@ -130,15 +149,15 @@
                         <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
-                <h2 class="text-xl font-bold text-gray-900 mb-2">You've Already Applied!</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-2 font-urbanist">You've Already Applied!</h2>
                 <p class="text-gray-600 mb-6">Your application for {{ $job->title }} at {{ $job->company }} has been received.</p>
                 <div class="flex justify-center gap-4">
                     <a href="{{ route('member.jobs.show', $job->slug) }}" 
-                       class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                       class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium">
                         Back to Job
                     </a>
                     <a href="{{ route('member.jobs.applications') }}" 
-                       class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                       class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium">
                         View My Applications
                     </a>
                 </div>
@@ -148,7 +167,7 @@
             <div class="bg-white rounded-lg p-6 mb-6 border border-gray-200">
                 <div class="flex items-start justify-between">
                     <div>
-                        <h2 class="text-xl font-bold text-gray-900">{{ $job->title }}</h2>
+                        <h2 class="text-xl font-bold text-gray-900 font-urbanist">{{ $job->title }}</h2>
                         <p class="text-gray-600 mt-1">{{ $job->company }} • {{ $job->location }}</p>
                     </div>
                     <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">
@@ -261,11 +280,20 @@
                 </form>
             </div>
         @endif
+
+        <!-- Security Footer Note -->
+        <div class="flex items-center justify-center gap-3 mt-8 text-xs text-gray-400">
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>256-bit encrypted</span>
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>Powered by Paystack</span>
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>Secure transactions</span>
+        </div>
     </div>
 </div>
 
 <script>
-
 function validateFile(input) {
     const file = input.files[0];
     const area = document.getElementById('resumeUploadArea');
@@ -280,19 +308,13 @@ function validateFile(input) {
     errorMessage.classList.add('hidden');
     
     if (file) {
-
         const maxSize = 5 * 1024 * 1024; 
         
         if (file.size > maxSize) {
-            // Show error message
             area.classList.add('has-error');
             errorText.textContent = `File is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximum size is 5MB.`;
             errorMessage.classList.remove('hidden');
-            
-            // Clear file input
             input.value = '';
-            
-            // Reset UI
             area.classList.remove('has-file');
             icon.className = 'fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3';
             uploadText.innerHTML = 'Drag & drop your resume here or <span class="text-indigo-600 font-semibold">browse</span>';
@@ -301,7 +323,6 @@ function validateFile(input) {
             return false;
         }
         
-        // Check file type
         const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
         const fileExtension = file.name.split('.').pop().toLowerCase();
         const validExtensions = ['pdf', 'doc', 'docx'];
@@ -310,9 +331,7 @@ function validateFile(input) {
             area.classList.add('has-error');
             errorText.textContent = 'Invalid file type. Please upload PDF, DOC, or DOCX.';
             errorMessage.classList.remove('hidden');
-            
             input.value = '';
-            
             area.classList.remove('has-file');
             icon.className = 'fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3';
             uploadText.innerHTML = 'Drag & drop your resume here or <span class="text-indigo-600 font-semibold">browse</span>';
@@ -320,6 +339,7 @@ function validateFile(input) {
             fileInfo.classList.add('hidden');
             return false;
         }
+        
         area.classList.remove('has-error');
         area.classList.add('has-file');
         icon.className = 'fas fa-check-circle text-4xl text-green-500 mb-3';
@@ -341,7 +361,6 @@ function validateFile(input) {
     }
 }
 
-// Form validation before submit
 function validateForm(event) {
     event.preventDefault();
     
@@ -357,11 +376,9 @@ function validateForm(event) {
         return false;
     }
     
-    // Show loading state
     submitBtn.disabled = true;
     submitText.classList.add('hidden');
     submitSpinner.classList.remove('hidden');
-
     loadingOverlay.classList.add('active');
     
     form.submit();
@@ -369,7 +386,6 @@ function validateForm(event) {
     return true;
 }
 
-// Drag and drop functionality
 const dropZone = document.getElementById('resumeUploadArea');
 if (dropZone) {
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {

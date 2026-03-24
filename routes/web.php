@@ -15,10 +15,8 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\FilterController;
 use App\Http\Controllers\JobApplicationController;
-
-
-
-
+use App\Http\Controllers\QuizController;
+use App\Http\Controllers\WordSearchController;
 
 Route::get('/', function () {
     return view('donation.donate');
@@ -48,7 +46,6 @@ Route::get('/member/success', function (Request $request) {
 Route::post('/donation/initialize', [DonationController::class, 'initialize'])->name('donation.initialize');
 
 //petition filtered image
-Route::post('/filter/apply', [FilterController::class, 'applyFilter'])->name('filter.apply');
 Route::post('/filter/apply', [FilterController::class, 'applyFilter'])->name('filter.apply');
 Route::get('/filter/images', [FilterController::class, 'getUserImages'])->name('filter.images');
 Route::get('/filter/download/{id}', [FilterController::class, 'downloadImage'])->name('filter.download');
@@ -120,7 +117,7 @@ Route::middleware(['auth:donor', 'member.active'])->prefix('member')->name('memb
     Route::get('/download/{id}', [MagazineController::class, 'download'])->name('download');
     Route::get('/view/{id}', [MagazineController::class, 'view'])->name('view');
 
-       // News routes
+    // News routes
     Route::get('/news', [NewsController::class, 'index'])->name('news.index');
     Route::get('/news/{slug}', [NewsController::class, 'show'])->name('news.show');
     
@@ -145,6 +142,7 @@ Route::prefix('badge')->name('member.badge.')->group(function () {
     Route::get('verify/{token}', [MemberBadgeController::class, 'verify'])->name('verify');
 });
 
+// ===== PUZZLES ROUTES (Combined with Quiz and Word Search)
 Route::prefix('puzzles')->name('puzzles.')->group(function () {
     // Public routes
     Route::get('/', [PuzzleController::class, 'hub'])->name('hub');
@@ -155,13 +153,52 @@ Route::prefix('puzzles')->name('puzzles.')->group(function () {
     
     // Protected routes
     Route::middleware(['auth:donor'])->group(function () {
-        Route::get('/{slug}/start', [PuzzleController::class, 'start'])->name('start');
+  Route::match(['GET', 'POST'], '/{slug}/start', [PuzzleController::class, 'start'])->name('start');
         Route::get('/play/{attempt}', [PuzzleController::class, 'play'])->name('play');
         Route::post('/submit/{attempt}', [PuzzleController::class, 'submit'])->name('submit');
         Route::get('/results/{attempt}', [PuzzleController::class, 'results'])->name('results');
         Route::post('/{slug}/rate', [PuzzleController::class, 'rate'])->name('rate');
         Route::post('/{slug}/comment', [PuzzleController::class, 'comment'])->name('comment');
         Route::get('/user/stats', [PuzzleController::class, 'getUserStats'])->name('user.stats');
+    });
+});
+
+// Quiz Routes
+Route::prefix('quiz')->name('quiz.')->group(function () {
+    Route::get('/', [PuzzleController::class, 'quizIndex'])->name('index');
+    Route::get('/{slug}', [PuzzleController::class, 'quizShow'])->name('show');
+    
+    Route::middleware(['auth:donor'])->group(function () {
+        Route::match(['GET', 'POST'], '/{slug}/start', [PuzzleController::class, 'quizStart'])->name('start');
+        Route::get('/play/{attempt}', [PuzzleController::class, 'quizPlay'])->name('play');
+        Route::post('/submit/{attempt}', [PuzzleController::class, 'submit'])->name('submit');
+        Route::get('/results/{attempt}', [PuzzleController::class, 'results'])->name('results');
+    });
+});
+
+// // Word Search Routes
+// Route::prefix('wordsearch')->name('wordsearch.')->group(function () {
+//     Route::get('/', [PuzzleController::class, 'wordsearchIndex'])->name('index');
+//     Route::get('/{slug}', [PuzzleController::class, 'wordsearchShow'])->name('show');
+    
+//     Route::middleware(['auth:donor'])->group(function () {
+//         Route::match(['GET', 'POST'], '/{slug}/start', [PuzzleController::class, 'wordsearchStart'])->name('start');
+//         Route::get('/play/{attempt}', [PuzzleController::class, 'wordsearchPlay'])->name('play');
+//         Route::post('/submit/{attempt}', [PuzzleController::class, 'submit'])->name('submit');
+//         Route::get('/results/{attempt}', [PuzzleController::class, 'results'])->name('results');
+//     });
+// });
+
+// Word Search Routes
+Route::prefix('wordsearch')->name('wordsearch.')->group(function () {
+    Route::get('/', [WordSearchController::class, 'index'])->name('index');
+    Route::get('/{slug}', [WordSearchController::class, 'show'])->name('show');
+    
+    Route::middleware(['auth:donor'])->group(function () {
+        Route::post('/{slug}/start', [WordSearchController::class, 'start'])->name('start');
+        Route::get('/play/{attempt}', [WordSearchController::class, 'play'])->name('play');
+        Route::post('/submit/{attempt}', [WordSearchController::class, 'submitWord'])->name('submit');
+        Route::get('/results/{attempt}', [WordSearchController::class, 'results'])->name('results');
     });
 });
 

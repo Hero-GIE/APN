@@ -85,9 +85,6 @@ SupportTicket
 
 
 
-
-
-
 Run a specific seeder
 php artisan db:seed --class=NewsSeeder
 
@@ -98,3 +95,12 @@ php artisan db:seed
 
 ✅ Run migrations + seed together
 php artisan migrate --seed
+
+
+
+# This is franklinadams773@gmail password in the APN database
+> bcrypt('password123');
+= "$2y$12$6ES1PaVfEChUWquzmB..YON3GzW3W69dGmTVYziLjV3UJpDOLQS3u"
+
+
+

@@ -89,6 +89,36 @@
 
 <div class="apn-layout animate-page-reveal">
 
+    <!-- Right Panel -->
+    <div class="right-panel">
+
+        <div class="absolute inset-0 bg-gradient-to-br from-[#0f172a]/60 via-[#1e1b4b]/50 to-[#2d1b4b]/35 z-[1]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(212,175,55,0.15),transparent_60%)] z-[2] pointer-events-none"></div>
+        <div class="absolute inset-0 opacity-10 z-[3] pointer-events-none animate-pattern"
+             style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><path d=\"M20,20 L30,10 L40,20 L50,10 L60,20 L70,10 L80,20 L70,30 L80,40 L70,50 L80,60 L70,70 L80,80 L70,90 L60,80 L50,90 L40,80 L30,90 L20,80 L30,70 L20,60 L30,50 L20,40 L30,30 Z\" fill=\"%23D4AF37\" opacity=\"0.15\"/><circle cx=\"50\" cy=\"50\" r=\"5\" fill=\"%234f46e5\" opacity=\"0.15\"/></svg>'); background-size:100px 100px; background-repeat:repeat;"></div>
+        <div class="absolute z-[3] w-56 h-56 rounded-full bg-[#D4AF37]/5 blur-3xl top-16 left-8 animate-float pointer-events-none"></div>
+        <div class="absolute z-[3] w-44 h-44 rounded-full bg-[#4f46e5]/5 blur-3xl bottom-32 right-8 animate-float pointer-events-none" style="animation-delay:2s;"></div>
+
+        <div class="relative z-[4] px-8 md:px-14 py-12 text-white bg-gradient-to-t from-black/60 via-black/25 to-transparent panel-text">
+            <div class="flex items-center gap-3 mb-4 text-xs font-semibold tracking-[3px] uppercase" style="font-family:'Urbanist',sans-serif;">
+                <span class="w-10 h-[2px] bg-gradient-to-r from-[#D4AF37] to-transparent"></span>
+                <span class="text-[#D4AF37] animate-pulse-slow">WELCOME BACK</span>
+                <span class="w-10 h-[2px] bg-gradient-to-l from-[#D4AF37] to-transparent"></span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold leading-[1.1] mb-4 drop-shadow-lg panel-heading" style="font-family:'Urbanist',sans-serif;">
+                Reconnect with<br>
+                <span class="text-[#D4AF37] relative inline-block">
+                    Africa's Future
+                    <span class="absolute bottom-2 left-0 w-full h-3 bg-[#D4AF37]/25 -z-[1] blur-sm"></span>
+                </span>
+            </h1>
+            <p class="text-sm leading-relaxed text-white/90 max-w-[400px] font-light panel-sub">
+                Access your membership dashboard, manage your contributions, and stay connected with the Africa Prosperity Network community.
+            </p>
+        </div>
+
+    </div>
+
     <!-- Left Panel  -->
     <div class="left-panel apn-scrollbar p-6 md:p-8 relative">
 
@@ -198,34 +228,6 @@
 
         <div class="absolute bottom-5 left-0 right-0 text-center text-xs text-[#94a3b8] z-20">
             <p>© {{ date('Y') }} Africa Prosperity Network. All rights reserved.</p>
-        </div>
-    </div>
-
-    <!-- Right Panel -->
-    <div class="right-panel">
-        <div class="absolute inset-0 bg-gradient-to-br from-[#0f172a]/60 via-[#1e1b4b]/50 to-[#2d1b4b]/35 z-[1]"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(212,175,55,0.15),transparent_60%)] z-[2] pointer-events-none"></div>
-        <div class="absolute inset-0 opacity-10 z-[3] pointer-events-none animate-pattern"
-             style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><path d=\"M20,20 L30,10 L40,20 L50,10 L60,20 L70,10 L80,20 L70,30 L80,40 L70,50 L80,60 L70,70 L80,80 L70,90 L60,80 L50,90 L40,80 L30,90 L20,80 L30,70 L20,60 L30,50 L20,40 L30,30 Z\" fill=\"%23D4AF37\" opacity=\"0.15\"/><circle cx=\"50\" cy=\"50\" r=\"5\" fill=\"%234f46e5\" opacity=\"0.15\"/></svg>'); background-size:100px 100px; background-repeat:repeat;"></div>
-        <div class="absolute z-[3] w-56 h-56 rounded-full bg-[#D4AF37]/5 blur-3xl top-16 left-8 animate-float pointer-events-none"></div>
-        <div class="absolute z-[3] w-44 h-44 rounded-full bg-[#4f46e5]/5 blur-3xl bottom-32 right-8 animate-float pointer-events-none" style="animation-delay:2s;"></div>
-
-        <div class="relative z-[4] px-8 md:px-14 py-12 text-white bg-gradient-to-t from-black/60 via-black/25 to-transparent panel-text">
-            <div class="flex items-center gap-3 mb-4 text-xs font-semibold tracking-[3px] uppercase" style="font-family:'Urbanist',sans-serif;">
-                <span class="w-10 h-[2px] bg-gradient-to-r from-[#D4AF37] to-transparent"></span>
-                <span class="text-[#D4AF37] animate-pulse-slow">WELCOME BACK</span>
-                <span class="w-10 h-[2px] bg-gradient-to-l from-[#D4AF37] to-transparent"></span>
-            </div>
-            <h1 class="text-4xl md:text-5xl font-extrabold leading-[1.1] mb-4 drop-shadow-lg panel-heading" style="font-family:'Urbanist',sans-serif;">
-                Reconnect with<br>
-                <span class="text-[#D4AF37] relative inline-block">
-                    Africa's Future
-                    <span class="absolute bottom-2 left-0 w-full h-3 bg-[#D4AF37]/25 -z-[1] blur-sm"></span>
-                </span>
-            </h1>
-            <p class="text-sm leading-relaxed text-white/90 max-w-[400px] font-light panel-sub">
-                Access your membership dashboard, manage your contributions, and stay connected with the Africa Prosperity Network community.
-            </p>
         </div>
     </div>
 </div>

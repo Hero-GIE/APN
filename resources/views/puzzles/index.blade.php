@@ -4,11 +4,14 @@
 <style>
     body {
         font-family: 'Open Sans', sans-serif;
-        font-size: 16px;
-        line-height: 1.6;
+        background-color: #f9fafb;
     }
     h1, h2, h3, h4, h5, h6 {
         font-family: 'Urbanist', sans-serif;
+    }
+    .breadcrumb-link {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 0.95rem;
     }
     .puzzle-card {
         transition: all 0.3s ease;
@@ -17,10 +20,61 @@
         overflow: hidden;
         background: white;
         height: 100%;
+        display: flex;
+        flex-direction: column;
     }
     .puzzle-card:hover {
         transform: translateY(-4px);
         box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+    }
+    .image-container {
+        position: relative;
+        overflow: hidden;
+        height: 200px;
+        flex-shrink: 0;
+    }
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.1) 0%,
+            rgba(0, 0, 0, 0.3) 50%,
+            rgba(0, 0, 0, 0.6) 100%
+        );
+        z-index: 1;
+    }
+    .card-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    .puzzle-card:hover .card-image {
+        transform: scale(1.1);
+    }
+    .card-content {
+        padding: 1.25rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .card-footer {
+        margin-top: auto;
+        padding-top: 0.75rem;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .difficulty-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
     }
     .filter-active {
         background: #3b82f6;
@@ -31,16 +85,27 @@
 
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Header -->
+        <!-- Breadcrumb -->
         <div class="mb-8">
-            <div class="flex items-center text-sm text-gray-500 mb-2">
-                <a href="{{ route('puzzles.hub') }}" class="hover:text-indigo-600">Puzzles</a>
+            <div class="flex items-center text-sm text-gray-500 mb-2 breadcrumb-link">
+                @php
+                    $donor = Auth::guard('donor')->user();
+                @endphp
+                @if($donor && \App\Models\Member::where('donor_id', $donor->id)->exists())
+                    <a href="{{ route('member.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
+                @else
+                    <a href="{{ route('donor.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
+                @endif
+                <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <a href="{{ route('puzzles.hub') }}" class="hover:text-indigo-600">Games & Puzzles</a>
                 <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                 </svg>
                 <span class="text-gray-700">All Puzzles</span>
             </div>
-            <h1 class="text-3xl font-bold text-gray-900">All Puzzles</h1>
+            <h1 class="text-3xl font-bold text-gray-900 font-urbanist">All Puzzles</h1>
             <p class="text-gray-600 mt-2">Browse and filter our collection of African puzzles and games.</p>
         </div>
 
@@ -107,7 +172,6 @@
                                placeholder="Search puzzles..." 
                                class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
-
                     <!-- Sort and Actions -->
                     <div class="flex space-x-3">
                         <select name="sort" class="rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
@@ -133,18 +197,21 @@
 
         <!-- Results Count -->
         <div class="mb-4">
-            <p class="text-sm text-gray-600">Showing {{ $puzzles->firstItem() ?? 0 }} - {{ $puzzles->lastItem() ?? 0 }} of {{ $puzzles->total() }} puzzles</p>
+            <p class="text-sm text-gray-600">Showing {{ $paginated->firstItem() ?? 0 }} - {{ $paginated->lastItem() ?? 0 }} of {{ $paginated->total() }} puzzles</p>
         </div>
 
         <!-- Puzzles Grid -->
-        @if($puzzles->count() > 0)
+        @if($paginated->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($puzzles as $puzzle)
+            @foreach($paginated as $puzzle)
             <div class="puzzle-card">
                 @if($puzzle->featured_image)
-                <img src="{{ $puzzle->featured_image }}" class="w-full h-48 object-cover">
+                <div class="image-container">
+                    <img src="{{ $puzzle->featured_image }}" class="card-image" alt="{{ $puzzle->title }}">
+                    <div class="image-overlay"></div>
+                </div>
                 @endif
-                <div class="p-6">
+                <div class="card-content">
                     <div class="flex justify-between items-start mb-3">
                         <div>
                             <span class="difficulty-badge 
@@ -163,30 +230,60 @@
                         @endif
                     </div>
 
-                    <h3 class="text-lg font-bold text-gray-900 mb-2">{{ $puzzle->title }}</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 font-urbanist">{{ $puzzle->title }}</h3>
                     
                     @if($puzzle->category)
                     <p class="text-xs text-indigo-600 mb-2">{{ $puzzle->category->name }}</p>
                     @endif
                     
-                    <p class="text-sm text-gray-600 mb-4">{{ Str::limit($puzzle->short_description, 100) }}</p>
+                    <p class="text-sm text-gray-600 mb-4">{{ Str::limit($puzzle->short_description ?? $puzzle->description, 100) }}</p>
 
                     <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
-                        <span><i class="far fa-question-circle mr-1"></i> {{ $puzzle->questions_count ?? 0 }} questions</span>
+                        @if(isset($puzzle->puzzle_type) && $puzzle->puzzle_type == 'wordsearch')
+                            <span><i class="fas fa-search mr-1"></i> {{ $puzzle->questions_count }} words</span>
+                        @elseif($puzzle->type == 'flag_match')
+                            <span><i class="fas fa-flag mr-1"></i> {{ $puzzle->questions_count ?? 0 }} flags</span>
+                        @else
+                            <span><i class="far fa-question-circle mr-1"></i> {{ $puzzle->questions_count ?? 0 }} questions</span>
+                        @endif
                         <span><i class="fas fa-star mr-1 text-yellow-400"></i> {{ number_format($puzzle->average_rating, 1) }} ({{ $puzzle->total_ratings }})</span>
                         <span><i class="fas fa-play mr-1"></i> {{ $puzzle->play_count }}</span>
                     </div>
 
                     <div class="flex space-x-3">
-                        <a href="{{ route('puzzles.show', $puzzle->slug) }}" 
-                           class="flex-1 text-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium">
-                            View Details
-                        </a>
-                        @if($puzzle->can_play)
-                        <a href="{{ route('puzzles.start', $puzzle->slug) }}" 
-                           class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">
-                            Play
-                        </a>
+                        @if(isset($puzzle->puzzle_type) && $puzzle->puzzle_type == 'wordsearch')
+                            <a href="{{ route('wordsearch.show', $puzzle->slug) }}" 
+                               class="flex-1 text-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium">
+                                View Details
+                            </a>
+                            @if($puzzle->can_play ?? true)
+                            <a href="{{ route('wordsearch.start', $puzzle->slug) }}" 
+                               class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">
+                                Play
+                            </a>
+                            @endif
+                        @elseif($puzzle->type == 'quiz')
+                            <a href="{{ route('quiz.show', $puzzle->slug) }}" 
+                               class="flex-1 text-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium">
+                                View Details
+                            </a>
+                            @if($puzzle->can_play)
+                            <a href="{{ route('quiz.start', $puzzle->slug) }}" 
+                               class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">
+                                Play
+                            </a>
+                            @endif
+                        @else
+                            <a href="{{ route('puzzles.show', $puzzle->slug) }}" 
+                               class="flex-1 text-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium">
+                                View Details
+                            </a>
+                            @if($puzzle->can_play)
+                            <a href="{{ route('puzzles.start', $puzzle->slug) }}" 
+                               class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">
+                                Play
+                            </a>
+                            @endif
                         @endif
                     </div>
                 </div>
@@ -196,17 +293,27 @@
 
         <!-- Pagination -->
         <div class="mt-8">
-            {{ $puzzles->links() }}
+            {{ $paginated->links() }}
         </div>
         @else
         <div class="bg-white rounded-lg shadow p-12 text-center">
             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
             </svg>
-            <h3 class="mt-4 text-lg font-medium text-gray-900">No puzzles found</h3>
+            <h3 class="mt-4 text-lg font-medium text-gray-900 font-urbanist">No puzzles found</h3>
             <p class="mt-2 text-gray-500">Try adjusting your filters or check back later for new puzzles.</p>
         </div>
         @endif
+
+        {{-- <!-- Security Footer Note -->
+        <div class="flex items-center justify-center gap-3 mt-8 text-xs text-gray-400">
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>256-bit encrypted</span>
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>Powered by Paystack</span>
+            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
+            <span>Secure transactions</span>
+        </div> --}}
     </div>
 </div>
 

@@ -408,6 +408,10 @@
     display: flex;
     gap: 0.5rem;
 }
+
+.absolute.right-0.mt-2.w-48 {
+    z-index: 9999 !important;
+}
 .carousel-thumb {
     width: 48px; height: 32px;
     border-radius: 6px;
@@ -865,6 +869,8 @@
         font-size: 0.8rem;
         margin-bottom: 0.75rem;
     }
+
+    
     
     .carousel-meta {
         flex-wrap: wrap;
@@ -1000,11 +1006,59 @@
     }
 }   
 
-
     th.text-xs.font-medium {
         font-size: 0.8rem !important;
         letter-spacing: 0.03em;
     }
+
+    /* Game Cards Enhancement */
+.group {
+    position: relative;
+}
+
+/* Smooth background zoom on hover */
+.group:hover .absolute.inset-0.bg-cover {
+    transform: scale(1.1);
+}
+
+/* Optional: Add a subtle shine effect on hover */
+.group::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.5s ease;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.group:hover::before {
+    left: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .group .p-8 {
+        padding: 1.5rem;
+    }
+    
+    .group .w-20.h-20 {
+        width: 4rem;
+        height: 4rem;
+    }
+    
+    .group h3 {
+        font-size: 1.25rem;
+    }
+    
+    .group p {
+        font-size: 0.875rem;
+        margin-bottom: 0.75rem;
+    }
+}
     
     /* Status badges */
     .px-2.py-1.inline-flex.text-xs {
@@ -1106,7 +1160,11 @@
     .benefit-text small {
         font-size: 0.8rem;
     }
-    
+
+    [x-cloak] { display: none !important; }
+.tab-content { display: none; }
+.tab-content[x-cloak] { display: none; }
+
     /* Tab styles */
     .dashboard-tabs {
         border-bottom: 2px solid #e5e7eb;
@@ -1227,11 +1285,11 @@
             </div>
             <div class="flex items-center space-x-3">
                 <!-- User Dropdown Menu -->
-                <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" class="flex items-center space-x-3 focus:outline-none">
-                      <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden flex-shrink-0" id="navAvatar">
-                      @if(isset($latestFilteredImage) && $latestFilteredImage)
-                     <img src="{{ url('storage/' . $latestFilteredImage->filtered_image) }}"
+            <div class="relative" x-data="{ open: false }">
+    <button @click="open = !open" class="flex items-center space-x-3 focus:outline-none">
+      <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden flex-shrink-0" id="navAvatar">
+      @if(isset($latestFilteredImage) && $latestFilteredImage)
+     <img src="{{ url('storage/' . $latestFilteredImage->filtered_image) }}"
              alt="{{ $donor->firstname }}"
              class="w-full h-full object-cover rounded-full">
                   @else
@@ -1245,7 +1303,16 @@
                             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
-                    <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                        <div x-show="open"
+                             x-cloak
+                             x-transition:enter="transition ease-out duration-100"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             @click.away="open = false"
+                             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-[9999]">
                         <a href="{{ route('member.profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
                         <a href="{{ route('member.benefits') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Member Benefits</a>
                         <a href="{{ route('member.payments') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Payment History</a>
@@ -1263,7 +1330,7 @@
             </div>
         </div>
 
-      <!-- Static Donation Banner - Always Visible -->
+      <!-- Static Donation Banner  -->
 <div class="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 sm:p-5 md:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
     <div class="flex items-start sm:items-center w-full sm:w-auto">
         <div class="bg-blue-100 rounded-full p-2 mr-3 flex-shrink-0">
@@ -1273,12 +1340,12 @@
         </div>
         <div class="flex-1">
             <p class="text-sm sm:text-base text-blue-800">
-                <span class="font-medium block sm:inline">Want to make an additional donation?</span> 
-                <span class="text-xs sm:text-sm block sm:inline sm:ml-1">Your support helps us expand our impact across Africa.</span>
+                <span class="font-lg block sm:inline">Want to make an additional donation?</span> 
+                <span class="font-lg sm:text-sm block sm:inline sm:ml-1">Your support helps us expand our impact across Africa.</span>
             </p>
         </div>
     </div>
-    <button onclick="openDonationModal()" class="w-full sm:w-auto text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline flex items-center justify-center sm:justify-start px-4 py-2 sm:px-0 sm:py-0 bg-blue-50 sm:bg-transparent rounded-lg sm:rounded-none">
+    <button onclick="openDonationModal()" class="w-full sm:w-auto text-md font-medium text-blue-600 hover:text-blue-700 hover:underline flex items-center justify-center sm:justify-start px-4 py-2 sm:px-0 sm:py-0 bg-blue-50 sm:bg-transparent rounded-lg sm:rounded-none">
         Donate Now
         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -1287,551 +1354,553 @@
 </div>
 
 
-{{-- ══════════════════════════════════════════════════════════
-     CAROUSEL — drop-in replacement for the entire
-     <!-- Featured Content Carousel --> block
-     ══════════════════════════════════════════════════════════ --}}
-
-<div class="featured-carousel mb-6 md:mb-8">
-    <div class="carousel-container">
-
-        {{-- Kente geometric pattern layer --}}
-        <div class="carousel-kente-pattern"></div>
-
-        {{-- Slide counter --}}
-        <div class="carousel-counter">
-            <span class="current" id="carouselCurrent">01</span>
-            <span> / </span>
-            <span id="carouselTotal">01</span>
-        </div>
-
-        @php
-            $featuredItems = collect();
-
-            $featuredNews = $news->where('is_featured', true)->take(2);
-            foreach($featuredNews as $newsItem) {
-                $featuredItems->push([
-                    'type'           => 'news',
-                    'id'             => $newsItem->id,
-                    'title'          => $newsItem->title,
-                    'excerpt'        => $newsItem->excerpt,
-                    'image'          => $newsItem->featured_image ?? 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=1600&q=80',
-                    'category'       => $newsItem->category,
-                    'category_color' => $newsItem->category_color,
-                    'date'           => $newsItem->published_date->format('M d, Y'),
-                    'slug'           => $newsItem->slug,
-                    'route'          => route('member.news.show', $newsItem->slug),
-                    'icon'           => 'fa-newspaper'
-                ]);
-            }
-
-            $featuredEvents = $events->where('is_featured', true)->take(2);
-            foreach($featuredEvents as $event) {
-                $featuredItems->push([
-                    'type'           => 'event',
-                    'id'             => $event->id,
-                    'title'          => $event->title,
-                    'excerpt'        => $event->description,
-                    'image'          => $event->featured_image ?? 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80',
-                    'category'       => $event->category,
-                    'category_color' => $event->badge_color ?? 'indigo',
-                    'date'           => $event->start_date->format('M d, Y'),
-                    'location'       => $event->location,
-                    'slug'           => $event->slug,
-                    'route'          => route('member.events.show', $event->slug),
-                    'icon'           => 'fa-calendar-alt'
-                ]);
-            }
-
-            $featuredJobs = $jobs->where('is_featured', true)->take(2);
-            foreach($featuredJobs as $job) {
-                $featuredItems->push([
-                    'type'           => 'job',
-                    'id'             => $job->id,
-                    'title'          => $job->title,
-                    'excerpt'        => $job->summary,
-                    'image'          => $job->company_logo ?? 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80',
-                    'category'       => $job->category,
-                    'category_color' => $job->category_color,
-                    'date'           => $job->posted_date->format('M d, Y'),
-                    'company'        => $job->company,
-                    'location'       => $job->location,
-                    'slug'           => $job->slug,
-                    'route'          => route('member.jobs.show', $job->slug),
-                    'icon'           => 'fa-briefcase'
-                ]);
-            }
-
-            if ($featuredItems->isEmpty()) {
-                if ($news->isNotEmpty()) {
-                    $newsItem = $news->first();
-                    $featuredItems->push(['type'=>'news','id'=>$newsItem->id,'title'=>$newsItem->title,'excerpt'=>$newsItem->excerpt,'image'=>$newsItem->featured_image ?? 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=1600&q=80','category'=>$newsItem->category,'category_color'=>$newsItem->category_color,'date'=>$newsItem->published_date->format('M d, Y'),'slug'=>$newsItem->slug,'route'=>route('member.news.show', $newsItem->slug),'icon'=>'fa-newspaper']);
-                }
-                if ($events->isNotEmpty()) {
-                    $event = $events->first();
-                    $featuredItems->push(['type'=>'event','id'=>$event->id,'title'=>$event->title,'excerpt'=>$event->description,'image'=>$event->featured_image ?? 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80','category'=>$event->category,'category_color'=>$event->badge_color ?? 'indigo','date'=>$event->start_date->format('M d, Y'),'location'=>$event->location,'slug'=>$event->slug,'route'=>route('member.events.show', $event->slug),'icon'=>'fa-calendar-alt']);
-                }
-                if ($jobs->isNotEmpty()) {
-                    $job = $jobs->first();
-                    $featuredItems->push(['type'=>'job','id'=>$job->id,'title'=>$job->title,'excerpt'=>$job->summary,'image'=>$job->company_logo ?? 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80','category'=>$job->category,'category_color'=>$job->category_color,'date'=>$job->posted_date->format('M d, Y'),'company'=>$job->company,'location'=>$job->location,'slug'=>$job->slug,'route'=>route('member.jobs.show', $job->slug),'icon'=>'fa-briefcase']);
-                }
-            }
-        @endphp
-
-        {{-- Slides --}}
-        @foreach($featuredItems as $index => $item)
-        <div class="carousel-slide {{ $index === 0 ? 'active' : '' }}"
-             style="background-image: url('{{ $item['image'] }}');"
-             data-index="{{ $index }}">
-            <div class="carousel-overlay">
-                <div class="carousel-content">
-                    <div class="carousel-category">
-                        <i class="fas {{ $item['icon'] }}"></i>
-                        {{ $item['category'] }}
-                    </div>
-                    <h2 class="carousel-title">{{ $item['title'] }}</h2>
-                    <p class="carousel-excerpt">{{ Str::limit($item['excerpt'], 130) }}</p>
-                    <div class="carousel-meta">
-                        <span class="carousel-meta-item">
-                            <i class="far fa-calendar-alt"></i>
-                            {{ $item['date'] }}
-                        </span>
-                        @if(isset($item['location']))
-                        <span class="carousel-meta-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            {{ $item['location'] }}
-                        </span>
-                        @endif
-                        @if(isset($item['company']))
-                        <span class="carousel-meta-item">
-                            <i class="fas fa-building"></i>
-                            {{ $item['company'] }}
-                        </span>
-                        @endif
-                    </div>
-                    <a href="{{ $item['route'] }}#from-dashboard-{{ $item['type'] }}" class="carousel-button">
-                        Learn More
-                        <i class="fas fa-arrow-right text-xs"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-        @endforeach
-
-        {{-- Arrows --}}
-        <div class="carousel-arrow prev hidden sm:flex" onclick="prevSlide()">
-            <i class="fas fa-chevron-left"></i>
-        </div>
-        <div class="carousel-arrow next hidden sm:flex" onclick="nextSlide()">
-            <i class="fas fa-chevron-right"></i>
-        </div>
-
-        {{-- Dot navigation --}}
-        <div class="carousel-nav">
-            @foreach($featuredItems as $index => $item)
-            <div class="carousel-dot {{ $index === 0 ? 'active' : '' }}"
-                 onclick="goToSlide({{ $index }})"
-                 data-index="{{ $index }}"></div>
-            @endforeach
-        </div>
-
-        {{-- Thumbnail strip --}}
-        <div class="carousel-thumbs hidden md:flex">
-            @foreach($featuredItems as $index => $item)
-            <div class="carousel-thumb {{ $index === 0 ? 'active' : '' }}"
-                 style="background-image: url('{{ $item['image'] }}');"
-                 onclick="goToSlide({{ $index }})"
-                 data-thumb="{{ $index }}"></div>
-            @endforeach
-        </div>
-
-        {{-- Progress bar --}}
-        {{-- <div class="carousel-progress">
-            <div class="carousel-progress-fill" id="carouselProgressFill"></div>
-        </div> --}}
-
-    </div>
-</div>
-
-      <!-- Tab Navigation -->
-     <div class="dashboard-tabs">
-    <button class="tab-button active" onclick="switchTab('dashboard')" id="tab-dashboard">
-        <i class="fas fa-chart-pie mr-2"></i>Dashboard
-    </button>
-    <button class="tab-button" onclick="switchTab('news')" id="tab-news">
-        <i class="fas fa-newspaper mr-2"></i>News
-    </button>
-    <button class="tab-button" onclick="switchTab('calendar')" id="tab-calendar">
-        <i class="fas fa-calendar-alt mr-2"></i>Event Calendar
-    </button>
-    <button class="tab-button" onclick="switchTab('jobs')" id="tab-jobs">
-        <i class="fas fa-briefcase mr-2"></i>Job Opportunities
-    </button>
-    <button class="tab-button" onclick="switchTab('resources')" id="tab-resources">
-        <i class="fas fa-book-open mr-2"></i>Resources
-    </button>
-    </div>
-
-        <!-- Tab Content-->
-        <div id="content-dashboard" class="tab-content active">
-           <!-- Membership Card -->
-    <div class="bg-white rounded-lg shadow p-6 md:p-8 mb-6 md:mb-8 membership-card">
-    <div class="flex flex-col lg:flex-row justify-between items-start gap-4 lg:gap-6">
-        <div class="flex-1 w-full">
-            <div class="flex flex-wrap items-center gap-2 mb-3 md:mb-4">
-                <span class="px-2 md:px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-semibold tracking-wide">
-                    {{ $member->plan_name }}
-                </span>
-                <span class="px-2 md:px-3 py-1 bg-{{ $statusConfig['color'] }}-100 text-{{ $statusConfig['color'] }}-700 rounded-full text-xs font-semibold flex items-center">
-                    <span class="w-1.5 h-1.5 md:w-2 md:h-2 bg-{{ $statusConfig['color'] }}-500 rounded-full mr-1 {{ $statusConfig['pulse'] ? 'animate-pulse' : '' }}"></span>
-                    {{ $statusConfig['text'] }}
-                </span>
-            </div>
-            
-            <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-1">
-                @if($member->status == 'active')
-                    Member Benefits Active
-                @elseif($member->status == 'expired')
-                    Membership Expired
-                @elseif($member->status == 'cancelled')
-                    Membership Cancelled
-                @elseif($member->status == 'pending')
-                    Membership Pending
-                @endif
-            </h2>
-            
-            <p class="text-gray-600 text-xs md:text-sm mb-4 md:mb-6">
-                @if($member->status == 'active')
-                    Your membership gives you access to exclusive APN benefits
-                @elseif($member->status == 'expired')
-                    Your membership has expired. Renew to continue enjoying benefits.
-                @elseif($member->status == 'cancelled')
-                    Your membership has been cancelled. You can rejoin anytime.
-                @elseif($member->status == 'pending')
-                    Your membership is being processed. This may take 24-48 hours.
-                @endif
-            </p>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
-                <div class="bg-gray-50 md:bg-transparent p-2 md:p-0 rounded-lg md:rounded-none">
-                    <p class="text-gray-500 text-xs">Member Since</p>
-                    <p class="text-sm md:text-base font-semibold text-gray-900">{{ $member->start_date->format('M Y') }}</p>
-                </div>
-                <div class="bg-gray-50 md:bg-transparent p-2 md:p-0 rounded-lg md:rounded-none">
-                    <p class="text-gray-500 text-xs">Renewal Date</p>
-                    <p class="text-sm md:text-base font-semibold text-gray-900">
-                        @if($member->end_date)
-                            {{ $member->end_date->format('M d, Y') }}
-                        @else
-                            N/A
-                        @endif
-                    </p>
-                </div>
-                <div class="bg-gray-50 md:bg-transparent p-2 md:p-0 rounded-lg md:rounded-none">
-                    <p class="text-gray-500 text-xs">Days Left</p>
-                    <p class="text-sm md:text-base font-semibold text-gray-900">
-                        @if($member->status == 'active')
-                            {{ $member->daysLeft() }} days
-                        @else
-                            -
-                        @endif
-                    </p>
-                </div>
-                <div class="bg-gray-50 md:bg-transparent p-2 md:p-0 rounded-lg md:rounded-none">
-                    <p class="text-gray-500 text-xs">Auto-Renew</p>
-                    <p class="text-sm md:text-base font-semibold text-gray-900">{{ $member->renewal_count > 0 ? 'Yes' : 'No' }}</p>
-                </div>
-            </div>
-        </div>
+<div x-data="{ 
+    activeTab: localStorage.getItem('dashboard_active_tab') || 'dashboard',
+    init() {
+        // Restore active tab on page load
+        const returnTab = sessionStorage.getItem('return_to_dashboard_tab');
+        if (returnTab) {
+            this.activeTab = returnTab;
+            localStorage.setItem('dashboard_active_tab', returnTab);
+            sessionStorage.removeItem('return_to_dashboard_tab');
+        }
         
-        <div class="w-full lg:w-auto lg:ml-6 flex-shrink-0">
-            <div class="flex items-center justify-start lg:justify-center bg-indigo-50 lg:bg-transparent p-3 lg:p-0 rounded-lg lg:rounded-none w-full lg:w-auto">
-                <div class="p-2 md:p-3 bg-indigo-100 rounded-full">
-                    <svg class="h-5 w-5 md:h-6 md:w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <p class="text-gray-500 text-xs">Membership</p>
-                    <p class="text-lg md:text-xl font-bold text-gray-900">${{ $member->price }}</p>
-                    <p class="text-xs text-gray-500">per {{ $member->membership_type }}</p>
-                </div>
-            </div>
-        </div>
+        // Watch for tab changes
+        this.$watch('activeTab', value => {
+            localStorage.setItem('dashboard_active_tab', value);
+        });
+    }
+}" x-cloak>
+
+  <!-- Navigation Tabs -->
+<div class="flex justify-center mb-8">
+    <div class="dashboard-tabs inline-flex flex-wrap justify-center gap-1 border-b-2 border-gray-200 pb-0">
+        <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('dashboard')" id="tab-dashboard">
+            <i class="fas fa-chart-pie mr-2"></i>Dashboard
+        </button>
+        <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('news')" id="tab-news">
+            <i class="fas fa-newspaper mr-2"></i>News
+        </button>
+        <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('calendar')" id="tab-calendar">
+            <i class="fas fa-calendar-alt mr-2"></i>Event Calendar
+        </button>
+        <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('jobs')" id="tab-jobs">
+            <i class="fas fa-briefcase mr-2"></i>Job Opportunities
+        </button>
+        <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('resources')" id="tab-resources">
+            <i class="fas fa-book-open mr-2"></i>Resources
+        </button>
+        <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('games')" id="tab-games">
+            <i class="fas fa-puzzle-piece mr-2"></i>Games & Puzzles
+        </button>
     </div>
 </div>
 
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white rounded-lg shadow p-6">
-                    <div class="flex items-center">
-                        <div class="p-3 bg-green-100 rounded-full">
-                            <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-gray-500 text-sm">Total Payments</p>
-                            <p class="text-lg font-semibold text-gray-900">{{ $payments->count() }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow p-6">
-                    <div class="flex items-center">
-                        <div class="p-3 bg-purple-100 rounded-full">
-                            <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                            </svg>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-gray-500 text-sm">Total Spent</p>
-                            <p class="text-lg font-semibold text-gray-900">${{ number_format($payments->sum('amount'), 2) }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow p-6">
-                    <div class="flex items-center">
-                        <div class="p-3 bg-yellow-100 rounded-full">
-                            <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-gray-500 text-sm">Renewals</p>
-                            <p class="text-lg font-semibold text-gray-900">{{ $member->renewal_count }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Actions Card -->
-            <div class="bg-white rounded-lg shadow p-6 mb-8">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <!-- About Us -->
-                    <a href="{{ route('member.about') }}" class="flex items-center justify-between p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
-                        <div class="flex items-center">
-                            <div class="bg-purple-100 rounded-lg p-2 mr-3">
-                                <svg class="h-5 w-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
-                            <span class="font-medium text-gray-700">About Us</span>
-                        </div>
-                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                    <!-- Cultural Puzzles -->
-                    <a href="{{ route('puzzles.hub') }}" class="flex items-center justify-between p-3 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
-                        <div class="flex items-center">
-                            <div class="bg-indigo-100 rounded-lg p-2 mr-3">
-                                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <span class="font-medium text-gray-700">Games & Puzzles</span>
-                                <p class="text-xs text-gray-500">Test your knowledge about Africa</p>
-                            </div>
-                        </div>
-                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                    <!-- View All Benefits -->
-                    <a href="{{ route('member.benefits') }}" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        <div class="flex items-center">
-                            <div class="bg-indigo-100 rounded-lg p-2 mr-3">
-                                <svg class="h-5 w-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
-                                </svg>
-                            </div>
-                            <span class="font-medium text-gray-700">View All Benefits</span>
-                        </div>
-                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                    <!-- Payment History -->
-                    <a href="{{ route('member.payments') }}" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        <div class="flex items-center">
-                            <div class="bg-green-100 rounded-lg p-2 mr-3">
-                                <svg class="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-                                </svg>
-                            </div>
-                            <span class="font-medium text-gray-700">Payment History</span>
-                        </div>
-                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                    <!-- Update Profile -->
-                    <a href="{{ route('member.profile.edit') }}" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        <div class="flex items-center">
-                            <div class="bg-purple-100 rounded-lg p-2 mr-3">
-                                <svg class="h-5 w-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                            </div>
-                            <span class="font-medium text-gray-700">Update Profile</span>
-                        </div>
-                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                    <!-- Help & Support -->
-                    <a href="{{ route('member.support') }}" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        <div class="flex items-center">
-                            <div class="bg-blue-100 rounded-lg p-2 mr-3">
-                                <svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                                </svg>
-                            </div>
-                            <span class="font-medium text-gray-700">Help & Support</span>
-                        </div>
-                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                    @if($member->status == 'active')
-                    <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-                        <form action="{{ route('member.cancel') }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel your membership? This action cannot be undone.')" class="w-full">
-                            @csrf
-                            <button type="submit" class="w-full flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <div class="bg-red-100 rounded-lg p-2 mr-3">
-                                        <svg class="h-5 w-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                        </svg>
-                                    </div>
-                                    <span class="font-medium text-red-700">Cancel Membership</span>
-                                </div>
-                            </button>
-                        </form>
-                    </div>
-                    @endif
-                </div>
-            </div>
-
-            <!-- Recent Payments Table -->
-            <div class="bg-white rounded-lg shadow overflow-hidden mb-8">
-                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                    <h2 class="text-lg font-semibold text-gray-800">Recent Membership Payments</h2>
-                    <a href="{{ route('member.payments') }}" class="text-sm text-indigo-600 hover:text-indigo-900">View All →</a>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction ID</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Receipt</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse($payments as $payment)
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $payment->payment_date->format('M d, Y') }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
-                                    {{ substr($payment->transaction_id, 0, 8) }}...
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                                    ${{ number_format($payment->amount, 2) }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    @if($payment->period_start && $payment->period_end)
-                                        {{ $payment->period_start->format('M d') }} - {{ $payment->period_end->format('M d, Y') }}
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        Paid
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <button onclick="downloadReceipt('{{ $payment->transaction_id }}', {{ $payment->amount }}, '{{ $payment->payment_date }}', '{{ $payment->payment_method ?? 'Card' }}')" 
-                                            class="text-indigo-600 hover:text-indigo-900 font-medium">
-                                        Download
-                                    </button>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500">
-                                    No payment records found.
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Donation History -->
-            <div class="bg-white rounded-lg shadow overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                    <h2 class="text-lg font-semibold text-gray-800">Your Donation History</h2>
-                    <a href="{{ route('member.transactions') }}" class="text-sm text-indigo-600 hover:text-indigo-900">View All Donations →</a>
+<!-- Tab Content - Dashboard -->
+<div id="content-dashboard" class="tab-content active">
+    <!-- Membership Card -->
+    <div class="bg-white rounded-lg shadow p-6 md:p-8 mb-6 md:mb-8 membership-card">
+        <div class="flex flex-col lg:flex-row justify-between items-start gap-4 lg:gap-6">
+            <div class="flex-1 w-full">
+                <div class="flex flex-wrap items-center gap-2 mb-3 md:mb-4">
+                    <span class="px-2 md:px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-semibold tracking-wide">
+                        {{ $member->plan_name }}
+                    </span>
+                    <span class="px-2 md:px-3 py-1 bg-{{ $statusConfig['color'] }}-100 text-{{ $statusConfig['color'] }}-700 rounded-full text-xs font-semibold flex items-center">
+                        <span class="w-1.5 h-1.5 md:w-2 md:h-2 bg-{{ $statusConfig['color'] }}-500 rounded-full mr-1 {{ $statusConfig['pulse'] ? 'animate-pulse' : '' }}"></span>
+                        {{ $statusConfig['text'] }}
+                    </span>
                 </div>
                 
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction ID</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Receipt</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse($donations as $donation)
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $donation->created_at->format('M d, Y') }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
-                                    {{ substr($donation->transaction_id, 0, 8) }}...
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                                    ${{ number_format($donation->amount, 2) }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        {{ ucfirst($donation->payment_status) }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <button onclick="downloadDonationReceipt('{{ $donation->transaction_id }}', {{ $donation->amount }}, '{{ $donation->created_at }}', '{{ $donation->payment_method ?? 'Card' }}')" 
-                                            class="text-indigo-600 hover:text-indigo-900 font-medium">
-                                        Download
-                                    </button>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">
-                                    No donations found.
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-1">
+                    @if($member->status == 'active')
+                        Member Benefits Active
+                    @elseif($member->status == 'expired')
+                        Membership Expired
+                    @elseif($member->status == 'cancelled')
+                        Membership Cancelled
+                    @elseif($member->status == 'pending')
+                        Membership Pending
+                    @endif
+                </h2>
+                
+                <p class="text-gray-600 text-xs md:text-sm mb-4 md:mb-6">
+                    @if($member->status == 'active')
+                        Your membership gives you access to exclusive APN benefits
+                    @elseif($member->status == 'expired')
+                        Your membership has expired. Renew to continue enjoying benefits.
+                    @elseif($member->status == 'cancelled')
+                        Your membership has been cancelled. You can rejoin anytime.
+                    @elseif($member->status == 'pending')
+                        Your membership is being processed. This may take 24-48 hours.
+                    @endif
+                </p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
+                    <div class="bg-gray-50 md:bg-transparent p-2 md:p-0 rounded-lg md:rounded-none">
+                        <p class="text-gray-500 text-xs">Member Since</p>
+                        <p class="text-sm md:text-base font-semibold text-gray-900">{{ $member->start_date->format('M Y') }}</p>
+                    </div>
+                    <div class="bg-gray-50 md:bg-transparent p-2 md:p-0 rounded-lg md:rounded-none">
+                        <p class="text-gray-500 text-xs">Renewal Date</p>
+                        <p class="text-sm md:text-base font-semibold text-gray-900">
+                            @if($member->end_date)
+                                {{ $member->end_date->format('M d, Y') }}
+                            @else
+                                N/A
+                            @endif
+                        </p>
+                    </div>
+                    <div class="bg-gray-50 md:bg-transparent p-2 md:p-0 rounded-lg md:rounded-none">
+                        <p class="text-gray-500 text-xs">Days Left</p>
+                        <p class="text-sm md:text-base font-semibold text-gray-900">
+                            @if($member->status == 'active')
+                                {{ $member->daysLeft() }} days
+                            @else
+                                -
+                            @endif
+                        </p>
+                    </div>
+                    <div class="bg-gray-50 md:bg-transparent p-2 md:p-0 rounded-lg md:rounded-none">
+                        <p class="text-gray-500 text-xs">Auto-Renew</p>
+                        <p class="text-sm md:text-base font-semibold text-gray-900">{{ $member->renewal_count > 0 ? 'Yes' : 'No' }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="w-full lg:w-auto lg:ml-6 flex-shrink-0">
+                <div class="flex items-center justify-start lg:justify-center bg-indigo-50 lg:bg-transparent p-3 lg:p-0 rounded-lg lg:rounded-none w-full lg:w-auto">
+                    <div class="p-2 md:p-3 bg-indigo-100 rounded-full">
+                        <svg class="h-5 w-5 md:h-6 md:w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-gray-500 text-xs">Membership</p>
+                        <p class="text-lg md:text-xl font-bold text-gray-900">${{ $member->price }}</p>
+                        <p class="text-xs text-gray-500">per {{ $member->membership_type }}</p>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-green-100 rounded-full">
+                    <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-gray-500 text-sm">Total Payments</p>
+                    <p class="text-lg font-semibold text-gray-900">{{ $payments->count() }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-purple-100 rounded-full">
+                    <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-gray-500 text-sm">Total Spent</p>
+                    <p class="text-lg font-semibold text-gray-900">${{ number_format($payments->sum('amount'), 2) }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 bg-yellow-100 rounded-full">
+                    <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-gray-500 text-sm">Renewals</p>
+                    <p class="text-lg font-semibold text-gray-900">{{ $member->renewal_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CAROUSEL - Featured Content -->
+    @if((isset($featuredNews) && $featuredNews->count() > 0) || (isset($featuredEvents) && $featuredEvents->count() > 0) || (isset($featuredJobs) && $featuredJobs->count() > 0))
+    <div class="featured-carousel mb-6 md:mb-8">
+        <div class="carousel-container">
+
+            {{-- Kente geometric pattern layer --}}
+            <div class="carousel-kente-pattern"></div>
+
+            {{-- Slide counter --}}
+            <div class="carousel-counter">
+                <span class="current" id="carouselCurrent">01</span>
+                <span> / </span>
+                <span id="carouselTotal">01</span>
+            </div>
+
+            @php
+                $featuredItems = collect();
+
+                if(isset($featuredNews)) {
+                    foreach($featuredNews as $newsItem) {
+                        $featuredItems->push([
+                            'type'           => 'news',
+                            'id'             => $newsItem->id,
+                            'title'          => $newsItem->title,
+                            'excerpt'        => $newsItem->excerpt,
+                            'image'          => $newsItem->featured_image ?? 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=1600&q=80',
+                            'category'       => $newsItem->category,
+                            'category_color' => $newsItem->category_color,
+                            'date'           => $newsItem->published_date->format('M d, Y'),
+                            'slug'           => $newsItem->slug,
+                            'route'          => route('member.news.show', $newsItem->slug),
+                            'icon'           => 'fa-newspaper'
+                        ]);
+                    }
+                }
+
+                if(isset($featuredEvents)) {
+                    foreach($featuredEvents as $event) {
+                        $featuredItems->push([
+                            'type'           => 'event',
+                            'id'             => $event->id,
+                            'title'          => $event->title,
+                            'excerpt'        => $event->description,
+                            'image'          => $event->featured_image ?? 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80',
+                            'category'       => $event->category,
+                            'category_color' => $event->badge_color ?? 'indigo',
+                            'date'           => $event->start_date->format('M d, Y'),
+                            'location'       => $event->location,
+                            'slug'           => $event->slug,
+                            'route'          => route('member.events.show', $event->slug),
+                            'icon'           => 'fa-calendar-alt'
+                        ]);
+                    }
+                }
+
+                if(isset($featuredJobs)) {
+                    foreach($featuredJobs as $job) {
+                        $featuredItems->push([
+                            'type'           => 'job',
+                            'id'             => $job->id,
+                            'title'          => $job->title,
+                            'excerpt'        => $job->summary,
+                            'image'          => $job->company_logo ?? 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80',
+                            'category'       => $job->category,
+                            'category_color' => $job->category_color,
+                            'date'           => $job->posted_date->format('M d, Y'),
+                            'company'        => $job->company,
+                            'location'       => $job->location,
+                            'slug'           => $job->slug,
+                            'route'          => route('member.jobs.show', $job->slug),
+                            'icon'           => 'fa-briefcase'
+                        ]);
+                    }
+                }
+
+                if ($featuredItems->isEmpty()) {
+                    if (isset($news) && $news->isNotEmpty()) {
+                        $newsItem = $news->first();
+                        $featuredItems->push(['type'=>'news','id'=>$newsItem->id,'title'=>$newsItem->title,'excerpt'=>$newsItem->excerpt,'image'=>$newsItem->featured_image ?? 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=1600&q=80','category'=>$newsItem->category,'category_color'=>$newsItem->category_color,'date'=>$newsItem->published_date->format('M d, Y'),'slug'=>$newsItem->slug,'route'=>route('member.news.show', $newsItem->slug),'icon'=>'fa-newspaper']);
+                    }
+                    if (isset($events) && $events->isNotEmpty()) {
+                        $event = $events->first();
+                        $featuredItems->push(['type'=>'event','id'=>$event->id,'title'=>$event->title,'excerpt'=>$event->description,'image'=>$event->featured_image ?? 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80','category'=>$event->category,'category_color'=>$event->badge_color ?? 'indigo','date'=>$event->start_date->format('M d, Y'),'location'=>$event->location,'slug'=>$event->slug,'route'=>route('member.events.show', $event->slug),'icon'=>'fa-calendar-alt']);
+                    }
+                    if (isset($jobs) && $jobs->isNotEmpty()) {
+                        $job = $jobs->first();
+                        $featuredItems->push(['type'=>'job','id'=>$job->id,'title'=>$job->title,'excerpt'=>$job->summary,'image'=>$job->company_logo ?? 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80','category'=>$job->category,'category_color'=>$job->category_color,'date'=>$job->posted_date->format('M d, Y'),'company'=>$job->company,'location'=>$job->location,'slug'=>$job->slug,'route'=>route('member.jobs.show', $job->slug),'icon'=>'fa-briefcase']);
+                    }
+                }
+            @endphp
+
+            {{-- Slides --}}
+            @foreach($featuredItems as $index => $item)
+            <div class="carousel-slide {{ $index === 0 ? 'active' : '' }}"
+                 style="background-image: url('{{ $item['image'] }}');"
+                 data-index="{{ $index }}">
+                <div class="carousel-overlay">
+                    <div class="carousel-content">
+                        <div class="carousel-category">
+                            <i class="fas {{ $item['icon'] }}"></i>
+                            {{ $item['category'] }}
+                        </div>
+                        <h2 class="carousel-title">{{ $item['title'] }}</h2>
+                        <p class="carousel-excerpt">{{ Str::limit($item['excerpt'], 130) }}</p>
+                        <div class="carousel-meta">
+                            <span class="carousel-meta-item">
+                                <i class="far fa-calendar-alt"></i>
+                                {{ $item['date'] }}
+                            </span>
+                            @if(isset($item['location']))
+                            <span class="carousel-meta-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                {{ $item['location'] }}
+                            </span>
+                            @endif
+                            @if(isset($item['company']))
+                            <span class="carousel-meta-item">
+                                <i class="fas fa-building"></i>
+                                {{ $item['company'] }}
+                            </span>
+                            @endif
+                        </div>
+                        <a href="{{ $item['route'] }}#from-dashboard-{{ $item['type'] }}" class="carousel-button">
+                            Learn More
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+
+            {{-- Arrows --}}
+            <div class="carousel-arrow prev hidden sm:flex" onclick="prevSlide()">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="carousel-arrow next hidden sm:flex" onclick="nextSlide()">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+
+            {{-- Dot navigation --}}
+            <div class="carousel-nav">
+                @foreach($featuredItems as $index => $item)
+                <div class="carousel-dot {{ $index === 0 ? 'active' : '' }}"
+                     onclick="goToSlide({{ $index }})"
+                     data-index="{{ $index }}"></div>
+                @endforeach
+            </div>
+
+            {{-- Thumbnail strip --}}
+            <div class="carousel-thumbs hidden md:flex">
+                @foreach($featuredItems as $index => $item)
+                <div class="carousel-thumb {{ $index === 0 ? 'active' : '' }}"
+                     style="background-image: url('{{ $item['image'] }}');"
+                     onclick="goToSlide({{ $index }})"
+                     data-thumb="{{ $index }}"></div>
+                @endforeach
+            </div>
+
+        </div>
+    </div>
+    @endif
+
+    <!-- Quick Actions Card -->
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <!-- About Us -->
+            <a href="{{ route('member.about') }}" class="flex items-center justify-between p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+                <div class="flex items-center">
+                    <div class="bg-purple-100 rounded-lg p-2 mr-3">
+                        <svg class="h-5 w-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-gray-700">About Us</span>
+                </div>
+                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+            <!-- View All Benefits -->
+            <a href="{{ route('member.benefits') }}" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div class="flex items-center">
+                    <div class="bg-indigo-100 rounded-lg p-2 mr-3">
+                        <svg class="h-5 w-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-gray-700">View All Benefits</span>
+                </div>
+                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+            <!-- Payment History -->
+            <a href="{{ route('member.payments') }}" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div class="flex items-center">
+                    <div class="bg-green-100 rounded-lg p-2 mr-3">
+                        <svg class="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-gray-700">Payment History</span>
+                </div>
+                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+            <!-- Update Profile -->
+            <a href="{{ route('member.profile.edit') }}" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div class="flex items-center">
+                    <div class="bg-purple-100 rounded-lg p-2 mr-3">
+                        <svg class="h-5 w-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-gray-700">Update Profile</span>
+                </div>
+                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+            <!-- Help & Support -->
+            <a href="{{ route('member.support') }}" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div class="flex items-center">
+                    <div class="bg-blue-100 rounded-lg p-2 mr-3">
+                        <svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </div>
+                    <span class="font-medium text-gray-700">Help & Support</span>
+                </div>
+                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+            @if($member->status == 'active')
+            <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                <form action="{{ route('member.cancel') }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel your membership? This action cannot be undone.')" class="w-full">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="bg-red-100 rounded-lg p-2 mr-3">
+                                <svg class="h-5 w-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </div>
+                            <span class="font-medium text-red-700">Cancel Membership</span>
+                        </div>
+                    </button>
+                </form>
+            </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- Recent Payments Table -->
+    <div class="bg-white rounded-lg shadow overflow-hidden mb-8">
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h2 class="text-lg font-semibold text-gray-800">Recent Membership Payments</h2>
+            <a href="{{ route('member.payments') }}" class="text-sm text-indigo-600 hover:text-indigo-900">View All →</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Receipt</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($payments as $payment)
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ $payment->payment_date->format('M d, Y') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+                            {{ substr($payment->transaction_id, 0, 8) }}...
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                            ${{ number_format($payment->amount, 2) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            @if($payment->period_start && $payment->period_end)
+                                {{ $payment->period_start->format('M d') }} - {{ $payment->period_end->format('M d, Y') }}
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Paid
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <button onclick="downloadReceipt('{{ $payment->transaction_id }}', {{ $payment->amount }}, '{{ $payment->payment_date }}', '{{ $payment->payment_method ?? 'Card' }}')" 
+                                    class="text-indigo-600 hover:text-indigo-900 font-medium">
+                                Download
+                            </button>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500">
+                            No payment records found.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Donation History -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h2 class="text-lg font-semibold text-gray-800">Your Donation History</h2>
+            <a href="{{ route('member.transactions') }}" class="text-sm text-indigo-600 hover:text-indigo-900">View All Donations →</a>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Receipt</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($donations as $donation)
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ $donation->created_at->format('M d, Y') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+                            {{ substr($donation->transaction_id, 0, 8) }}...
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                            ${{ number_format($donation->amount, 2) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                {{ ucfirst($donation->payment_status) }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <button onclick="downloadDonationReceipt('{{ $donation->transaction_id }}', {{ $donation->amount }}, '{{ $donation->created_at }}', '{{ $donation->payment_method ?? 'Card' }}')" 
+                                    class="text-indigo-600 hover:text-indigo-900 font-medium">
+                                Download
+                            </button>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">
+                            No donations found.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 
     <!-- Tab Content - News -->
@@ -1869,7 +1938,7 @@
 
     @if($news->count() > 0)
     <div class="text-center mt-8">
-        <a href="{{ route('member.news.index') }}" class="inline-block px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
+        <a href="{{ route('puzzles.index') }}" class="inline-block px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
             Browse All News
         </a>
     </div>
@@ -1927,6 +1996,7 @@
         </div>
     </div>
 </div>
+
 <!-- Tab Content - Job Opportunities -->
 <div id="content-jobs" class="tab-content">
     <div class="flex justify-between items-center mb-6">
@@ -2153,6 +2223,226 @@
             </svg>
             <h3 class="text-lg font-medium text-gray-900 mb-2">No publications available</h3>
             <p class="text-gray-500">Check back soon for new content.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Tab Content - Games & Puzzles -->
+<div id="content-games" class="tab-content">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <!-- Game Type Cards -->
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <!-- Quiz Card with Background Image -->
+    <a href="{{ route('quiz.index') }}" 
+       class="group relative rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+        <!-- Background Image -->
+        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" 
+             style="background-image: url('https://res.cloudinary.com/dvsacegwf/image/upload/v1774378076/84630ad2-4a44-481d-bfad-e8556e33ae42_pcretq.jpg');">
+        </div>
+        <!-- Light Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/70 via-indigo-800/60 to-purple-900/70 group-hover:opacity-90 transition-opacity duration-300"></div>
+        
+        <div class="relative p-8 text-center z-10">
+            <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <i class="fas fa-question-circle text-4xl text-white"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">Quizzes</h3>
+            <p class="text-indigo-100 mb-4">Test your knowledge about African history, culture, and heritage.</p>
+            <span class="inline-flex items-center text-white font-medium group-hover:translate-x-2 transition-transform">
+                Browse Quizzes
+                <i class="fas fa-arrow-right ml-2"></i>
+            </span>
+        </div>
+    </a>
+
+    <!-- Word Search Card with Background Image -->
+    <a href="{{ route('wordsearch.index') }}" 
+       class="group relative rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+        <!-- Background Image -->
+        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" 
+             style="background-image: url('https://res.cloudinary.com/dvsacegwf/image/upload/v1774380503/wordsearch-game-word-corporation-business_joawdj.jpg');">
+        </div>
+        <!-- Light Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-br from-gray-900/60 via-gray-800/50 to-gray-700/60 group-hover:opacity-80 transition-opacity duration-300"></div>
+        
+        <div class="relative p-8 text-center z-10">
+            <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <i class="fas fa-search text-4xl text-white"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">Word Search</h3>
+            <p class="text-gray-100 mb-4">
+                Find hidden words about African countries, leaders, and cultural terms.
+            </p>
+            <span class="inline-flex items-center text-white font-medium group-hover:translate-x-2 transition-transform">
+                Play Word Search
+                <i class="fas fa-arrow-right ml-2"></i>
+            </span>
+        </div>
+    </a>
+</div>
+
+        <!-- Featured Word Searches Section -->
+        @if(isset($featuredWordsearches) && $featuredWordsearches->count() > 0)
+        <div class="mb-8">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">Featured Word Searches</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach($featuredWordsearches as $wordsearch)
+                <div class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-all">
+                    @if($wordsearch->featured_image)
+                    <div class="h-32 overflow-hidden">
+                        <img src="{{ $wordsearch->featured_image }}" class="w-full h-full object-cover">
+                    </div>
+                    @endif
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs px-2 py-1 rounded-full 
+                                @if($wordsearch->difficulty == 'beginner') bg-green-100 text-green-700
+                                @elseif($wordsearch->difficulty == 'intermediate') bg-blue-100 text-blue-700
+                                @else bg-orange-100 text-orange-700 @endif">
+                                {{ ucfirst($wordsearch->difficulty) }}
+                            </span>
+                            <span class="text-xs text-gray-500">{{ $wordsearch->questions->count() }} words</span>
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-1">{{ $wordsearch->title }}</h3>
+                        <p class="text-xs text-gray-600 mb-3">{{ Str::limit($wordsearch->short_description, 70) }}</p>
+                        <a href="{{ route('wordsearch.show', $wordsearch->slug) }}" class="text-indigo-600 text-sm font-medium hover:text-indigo-800">
+                            Play Now →
+                        </a>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        <!-- Popular Puzzles Section -->
+        @if(isset($popularPuzzles) && $popularPuzzles->count() > 0)
+        <div class="mb-8">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">Popular Puzzles</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach($popularPuzzles as $puzzle)
+                <div class="bg-gray-50 rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs px-2 py-1 rounded-full 
+                            @if($puzzle->difficulty == 'beginner') bg-green-100 text-green-700
+                            @elseif($puzzle->difficulty == 'intermediate') bg-blue-100 text-blue-700
+                            @elseif($puzzle->difficulty == 'advanced') bg-orange-100 text-orange-700
+                            @else bg-red-100 text-red-700 @endif">
+                            {{ ucfirst($puzzle->difficulty) }}
+                        </span>
+                        <div class="flex items-center text-xs text-yellow-500">
+                            <i class="fas fa-star mr-1"></i>
+                            <span>{{ number_format($puzzle->average_rating ?? 4.5, 1) }}</span>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-1">{{ $puzzle->title }}</h3>
+                    <p class="text-xs text-gray-600 mb-3">{{ Str::limit($puzzle->short_description, 70) }}</p>
+                    <a href="{{ route('puzzles.show', $puzzle->slug) }}" class="text-indigo-600 text-sm font-medium hover:text-indigo-800">
+                        Play Now →
+                    </a>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+   <!-- Word Search Categories -->
+<div class="mb-8">
+    <h2 class="text-lg font-semibold text-gray-800 mb-4 font-urbanist">Word Search Categories</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <!-- All Word Searches Card -->
+        <a href="{{ route('wordsearch.index') }}" class="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all hover:-translate-y-1 group">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-indigo-200 transition-colors">
+                    <i class="fas fa-globe-africa text-indigo-600 text-xl"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1 font-urbanist text-sm">All Word Search Puzzles</h3>
+                <p class="text-xs text-gray-500">Browse all word searches</p>
+                <div class="mt-2 text-indigo-600 text-xs font-medium group-hover:underline">
+                    Explore →
+                </div>
+            </div>
+        </a>
+
+        <!-- Countries Card -->
+        <a href="{{ route('wordsearch.show', 'african-countries') }}" class="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all hover:-translate-y-1 group">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-green-200 transition-colors">
+                    <i class="fas fa-map text-green-600 text-xl"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1 font-urbanist text-sm">Countries</h3>
+                <p class="text-xs text-gray-500">Find African nations</p>
+                <div class="mt-2 text-indigo-600 text-xs font-medium group-hover:underline">
+                    Play →
+                </div>
+            </div>
+        </a>
+
+        <!-- Capitals Card -->
+        <a href="{{ route('wordsearch.show', 'african-capitals') }}" class="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all hover:-translate-y-1 group">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-200 transition-colors">
+                    <i class="fas fa-city text-blue-600 text-xl"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1 font-urbanist text-sm">Capitals</h3>
+                <p class="text-xs text-gray-500">Find capital cities</p>
+                <div class="mt-2 text-indigo-600 text-xs font-medium group-hover:underline">
+                    Play →
+                </div>
+            </div>
+        </a>
+
+        <!-- Animals Card -->
+        <a href="{{ route('wordsearch.show', 'african-animals') }}" class="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all hover:-translate-y-1 group">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-amber-200 transition-colors">
+                    <i class="fas fa-paw text-amber-600 text-xl"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1 font-urbanist text-sm">Animals</h3>
+                <p class="text-xs text-gray-500">African wildlife</p>
+                <div class="mt-2 text-indigo-600 text-xs font-medium group-hover:underline">
+                    Play →
+                </div>
+            </div>
+        </a>
+
+        <!-- Landmarks Card -->
+        <a href="{{ route('wordsearch.show', 'african-landmarks') }}" class="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all hover:-translate-y-1 group">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-purple-200 transition-colors">
+                    <i class="fas fa-landmark text-purple-600 text-xl"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1 font-urbanist text-sm">Landmarks</h3>
+                <p class="text-xs text-gray-500">Famous places</p>
+                <div class="mt-2 text-indigo-600 text-xs font-medium group-hover:underline">
+                    Play →
+                </div>
+            </div>
+        </a>
+
+        <!-- Cultures Card -->
+        <a href="{{ route('wordsearch.show', 'african-cultures') }}" class="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all hover:-translate-y-1 group">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-pink-200 transition-colors">
+                    <i class="fas fa-drumstick-bite text-pink-600 text-xl"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1 font-urbanist text-sm">Cultures</h3>
+                <p class="text-xs text-gray-500">African traditions</p>
+                <div class="mt-2 text-indigo-600 text-xs font-medium group-hover:underline">
+                    Play →
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+        <!-- View All Button -->
+        <div class="text-center">
+            <a href="{{ route('puzzles.index') }}" class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium">
+                <i class="fas fa-th-large mr-2"></i>
+                Browse All Games
+                <i class="fas fa-arrow-right ml-2"></i>
+            </a>
         </div>
     </div>
 </div>
@@ -2540,10 +2830,13 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script>
-    let selectedDonationAmount = 0;
-    let selectedDonationReason = '';
 
-    function selectDonationReason(reason) {
+    let selectedFilterType = '';
+let selectedFile = null;
+  let selectedDonationAmount = 0;
+let selectedDonationReason = '';
+
+function selectDonationReason(reason) {
     // Remove selected class from all options
     document.querySelectorAll('.donation-reason-option').forEach(opt => {
         opt.classList.remove('selected');
@@ -2565,22 +2858,18 @@
     clearModalError();
 }
 
-
 let currentSlide = 0;
 const slides = document.querySelectorAll('.carousel-slide');
-const dots   = document.querySelectorAll('.carousel-dot');
+const dots = document.querySelectorAll('.carousel-dot');
 const thumbs = document.querySelectorAll('.carousel-thumb');
 const totalSlides = slides.length;
 const SLIDE_DURATION = 6000; // ms
 
 // Update counter
 const counterCurrent = document.getElementById('carouselCurrent');
-const counterTotal   = document.getElementById('carouselTotal');
-// const progressFill   = document.getElementById('carouselProgressFill');
+const counterTotal = document.getElementById('carouselTotal');
 
 if (counterTotal) counterTotal.textContent = String(totalSlides).padStart(2, '0');
-
-// let progressTimer = null;
 
 function showSlide(index) {
     if (index < 0) index = totalSlides - 1;
@@ -2591,51 +2880,23 @@ function showSlide(index) {
     thumbs.forEach(t => t.classList.remove('active'));
 
     slides[index].classList.add('active');
-    if (dots[index])   dots[index].classList.add('active');
+    if (dots[index]) dots[index].classList.add('active');
     if (thumbs[index]) thumbs[index].classList.add('active');
 
     if (counterCurrent) counterCurrent.textContent = String(index + 1).padStart(2, '0');
 
     currentSlide = index;
-    // startProgress();
 }
 
-// function startProgress() {
-//     if (!progressFill) return;
-//     clearTimeout(progressTimer);
-//     progressFill.style.transition = 'none';
-//     progressFill.style.width = '0%';
-
-//     // Force reflow
-//     progressFill.getBoundingClientRect();
-
-//     progressFill.style.transition = `width ${SLIDE_DURATION}ms linear`;
-//     progressFill.style.width = '100%';
-
-//     progressTimer = setTimeout(() => nextSlide(), SLIDE_DURATION);
-// }
-
 function nextSlide() { showSlide(currentSlide + 1); }
-function prevSlide()  { showSlide(currentSlide - 1); }
+function prevSlide() { showSlide(currentSlide - 1); }
 function goToSlide(i) { showSlide(i); }
 
 // Pause on hover
 const carouselEl = document.querySelector('.carousel-container');
 if (carouselEl) {
-    carouselEl.addEventListener('mouseenter', () => {
- 
-        // if (progressFill) {
-        //     const computed = window.getComputedStyle(progressFill).width;
-        //     const parent   = progressFill.parentElement.offsetWidth;
-        //     const pct      = (parseFloat(computed) / parent) * 100;
-        //     progressFill.style.transition = 'none';
-        //     progressFill.style.width = pct + '%';
-        // }
-    });
-    carouselEl.addEventListener('mouseleave', () => {
-        // Restart from current position
-        // startProgress();
-    });
+    carouselEl.addEventListener('mouseenter', () => {});
+    carouselEl.addEventListener('mouseleave', () => {});
 
     // Touch swipe
     let touchStartX = 0;
@@ -2646,21 +2907,123 @@ if (carouselEl) {
     });
 }
 
-// Kick off
 showSlide(0);
-    // Tab switching function
-    function switchTab(tabName) {
-        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        document.getElementById(`tab-${tabName}`).classList.add('active');
-        document.getElementById(`content-${tabName}`).classList.add('active');
-    }
 
-    function openDonationModal() {
-        document.getElementById('donationModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-        clearModalError();
+// ==================== TAB SWITCHING WITH PERSISTENCE ====================
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    document.getElementById(`tab-${tabName}`).classList.add('active');
+    document.getElementById(`content-${tabName}`).classList.add('active');
+    
+    // Save the active tab to sessionStorage
+    sessionStorage.setItem('active_dashboard_tab', tabName);
+    
+    // Load resources if needed
+    if (tabName === 'resources') {
+        loadResources();
     }
+}
+
+// ==================== STORE RETURN TAB FOR EXTERNAL LINKS ====================
+document.querySelectorAll('.news-card a[href*="news"]').forEach(link => {
+    link.addEventListener('click', function() {
+        sessionStorage.setItem('return_to_dashboard_tab', 'news');
+    });
+});
+
+document.querySelectorAll('.event-card a[href*="events"]').forEach(link => {
+    link.addEventListener('click', function() {
+        sessionStorage.setItem('return_to_dashboard_tab', 'calendar');
+    });
+});
+
+document.querySelectorAll('.job-card a[href*="jobs"]').forEach(link => {
+    link.addEventListener('click', function() {
+        sessionStorage.setItem('return_to_dashboard_tab', 'jobs');
+    });
+});
+
+document.querySelectorAll('.game-card a[href*="quiz"], a[href*="wordsearch"], .games a').forEach(link => {
+    link.addEventListener('click', function() {
+        sessionStorage.setItem('return_to_dashboard_tab', 'games');
+    });
+});
+
+document.querySelectorAll('[href*="resources"], [href*="publications"]').forEach(link => {
+    link.addEventListener('click', function() {
+        sessionStorage.setItem('return_to_dashboard_tab', 'resources');
+    });
+});
+
+// ==================== PAGE INITIALIZATION ====================
+document.addEventListener('DOMContentLoaded', function() {
+
+    const returnTab = sessionStorage.getItem('return_to_dashboard_tab');
+    if (returnTab) {
+        switchTab(returnTab);
+        sessionStorage.removeItem('return_to_dashboard_tab');
+    } 
+    else {
+        const savedTab = sessionStorage.getItem('active_dashboard_tab');
+        if (savedTab && document.getElementById(`tab-${savedTab}`)) {
+            switchTab(savedTab);
+        } else {
+            switchTab('dashboard');
+        }
+    }
+    
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('tab') === 'games') {
+        switchTab('games');
+    }
+    
+    if (document.getElementById('tab-resources').classList.contains('active')) {
+        loadResources();
+    }
+});
+
+// Add this to your existing JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    const linksToIntercept = [
+        { selector: '.news-card a', tab: 'news' },
+        { selector: '.event-card a', tab: 'calendar' },
+        { selector: '.job-card a', tab: 'jobs' },
+        { selector: '[href*="wordsearch"], [href*="quiz"]', tab: 'games' },
+        { selector: '[href*="resources"], [href*="publications"]', tab: 'resources' }
+    ];
+    
+    linksToIntercept.forEach(item => {
+        document.querySelectorAll(item.selector).forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.href.includes('#') || 
+                    (this.href.includes('http') && !this.href.includes(window.location.hostname))) {
+                    return;
+                }
+                
+                e.preventDefault();
+                sessionStorage.setItem('return_to_dashboard_tab', item.tab);
+                window.location.href = this.href;
+            });
+        });
+    });
+});
+// Save current tab when leaving the page
+window.addEventListener('beforeunload', function() {
+    const activeTab = document.querySelector('.tab-button.active');
+    if (activeTab) {
+        const tabId = activeTab.id.replace('tab-', '');
+        sessionStorage.setItem('active_dashboard_tab', tabId);
+    }
+});
+
+// ==================== MODAL FUNCTIONS ====================
+function openDonationModal() {
+    document.getElementById('donationModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    clearModalError();
+}
 
 function closeDonationModal() {
     document.getElementById('donationModal').classList.remove('active');
@@ -2679,23 +3042,23 @@ function closeDonationModal() {
     clearModalError();
 }
 
-    function clearModalError() {
-        const container = document.getElementById('modalErrorContainer');
-        if (container) container.innerHTML = '';
-    }
+function clearModalError() {
+    const container = document.getElementById('modalErrorContainer');
+    if (container) container.innerHTML = '';
+}
 
-    function showModalError(message) {
-        const errorHtml = `
-            <div class="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-4 flex items-center gap-3 text-red-600 text-sm">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>${message}</span>
-                <button onclick="this.parentElement.remove()" class="ml-auto hover:opacity-70">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        `;
-        document.getElementById('modalErrorContainer').innerHTML = errorHtml;
-    }
+function showModalError(message) {
+    const errorHtml = `
+        <div class="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-4 flex items-center gap-3 text-red-600 text-sm">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>${message}</span>
+            <button onclick="this.parentElement.remove()" class="ml-auto hover:opacity-70">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    document.getElementById('modalErrorContainer').innerHTML = errorHtml;
+}
 
 function setDonationAmount(amount) {
     document.querySelectorAll('.donation-option').forEach(opt => opt.classList.remove('selected'));
@@ -2705,222 +3068,15 @@ function setDonationAmount(amount) {
     clearModalError();
 }
 
-
-document.querySelectorAll('[href*="resources"]').forEach(link => {
-    link.addEventListener('click', function() {
-        sessionStorage.setItem('return_to_dashboard_tab', 'resources');
-    });
-});
-document.addEventListener('DOMContentLoaded', function() {
-    const returnTab = sessionStorage.getItem('return_to_dashboard_tab');
-    if (returnTab) {
-        switchTab(returnTab);
-        sessionStorage.removeItem('return_to_dashboard_tab');
-    }
-    
-    if (document.getElementById('tab-resources').classList.contains('active')) {
-        loadResources();
-    }
-});
-
-// Filter Upload Modal Functions
-let selectedFilterType = '';
-let selectedFile = null;
-
-function openFilterUploadModal() {
-    document.getElementById('filterUploadModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-    resetFilterModal();
-}
-
-function closeFilterUploadModal() {
-    document.getElementById('filterUploadModal').classList.remove('active');
-    document.body.style.overflow = '';
-    resetFilterModal();
-}
-
-function closeFilterResultModal() {
-    document.getElementById('filterResultModal').classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-function resetFilterModal() {
-    selectedFilterType = '';
-    selectedFile = null;
-    document.querySelectorAll('.filter-type-option').forEach(opt => {
-        opt.classList.remove('selected', 'border-purple-500', 'bg-purple-50');
-    });
-    document.getElementById('filterPhotoInput').value = '';
-    document.getElementById('imagePreviewContainer').classList.add('hidden');
-    document.getElementById('processFilterBtn').disabled = true;
-    document.getElementById('filterModalErrorContainer').innerHTML = '';
-}
-
-function selectFilterType(type) {
-    document.querySelectorAll('.filter-type-option').forEach(opt => {
-        opt.classList.remove('selected', 'border-purple-500', 'bg-purple-50');
-        if (opt.dataset.type === type) {
-            opt.classList.add('selected', 'border-purple-500', 'bg-purple-50');
-        }
-    });
-    selectedFilterType = type;
-    checkFilterFormComplete();
-}
-
-function handleFileSelect(input) {
-    const file = input.files[0];
-    if (file) {
-        // Validate file type
-        const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-        if (!validTypes.includes(file.type)) {
-            showFilterError('Please select a valid image file (JPG or PNG)');
-            return;
-        }
-        
-        // Validate file size (2MB max)
-        if (file.size > 5 * 1024 * 1024) {
-            showFilterError('File size must be less than 2MB');
-            return;
-        }
-        
-        selectedFile = file;
-        
-        // Show preview
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('imagePreview').src = e.target.result;
-            document.getElementById('imageFileName').textContent = file.name;
-            document.getElementById('imageFileSize').textContent = (file.size / 1024).toFixed(2) + ' KB';
-            document.getElementById('imagePreviewContainer').classList.remove('hidden');
-        }
-        reader.readAsDataURL(file);
-        
-        checkFilterFormComplete();
-    }
-}
-
-function removeSelectedFile() {
-    selectedFile = null;
-    document.getElementById('filterPhotoInput').value = '';
-    document.getElementById('imagePreviewContainer').classList.add('hidden');
-    document.getElementById('processFilterBtn').disabled = true;
-}
-
-function checkFilterFormComplete() {
-    const btn = document.getElementById('processFilterBtn');
-    btn.disabled = !(selectedFilterType && selectedFile);
-}
-
-function showFilterError(message) {
-    const errorHtml = `
-        <div class="bg-red-50 border-2 border-red-200 rounded-xl p-4 flex items-center gap-3 text-red-600 text-sm">
-            <i class="fas fa-exclamation-circle"></i>
-            <span>${message}</span>
-            <button onclick="this.parentElement.remove()" class="ml-auto hover:opacity-70">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    `;
-    document.getElementById('filterModalErrorContainer').innerHTML = errorHtml;
-}
-
-async function processFilterUpload() {
-    if (!selectedFile) {
-        showFilterError('Please upload a photo');
-        return;
-    }
-    
-    const btn = document.getElementById('processFilterBtn');
-    const originalText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
-    
-    const formData = new FormData();
-    formData.append('user_photo', selectedFile);
-    formData.append('filter_type', 'petition');
-    formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
-    
-    try {
-        const response = await fetch('{{ route("filter.apply") }}', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            closeFilterUploadModal();
-            
-            document.getElementById('filteredResultImage').src = data.image_url;
-
-    if (data.share_links) {
-    document.getElementById('linkedinShareFilter').href  = data.share_links.linkedin;
-    document.getElementById('twitterShareFilter').href   = data.share_links.twitter;
-    document.getElementById('instagramShareFilter').href = data.share_links.facebook;
-   }
-            
-            window.filteredImageUrl = data.image_url;
-            
-            document.getElementById('filterResultModal').classList.add('active');
-        } else {
-            showFilterError(data.message || 'Failed to process image');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        showFilterError('Failed to process image. Please try again.');
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
-    }
-}
-
-function downloadFilteredImage() {
-    if (window.filteredImageUrl) {
-        const link = document.createElement('a');
-        link.download = 'filtered-photo.png';
-        link.href = window.filteredImageUrl;
-        link.click();
-    }
-}
-
-// Drag and drop functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const dropZone = document.getElementById('dropZone');
-    if (dropZone) {
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('border-purple-500', 'bg-purple-50');
-        });
-        
-        dropZone.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('border-purple-500', 'bg-purple-50');
-        });
-        
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('border-purple-500', 'bg-purple-50');
-            
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                document.getElementById('filterPhotoInput').files = e.dataTransfer.files;
-                handleFileSelect(document.getElementById('filterPhotoInput'));
-            } else {
-                showFilterError('Please drop a valid image file');
-            }
-        });
-    }
-});
-
+// ==================== RESOURCES FUNCTIONS ====================
 function loadResources() {
     const loadingEl = document.getElementById('resourcesLoading');
     const magazinesList = document.getElementById('magazinesList');
     const reportsList = document.getElementById('reportsList');
     const newslettersList = document.getElementById('newslettersList');
     const emptyState = document.getElementById('resourcesEmptyState');
+    
+    if (!loadingEl) return;
     
     loadingEl.classList.remove('hidden');
     
@@ -2984,10 +3140,8 @@ function renderResourceItems(listId, items) {
     }
     
     items.forEach(item => {
-        // Get file extension from file_path
         const fileExtension = item.file_path.split('.').pop().toLowerCase();
         
-        // Set icon and color based on file type
         let fileIcon = 'fa-file-pdf';
         let fileColor = 'text-red-500';
         
@@ -3034,17 +3188,10 @@ function renderResourceItems(listId, items) {
     list.innerHTML = html;
 }
 
-const originalSwitchTab = switchTab;
-switchTab = function(tabName) {
-    originalSwitchTab(tabName);
-    if (tabName === 'resources') {
-        loadResources();
-    }
-};
- async function processDonation() {
+// ==================== DONATION PROCESSING ====================
+async function processDonation() {
     clearModalError();
     
-    // Validate reason
     if (!selectedDonationReason) {
         showModalError('Please select a donation purpose');
         return;
@@ -3056,7 +3203,6 @@ switchTab = function(tabName) {
         return;
     }
     
-    // Get custom reason if "other" is selected
     let customReason = '';
     if (selectedDonationReason === 'other') {
         customReason = document.getElementById('customReason').value.trim();
@@ -3132,391 +3278,410 @@ switchTab = function(tabName) {
     }
 }
 
+// ==================== FILTER UPLOAD FUNCTIONS ====================
 
-document.querySelectorAll('.news-card a[href*="news"]').forEach(link => {
-        link.addEventListener('click', function() {
-            sessionStorage.setItem('return_to_dashboard_tab', 'news');
-        });
-    });
-    
-    document.querySelectorAll('.event-card a[href*="events"]').forEach(link => {
-        link.addEventListener('click', function() {
-            sessionStorage.setItem('return_to_dashboard_tab', 'calendar');
-        });
-    });
-    
-    document.querySelectorAll('.job-card a[href*="jobs"]').forEach(link => {
-        link.addEventListener('click', function() {
-            sessionStorage.setItem('return_to_dashboard_tab', 'jobs');
-        });
-    });
 
-     document.addEventListener('DOMContentLoaded', function() {
-        const returnTab = sessionStorage.getItem('return_to_dashboard_tab');
-        if (returnTab) {
-            switchTab(returnTab);
-            sessionStorage.removeItem('return_to_dashboard_tab');
+function openFilterUploadModal() {
+    document.getElementById('filterUploadModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    resetFilterModal();
+}
+
+function closeFilterUploadModal() {
+    document.getElementById('filterUploadModal').classList.remove('active');
+    document.body.style.overflow = '';
+    resetFilterModal();
+}
+
+function closeFilterResultModal() {
+    document.getElementById('filterResultModal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function resetFilterModal() {
+    selectedFilterType = '';
+    selectedFile = null;
+    document.querySelectorAll('.filter-type-option').forEach(opt => {
+        opt.classList.remove('selected', 'border-purple-500', 'bg-purple-50');
+    });
+    document.getElementById('filterPhotoInput').value = '';
+    document.getElementById('imagePreviewContainer').classList.add('hidden');
+    document.getElementById('processFilterBtn').disabled = true;
+    document.getElementById('filterModalErrorContainer').innerHTML = '';
+}
+
+function selectFilterType(type) {
+    document.querySelectorAll('.filter-type-option').forEach(opt => {
+        opt.classList.remove('selected', 'border-purple-500', 'bg-purple-50');
+        if (opt.dataset.type === type) {
+            opt.classList.add('selected', 'border-purple-500', 'bg-purple-50');
         }
     });
-    function downloadDonationReceipt(transactionId, amount, date, paymentMethod) {
-        const button = event.target;
-        const originalText = button.textContent;
-        button.innerHTML = '<svg class="animate-spin h-4 w-4 mr-2 inline" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...';
-        button.disabled = true;
+    selectedFilterType = type;
+    checkFilterFormComplete();
+}
 
-        setTimeout(() => {
-            const receiptDate = new Date(date);
-            const formattedDate = receiptDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-            const receiptHTML = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Donation Receipt</title>
-                    <style>
-                        body { 
-                            font-family: 'Open Sans', sans-serif; 
-                            max-width: 600px; 
-                            margin: 0 auto; 
-                            padding: 30px; 
-                            background: #f9fafb; 
-                        }
-                        h1, h2, h3, h4, h5, h6 { 
-                            font-family: 'Urbanist', sans-serif; 
-                        }
-                        .receipt-container { 
-                            background: white; 
-                            border-radius: 12px; 
-                            padding: 30px; 
-                            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); 
-                        }
-                        .header { 
-                            text-align: center; 
-                            margin-bottom: 30px; 
-                            border-bottom: 2px solid #e5e7eb; 
-                            padding-bottom: 20px; 
-                        }
-                        .logo { 
-                            font-size: 24px; 
-                            font-weight: bold; 
-                            color: #4f46e5; 
-                            font-family: 'Urbanist', sans-serif; 
-                        }
-                        .receipt-title { 
-                            font-size: 20px; 
-                            margin-top: 10px; 
-                            color: #1f2937; 
-                            font-family: 'Urbanist', sans-serif; 
-                        }
-                        .details { 
-                            margin: 20px 0; 
-                        }
-                        .row { 
-                            display: flex; 
-                            justify-content: space-between; 
-                            margin-bottom: 12px; 
-                            padding: 8px 0; 
-                            border-bottom: 1px dashed #e5e7eb; 
-                        }
-                        .label { 
-                            font-weight: 600; 
-                            color: #4b5563; 
-                            font-family: 'Urbanist', sans-serif; 
-                        }
-                        .value { 
-                            color: #1f2937; 
-                        }
-                        .amount { 
-                            font-size: 24px; 
-                            font-weight: bold; 
-                            color: #059669; 
-                            text-align: center; 
-                            margin: 20px 0; 
-                            font-family: 'Urbanist', sans-serif; 
-                        }
-                        .footer { 
-                            margin-top: 30px; 
-                            text-align: center; 
-                            color: #6b7280; 
-                            font-size: 14px; 
-                            border-top: 2px solid #e5e7eb; 
-                            padding-top: 20px; 
-                        }
-                        .thank-you { 
-                            font-size: 18px; 
-                            color: #4f46e5; 
-                            margin-bottom: 10px; 
-                            font-family: 'Urbanist', sans-serif; 
-                        }
-                        .receipt-type { 
-                            background: #e0f2fe; 
-                            color: #0369a1; 
-                            padding: 4px 12px; 
-                            border-radius: 20px; 
-                            font-size: 12px; 
-                            display: inline-block; 
-                            margin-bottom: 10px; 
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="receipt-container">
-                        <div class="header">
-                            <div class="logo">Africa Prosperity Network</div>
-                            <div class="receipt-title">Donation Receipt</div>
-                            <div class="receipt-type">Tax-Deductible Donation</div>
-                        </div>
-                        
-                        <div class="amount">$${parseFloat(amount).toFixed(2)}</div>
-                        
-                        <div class="details">
-                            <div class="row"><span class="label">Transaction ID:</span><span class="value">${transactionId}</span></div>
-                            <div class="row"><span class="label">Date:</span><span class="value">${formattedDate}</span></div>
-                            <div class="row"><span class="label">Donor Name:</span><span class="value">{{ $donor->firstname }} {{ $donor->lastname }}</span></div>
-                            <div class="row"><span class="label">Donor Email:</span><span class="value">{{ $donor->email }}</span></div>
-                            <div class="row"><span class="label">Payment Method:</span><span class="value">${paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1)}</span></div>
-                            <div class="row"><span class="label">Status:</span><span class="value" style="color: #059669;">Success</span></div>
-                        </div>
-                        
-                        <div class="footer">
-                            <div class="thank-you">Thank you for your generous support!</div>
-                            <p>Your donation helps us build Africa's prosperity through economic integration and development programs.</p>
-                            <p style="margin-top: 15px; font-size: 12px;">This is a computer-generated receipt. No signature required.</p>
-                        </div>
-                    </div>
-                </body>
-                </html>
-            `;
-            const blob = new Blob([receiptHTML], { type: 'text/html' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `donation-receipt-${transactionId}.html`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-
-            button.innerHTML = originalText;
-            button.disabled = false;
-        }, 1000);
-    }
-
-    function downloadReceipt(transactionId, amount, date, paymentMethod) {
-        const button = event.target;
-        const originalText = button.textContent;
-        button.innerHTML = '<svg class="animate-spin h-4 w-4 mr-2 inline" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...';
-        button.disabled = true;
-
-        setTimeout(() => {
-            const receiptDate = new Date(date);
-            const formattedDate = receiptDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-
-            const receiptHTML = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Payment Receipt</title>
-                    <style>
-                        body { 
-                            font-family: 'Open Sans', sans-serif; 
-                            max-width: 600px; 
-                            margin: 0 auto; 
-                            padding: 30px; 
-                            background: #f9fafb; 
-                        }
-                        h1, h2, h3, h4, h5, h6 { 
-                            font-family: 'Urbanist', sans-serif; 
-                        }
-                        .receipt-container { 
-                            background: white; 
-                            border-radius: 12px; 
-                            padding: 30px; 
-                            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); 
-                        }
-                        .header { 
-                            text-align: center; 
-                            margin-bottom: 30px; 
-                            border-bottom: 2px solid #e5e7eb; 
-                            padding-bottom: 20px; 
-                        }
-                        .logo { 
-                            font-size: 24px; 
-                            font-weight: bold; 
-                            color: #4f46e5; 
-                            font-family: 'Urbanist', sans-serif; 
-                        }
-                        .receipt-title { 
-                            font-size: 20px; 
-                            margin-top: 10px; 
-                            color: #1f2937; 
-                            font-family: 'Urbanist', sans-serif; 
-                        }
-                        .details { 
-                            margin: 20px 0; 
-                        }
-                        .row { 
-                            display: flex; 
-                            justify-content: space-between; 
-                            margin-bottom: 12px; 
-                            padding: 8px 0; 
-                            border-bottom: 1px dashed #e5e7eb; 
-                        }
-                        .label { 
-                            font-weight: 600; 
-                            color: #4b5563; 
-                            font-family: 'Urbanist', sans-serif; 
-                        }
-                        .value { 
-                            color: #1f2937; 
-                        }
-                        .amount { 
-                            font-size: 24px; 
-                            font-weight: bold; 
-                            color: #059669; 
-                            text-align: center; 
-                            margin: 20px 0; 
-                            font-family: 'Urbanist', sans-serif; 
-                        }
-                        .footer { 
-                            margin-top: 30px; 
-                            text-align: center; 
-                            color: #6b7280; 
-                            font-size: 14px; 
-                            border-top: 2px solid #e5e7eb; 
-                            padding-top: 20px; 
-                        }
-                        .thank-you { 
-                            font-size: 18px; 
-                            color: #4f46e5; 
-                            margin-bottom: 10px; 
-                            font-family: 'Urbanist', sans-serif; 
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="receipt-container">
-                        <div class="header">
-                            <div class="logo">Africa Prosperity Network</div>
-                            <div class="receipt-title">Payment Receipt</div>
-                        </div>
-                        
-                        <div class="amount">$${parseFloat(amount).toFixed(2)}</div>
-                        
-                        <div class="details">
-                            <div class="row"><span class="label">Transaction ID:</span><span class="value">${transactionId}</span></div>
-                            <div class="row"><span class="label">Date:</span><span class="value">${formattedDate}</span></div>
-                            <div class="row"><span class="label">Donor Name:</span><span class="value">{{ $donor->firstname }} {{ $donor->lastname }}</span></div>
-                            <div class="row"><span class="label">Donor Email:</span><span class="value">{{ $donor->email }}</span></div>
-                            <div class="row"><span class="label">Payment Method:</span><span class="value">${paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1)}</span></div>
-                            <div class="row"><span class="label">Status:</span><span class="value" style="color: #059669;">Success</span></div>
-                        </div>
-                        
-                        <div class="footer">
-                            <div class="thank-you">Thank you for your support!</div>
-                            <p>This is a computer-generated receipt. No signature required.</p>
-                        </div>
-                    </div>
-                </body>
-                </html>
-            `;
-
-            const blob = new Blob([receiptHTML], { type: 'text/html' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `receipt-${transactionId}.html`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-
-            button.innerHTML = originalText;
-            button.disabled = false;
-        }, 1000);
-    }
-
-    document.getElementById('donationModal')?.addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeDonationModal();
+function handleFileSelect(input) {
+    const file = input.files[0];
+    if (file) {
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        if (!validTypes.includes(file.type)) {
+            showFilterError('Please select a valid image file (JPG or PNG)');
+            return;
         }
-    });
-
-    if (!document.querySelector('meta[name="csrf-token"]')) {
-        const meta = document.createElement('meta');
-        meta.name = 'csrf-token';
-        meta.content = '{{ csrf_token() }}';
-        document.head.appendChild(meta);
+        
+        if (file.size > 5 * 1024 * 1024) {
+            showFilterError('File size must be less than 2MB');
+            return;
+        }
+        
+        selectedFile = file;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imagePreview').src = e.target.result;
+            document.getElementById('imageFileName').textContent = file.name;
+            document.getElementById('imageFileSize').textContent = (file.size / 1024).toFixed(2) + ' KB';
+            document.getElementById('imagePreviewContainer').classList.remove('hidden');
+        }
+        reader.readAsDataURL(file);
+        
+        checkFilterFormComplete();
     }
+}
 
-    function openLibraryModal() {
-        document.getElementById('libraryModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-        
-        // Show loading
-        document.getElementById('libraryLoading').classList.remove('hidden');
-        document.getElementById('libraryContent').classList.add('hidden');
-        
-        // Fetch publications
-        fetchPublications();
+function removeSelectedFile() {
+    selectedFile = null;
+    document.getElementById('filterPhotoInput').value = '';
+    document.getElementById('imagePreviewContainer').classList.add('hidden');
+    document.getElementById('processFilterBtn').disabled = true;
+}
+
+function checkFilterFormComplete() {
+    const btn = document.getElementById('processFilterBtn');
+    btn.disabled = !(selectedFilterType && selectedFile);
+}
+
+function showFilterError(message) {
+    const errorHtml = `
+        <div class="bg-red-50 border-2 border-red-200 rounded-xl p-4 flex items-center gap-3 text-red-600 text-sm">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>${message}</span>
+            <button onclick="this.parentElement.remove()" class="ml-auto hover:opacity-70">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    document.getElementById('filterModalErrorContainer').innerHTML = errorHtml;
+}
+
+async function processFilterUpload() {
+    
+    if (!selectedFile) {
+        showFilterError('Please upload a photo');
+        return;
     }
     
-    function closeLibraryModal() {
-        document.getElementById('libraryModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
-
-    function fetchPublications() {
-        fetch('/member/publications', {
-            method: 'GET',
+    const btn = document.getElementById('processFilterBtn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+    
+    const formData = new FormData();
+    formData.append('user_photo', selectedFile);
+    formData.append('filter_type', 'petition');
+    formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+    
+    try {
+        const response = await fetch('{{ route("filter.apply") }}', {
+            method: 'POST',
+            body: formData,
             headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json'
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                renderPublications(data.publications);
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            closeFilterUploadModal();
+            document.getElementById('filteredResultImage').src = data.image_url;
+
+            if (data.share_links) {
+                document.getElementById('linkedinShareFilter').href = data.share_links.linkedin;
+                document.getElementById('twitterShareFilter').href = data.share_links.twitter;
+                document.getElementById('instagramShareFilter').href = data.share_links.facebook;
+            }
+            
+            window.filteredImageUrl = data.image_url;
+            document.getElementById('filterResultModal').classList.add('active');
+        } else {
+            showFilterError(data.message || 'Failed to process image');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showFilterError('Failed to process image. Please try again.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+}
+
+function downloadFilteredImage() {
+    if (window.filteredImageUrl) {
+        const link = document.createElement('a');
+        link.download = 'filtered-photo.png';
+        link.href = window.filteredImageUrl;
+        link.click();
+    }
+}
+
+// ==================== DRAG AND DROP ====================
+document.addEventListener('DOMContentLoaded', function() {
+    const dropZone = document.getElementById('dropZone');
+    if (dropZone) {
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-purple-500', 'bg-purple-50');
+        });
+        
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-purple-500', 'bg-purple-50');
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-purple-500', 'bg-purple-50');
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                document.getElementById('filterPhotoInput').files = e.dataTransfer.files;
+                handleFileSelect(document.getElementById('filterPhotoInput'));
             } else {
-                showEmptyState();
+                showFilterError('Please drop a valid image file');
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showEmptyState();
-        })
-        .finally(() => {
-            document.getElementById('libraryLoading').classList.add('hidden');
-            document.getElementById('libraryContent').classList.remove('hidden');
         });
     }
+});
 
-    function renderPublications(publications) {
-        let hasContent = false;
-        document.getElementById('magazinesList').innerHTML = '';
-        document.getElementById('reportsList').innerHTML = '';
-        document.getElementById('newslettersList').innerHTML = '';
-        // Magazines
-        if (publications.magazine && publications.magazine.length > 0) {
-            renderItems('magazinesList', publications.magazine, 'Magazines');
-            hasContent = true;
-        } 
-        // Reports
-        if (publications.report && publications.report.length > 0) {
-            renderItems('reportsList', publications.report, 'Special Reports');
-            hasContent = true;
-        }
-        // Newsletters
-        if (publications.newsletter && publications.newsletter.length > 0) {
-            renderItems('newslettersList', publications.newsletter, 'Newsletters');
-            hasContent = true;
-        }
-        if (!hasContent) {
-            document.getElementById('emptyState').classList.remove('hidden');
-        } else {
-            document.getElementById('emptyState').classList.add('hidden');
-        }
+// ==================== RECEIPT DOWNLOADS ====================
+function downloadDonationReceipt(transactionId, amount, date, paymentMethod) {
+    const button = event.target;
+    const originalText = button.textContent;
+    button.innerHTML = '<svg class="animate-spin h-4 w-4 mr-2 inline" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...';
+    button.disabled = true;
+
+    setTimeout(() => {
+        const receiptDate = new Date(date);
+        const formattedDate = receiptDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        const receiptHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Donation Receipt</title>
+                <style>
+                    body { font-family: 'Open Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: #f9fafb; }
+                    h1, h2, h3, h4, h5, h6 { font-family: 'Urbanist', sans-serif; }
+                    .receipt-container { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+                    .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #e5e7eb; padding-bottom: 20px; }
+                    .logo { font-size: 24px; font-weight: bold; color: #4f46e5; font-family: 'Urbanist', sans-serif; }
+                    .receipt-title { font-size: 20px; margin-top: 10px; color: #1f2937; font-family: 'Urbanist', sans-serif; }
+                    .details { margin: 20px 0; }
+                    .row { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 8px 0; border-bottom: 1px dashed #e5e7eb; }
+                    .label { font-weight: 600; color: #4b5563; font-family: 'Urbanist', sans-serif; }
+                    .value { color: #1f2937; }
+                    .amount { font-size: 24px; font-weight: bold; color: #059669; text-align: center; margin: 20px 0; font-family: 'Urbanist', sans-serif; }
+                    .footer { margin-top: 30px; text-align: center; color: #6b7280; font-size: 14px; border-top: 2px solid #e5e7eb; padding-top: 20px; }
+                    .thank-you { font-size: 18px; color: #4f46e5; margin-bottom: 10px; font-family: 'Urbanist', sans-serif; }
+                </style>
+            </head>
+            <body>
+                <div class="receipt-container">
+                    <div class="header">
+                        <div class="logo">Africa Prosperity Network</div>
+                        <div class="receipt-title">Donation Receipt</div>
+                    </div>
+                    <div class="amount">$${parseFloat(amount).toFixed(2)}</div>
+                    <div class="details">
+                        <div class="row"><span class="label">Transaction ID:</span><span class="value">${transactionId}</span></div>
+                        <div class="row"><span class="label">Date:</span><span class="value">${formattedDate}</span></div>
+                        <div class="row"><span class="label">Donor Name:</span><span class="value">{{ $donor->firstname }} {{ $donor->lastname }}</span></div>
+                        <div class="row"><span class="label">Donor Email:</span><span class="value">{{ $donor->email }}</span></div>
+                        <div class="row"><span class="label">Payment Method:</span><span class="value">${paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1)}</span></div>
+                        <div class="row"><span class="label">Status:</span><span class="value" style="color: #059669;">Success</span></div>
+                    </div>
+                    <div class="footer">
+                        <div class="thank-you">Thank you for your generous support!</div>
+                        <p>This is a computer-generated receipt. No signature required.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `;
+        const blob = new Blob([receiptHTML], { type: 'text/html' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `donation-receipt-${transactionId}.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+
+        button.innerHTML = originalText;
+        button.disabled = false;
+    }, 1000);
+}
+
+function downloadReceipt(transactionId, amount, date, paymentMethod) {
+    const button = event.target;
+    const originalText = button.textContent;
+    button.innerHTML = '<svg class="animate-spin h-4 w-4 mr-2 inline" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...';
+    button.disabled = true;
+
+    setTimeout(() => {
+        const receiptDate = new Date(date);
+        const formattedDate = receiptDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        const receiptHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Payment Receipt</title>
+                <style>
+                    body { font-family: 'Open Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: #f9fafb; }
+                    h1, h2, h3, h4, h5, h6 { font-family: 'Urbanist', sans-serif; }
+                    .receipt-container { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+                    .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #e5e7eb; padding-bottom: 20px; }
+                    .logo { font-size: 24px; font-weight: bold; color: #4f46e5; font-family: 'Urbanist', sans-serif; }
+                    .receipt-title { font-size: 20px; margin-top: 10px; color: #1f2937; font-family: 'Urbanist', sans-serif; }
+                    .details { margin: 20px 0; }
+                    .row { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 8px 0; border-bottom: 1px dashed #e5e7eb; }
+                    .label { font-weight: 600; color: #4b5563; font-family: 'Urbanist', sans-serif; }
+                    .value { color: #1f2937; }
+                    .amount { font-size: 24px; font-weight: bold; color: #059669; text-align: center; margin: 20px 0; font-family: 'Urbanist', sans-serif; }
+                    .footer { margin-top: 30px; text-align: center; color: #6b7280; font-size: 14px; border-top: 2px solid #e5e7eb; padding-top: 20px; }
+                    .thank-you { font-size: 18px; color: #4f46e5; margin-bottom: 10px; font-family: 'Urbanist', sans-serif; }
+                </style>
+            </head>
+            <body>
+                <div class="receipt-container">
+                    <div class="header">
+                        <div class="logo">Africa Prosperity Network</div>
+                        <div class="receipt-title">Payment Receipt</div>
+                    </div>
+                    <div class="amount">$${parseFloat(amount).toFixed(2)}</div>
+                    <div class="details">
+                        <div class="row"><span class="label">Transaction ID:</span><span class="value">${transactionId}</span></div>
+                        <div class="row"><span class="label">Date:</span><span class="value">${formattedDate}</span></div>
+                        <div class="row"><span class="label">Donor Name:</span><span class="value">{{ $donor->firstname }} {{ $donor->lastname }}</span></div>
+                        <div class="row"><span class="label">Donor Email:</span><span class="value">{{ $donor->email }}</span></div>
+                        <div class="row"><span class="label">Payment Method:</span><span class="value">${paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1)}</span></div>
+                        <div class="row"><span class="label">Status:</span><span class="value" style="color: #059669;">Success</span></div>
+                    </div>
+                    <div class="footer">
+                        <div class="thank-you">Thank you for your support!</div>
+                        <p>This is a computer-generated receipt. No signature required.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `;
+        const blob = new Blob([receiptHTML], { type: 'text/html' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `receipt-${transactionId}.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+
+        button.innerHTML = originalText;
+        button.disabled = false;
+    }, 1000);
+}
+
+// ==================== MODAL CLOSE ON CLICK OUTSIDE ====================
+document.getElementById('donationModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDonationModal();
     }
+});
+
+// ==================== CSRF TOKEN ====================
+if (!document.querySelector('meta[name="csrf-token"]')) {
+    const meta = document.createElement('meta');
+    meta.name = 'csrf-token';
+    meta.content = '{{ csrf_token() }}';
+    document.head.appendChild(meta);
+}
+
+// ==================== LIBRARY FUNCTIONS ====================
+function openLibraryModal() {
+    document.getElementById('libraryModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('libraryLoading').classList.remove('hidden');
+    document.getElementById('libraryContent').classList.add('hidden');
+    fetchPublications();
+}
+
+function closeLibraryModal() {
+    document.getElementById('libraryModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+function fetchPublications() {
+    fetch('/member/publications', {
+        method: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            renderPublications(data.publications);
+        } else {
+            showEmptyState();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showEmptyState();
+    })
+    .finally(() => {
+        document.getElementById('libraryLoading').classList.add('hidden');
+        document.getElementById('libraryContent').classList.remove('hidden');
+    });
+}
+
+function renderPublications(publications) {
+    let hasContent = false;
+    document.getElementById('magazinesList').innerHTML = '';
+    document.getElementById('reportsList').innerHTML = '';
+    document.getElementById('newslettersList').innerHTML = '';
+    
+    if (publications.magazine && publications.magazine.length > 0) {
+        renderItems('magazinesList', publications.magazine, 'Magazines');
+        hasContent = true;
+    }
+    if (publications.report && publications.report.length > 0) {
+        renderItems('reportsList', publications.report, 'Special Reports');
+        hasContent = true;
+    }
+    if (publications.newsletter && publications.newsletter.length > 0) {
+        renderItems('newslettersList', publications.newsletter, 'Newsletters');
+        hasContent = true;
+    }
+    if (!hasContent) {
+        document.getElementById('emptyState').classList.remove('hidden');
+    } else {
+        document.getElementById('emptyState').classList.add('hidden');
+    }
+}
+
 function renderItems(listId, items, sectionTitle) {
     const list = document.getElementById(listId);
     let html = '';
@@ -3571,13 +3736,13 @@ function renderItems(listId, items, sectionTitle) {
     
     list.innerHTML = html;
 }
-    
-    function showEmptyState() {
-        document.getElementById('emptyState').classList.remove('hidden');
-        document.getElementById('magazinesList').innerHTML = '';
-        document.getElementById('reportsList').innerHTML = '';
-        document.getElementById('newslettersList').innerHTML = '';
-    }
+
+function showEmptyState() {
+    document.getElementById('emptyState').classList.remove('hidden');
+    document.getElementById('magazinesList').innerHTML = '';
+    document.getElementById('reportsList').innerHTML = '';
+    document.getElementById('newslettersList').innerHTML = '';
+}
 </script>
 @endpush
 @endsection

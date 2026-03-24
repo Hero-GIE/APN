@@ -154,27 +154,40 @@
                             {!! nl2br(e($puzzle->description)) !!}
                         </div>
                         @endif
-
-                        <!-- Action Buttons -->
-                        <div class="flex space-x-4">
-                            @if($donor)
-                                @if($puzzle->can_play)
-                                <a href="{{ route('puzzles.start', $puzzle->slug) }}" 
-                                   class="flex-1 py-3 bg-green-600 text-white rounded-lg text-center font-semibold hover:bg-green-700 transition-colors">
-                                    <i class="fas fa-play mr-2"></i>Start Puzzle
-                                </a>
-                                @else
-                                <button disabled class="flex-1 py-3 bg-gray-400 text-white rounded-lg font-semibold cursor-not-allowed">
-                                    No Attempts Left
-                                </button>
-                                @endif
-                            @else
-                            <a href="{{ route('donor.login') }}" 
-                               class="flex-1 py-3 bg-indigo-600 text-white rounded-lg text-center font-semibold hover:bg-indigo-700">
-                                <i class="fas fa-sign-in-alt mr-2"></i>Login to Play
-                            </a>
-                            @endif
-                        </div>
+<!-- Action Buttons -->
+<div class="flex space-x-4">
+    @if($donor)
+        @if($puzzle->type == 'quiz')
+            <form action="{{ route('quiz.start', $puzzle->slug) }}" method="POST" class="flex-1">
+                @csrf
+                <button type="submit" class="w-full py-3 bg-green-600 text-white rounded-lg text-center font-semibold hover:bg-green-700 transition-colors">
+                    <i class="fas fa-play mr-2"></i>Start Quiz
+                </button>
+            </form>
+        @elseif($puzzle->type == 'wordsearch')
+            <form action="{{ route('wordsearch.start', $puzzle->slug) }}" method="POST" class="flex-1">
+                @csrf
+                <button type="submit" class="w-full py-3 bg-green-600 text-white rounded-lg text-center font-semibold hover:bg-green-700 transition-colors">
+                    <i class="fas fa-play mr-2"></i>Start Word Search
+                </button>
+            </form>
+        @elseif($puzzle->can_play)
+            <a href="{{ route('puzzles.start', $puzzle->slug) }}" 
+               class="flex-1 py-3 bg-green-600 text-white rounded-lg text-center font-semibold hover:bg-green-700 transition-colors">
+                <i class="fas fa-play mr-2"></i>Start Puzzle
+            </a>
+        @else
+            <button disabled class="flex-1 py-3 bg-gray-400 text-white rounded-lg font-semibold cursor-not-allowed">
+                No Attempts Left
+            </button>
+        @endif
+    @else
+        <a href="{{ route('donor.login') }}" 
+           class="flex-1 py-3 bg-indigo-600 text-white rounded-lg text-center font-semibold hover:bg-indigo-700">
+            <i class="fas fa-sign-in-alt mr-2"></i>Login to Play
+        </a>
+    @endif
+</div>
 
                         @if($donor && $puzzle->attempts_allowed > 0)
                         <p class="text-sm text-gray-500 mt-3">
