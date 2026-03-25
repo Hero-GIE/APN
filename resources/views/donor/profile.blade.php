@@ -255,10 +255,10 @@
                             <p class="text-base font-medium text-gray-900">{{ $donor->region ?? 'Not provided' }}</p>
                         </div>
 
-                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                        {{-- <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
                             <p class="text-xs text-gray-500 mb-1">Postal Code</p>
                             <p class="text-base font-medium text-gray-900">{{ $donor->postcode ?? 'Not provided' }}</p>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
 

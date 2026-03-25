@@ -163,7 +163,7 @@
     .country-item .ci-name { flex: 1; }
     .country-no-results { padding: 1rem; text-align: center; color: #94a3b8; font-size: 0.83rem; }
 
-    .region-picker { position: relative; }
+    /* .region-picker { position: relative; }
     .region-trigger { width: 100%; padding: 0.75rem 2.5rem 0.75rem 2.6rem; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 0.88rem; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s ease; text-align: left; outline: none; user-select: none; font-family: 'Open Sans', sans-serif; }
     .region-trigger:hover, .region-trigger.open { border-color: #3b82f6; background: #fff; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
     .region-trigger .rt-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -184,7 +184,7 @@
     .region-custom-wrap { border-top: 1px solid #e2e8f0; padding: 0.6rem; background: #fafbfc; }
     .region-custom-input { width: 100%; padding: 0.5rem 0.8rem; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 0.83rem; outline: none; background: #fff; color: #1e293b; font-family: 'Open Sans', sans-serif; }
     .region-custom-input:focus { border-color: #3b82f6; }
-    .region-custom-label { font-size: 0.73rem; color: #94a3b8; margin-bottom: 0.35rem; display: block; }
+    .region-custom-label { font-size: 0.73rem; color: #94a3b8; margin-bottom: 0.35rem; display: block; } */
 </style>
 
 <div class="apn-layout animate-page-reveal">
@@ -221,8 +221,8 @@
     <div class="left-panel apn-scrollbar p-6 md:p-8 relative">
       <div class="login-btn-top absolute top-6 right-6 z-20">
     <a href="{{ route('donor.login') }}"
-       class="inline-flex items-center gap-2 text-sm text-[#64748b] hover:text-[#3b82f6] transition-colors duration-300">
-        <i class="fas fa-sign-in-alt text-xs"></i>
+       class="inline-flex items-center gap-2 text-md text-[#64748b] hover:text-[#3b82f6] transition-colors duration-300">
+        <i class="fas fa-sign-in-alt text-md"></i>
         <span>Login</span>
     </a>
 </div>
@@ -378,7 +378,7 @@
                         <input type="text" id="city" class="field-apn" placeholder="Accra">
                     </div>
                 </div>
-                <div>
+                {{-- <div>
                     <label class="flex items-center gap-1 text-xs font-semibold text-[#334155] mb-1.5" style="font-family:'Urbanist',sans-serif;">
                         <i class="fas fa-map text-[#3b82f6]" style="font-size:0.75rem;"></i> Region
                     </label>
@@ -397,7 +397,18 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
+
+
+                <div>
+    <label class="flex items-center gap-1 text-xs font-semibold text-[#334155] mb-1.5" style="font-family:'Urbanist',sans-serif;">
+        <i class="fas fa-map text-[#3b82f6]" style="font-size:0.75rem;"></i> Region
+    </label>
+    <div class="field-wrap">
+        <i class="fas fa-map field-icon"></i>
+        <input type="text" id="region" class="field-apn" placeholder="e.g. Ashanti, Greater Accra...">
+    </div>
+</div>
             </div>
 
             <button type="button" id="joinBtn" onclick="processMembership()"
@@ -594,43 +605,43 @@ document.addEventListener('click', function(e) {
     }
 });
 
-const GHANA_REGIONS = [
-    {name:'Ahafo',capital:'Goaso'},{name:'Ashanti',capital:'Kumasi'},
-    {name:'Bono',capital:'Sunyani'},{name:'Bono East',capital:'Techiman'},
-    {name:'Central',capital:'Cape Coast'},{name:'Eastern',capital:'Koforidua'},
-    {name:'Greater Accra',capital:'Accra'},{name:'North East',capital:'Nalerigu'},
-    {name:'Northern',capital:'Tamale'},{name:'Oti',capital:'Dambai'},
-    {name:'Savannah',capital:'Damongo'},{name:'Upper East',capital:'Bolgatanga'},
-    {name:'Upper West',capital:'Wa'},{name:'Volta',capital:'Ho'},
-    {name:'Western',capital:'Sekondi-Takoradi'},{name:'Western North',capital:'Sefwi Wiawso'},
-];
+// const GHANA_REGIONS = [
+//     {name:'Ahafo',capital:'Goaso'},{name:'Ashanti',capital:'Kumasi'},
+//     {name:'Bono',capital:'Sunyani'},{name:'Bono East',capital:'Techiman'},
+//     {name:'Central',capital:'Cape Coast'},{name:'Eastern',capital:'Koforidua'},
+//     {name:'Greater Accra',capital:'Accra'},{name:'North East',capital:'Nalerigu'},
+//     {name:'Northern',capital:'Tamale'},{name:'Oti',capital:'Dambai'},
+//     {name:'Savannah',capital:'Damongo'},{name:'Upper East',capital:'Bolgatanga'},
+//     {name:'Upper West',capital:'Wa'},{name:'Volta',capital:'Ho'},
+//     {name:'Western',capital:'Sekondi-Takoradi'},{name:'Western North',capital:'Sefwi Wiawso'},
+// ];
 
-let regionDropdownOpen = false;
+// let regionDropdownOpen = false;
 
-function buildRegionList() {
-    const list = document.getElementById('regionList');
-    list.innerHTML = GHANA_REGIONS.map(r => `<div class="region-item" onclick="selectRegion('${r.name}','${r.capital}')"><div><div class="ri-name">${r.name}</div><div class="ri-cap">Capital: ${r.capital}</div></div></div>`).join('');
-}
+// function buildRegionList() {
+//     const list = document.getElementById('regionList');
+//     list.innerHTML = GHANA_REGIONS.map(r => `<div class="region-item" onclick="selectRegion('${r.name}','${r.capital}')"><div><div class="ri-name">${r.name}</div><div class="ri-cap">Capital: ${r.capital}</div></div></div>`).join('');
+// }
 
-function toggleRegionDropdown() {
-    const dropdown = document.getElementById('regionDropdown');
-    const trigger = document.getElementById('regionTrigger');
-    regionDropdownOpen = !regionDropdownOpen;
-    dropdown.classList.toggle('open', regionDropdownOpen);
-    trigger.classList.toggle('open', regionDropdownOpen);
-    if (regionDropdownOpen) { buildRegionList(); setTimeout(() => document.getElementById('regionCustomInput').focus(), 80); }
-}
+// function toggleRegionDropdown() {
+//     const dropdown = document.getElementById('regionDropdown');
+//     const trigger = document.getElementById('regionTrigger');
+//     regionDropdownOpen = !regionDropdownOpen;
+//     dropdown.classList.toggle('open', regionDropdownOpen);
+//     trigger.classList.toggle('open', regionDropdownOpen);
+//     if (regionDropdownOpen) { buildRegionList(); setTimeout(() => document.getElementById('regionCustomInput').focus(), 80); }
+// }
 
-function selectRegion(name, capital) {
-    document.getElementById('region').value = name;
-    document.getElementById('selectedRegionName').textContent = name + ' (' + capital + ')';
-    document.getElementById('regionCustomInput').value = '';
-    document.querySelectorAll('.region-item').forEach(el => el.classList.remove('selected'));
-    event.currentTarget.classList.add('selected');
-    document.getElementById('regionDropdown').classList.remove('open');
-    document.getElementById('regionTrigger').classList.remove('open');
-    regionDropdownOpen = false;
-}
+// function selectRegion(name, capital) {
+//     document.getElementById('region').value = name;
+//     document.getElementById('selectedRegionName').textContent = name + ' (' + capital + ')';
+//     document.getElementById('regionCustomInput').value = '';
+//     document.querySelectorAll('.region-item').forEach(el => el.classList.remove('selected'));
+//     event.currentTarget.classList.add('selected');
+//     document.getElementById('regionDropdown').classList.remove('open');
+//     document.getElementById('regionTrigger').classList.remove('open');
+//     regionDropdownOpen = false;
+// }
 
 function onRegionCustomInput(val) {
     document.getElementById('region').value = val;

@@ -123,8 +123,8 @@
     <div class="left-panel apn-scrollbar p-6 md:p-8 relative">
 
         <div class="back-link absolute top-7 left-7 z-20">
-            <a href="/" class="inline-flex items-center gap-2 text-sm text-[#64748b] hover:text-[#4f46e5] transition-colors duration-300">
-                <i class="fas fa-chevron-left text-xs"></i>
+            <a href="/" class="inline-flex items-center gap-2 text-md text-[#64748b] hover:text-[#4f46e5] transition-colors duration-300">
+                <i class="fas fa-chevron-left text-md"></i>
                 <span>Back to Home</span>
             </a>
         </div>
