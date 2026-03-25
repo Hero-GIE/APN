@@ -23,3 +23,8 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 error_log
+__MACOSX/
+*.log
+error_log
+public222/
+.DS_Store
