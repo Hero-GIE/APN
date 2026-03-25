@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
 
         // Call all other seeders
         $this->call([
+<<<<<<< Updated upstream
             JobOpportunitySeeder::class,
             MagazineSeeder::class,
             MemberBadgeTokenSeeder::class,
@@ -36,6 +37,15 @@ class DatabaseSeeder extends Seeder
             PuzzleAchievementSeeder::class,
             PuzzleSeeder::class,
             EventSeeder::class,
+=======
+            // JobOpportunitySeeder::class,
+            MagazineSeeder::class,
+            // MemberBadgeTokenSeeder::class,
+            // NewsSeeder::class,
+            // PuzzleAchievementSeeder::class,
+            // PuzzleSeeder::class,
+            // EventSeeder::class,
+>>>>>>> Stashed changes
         ]);
     }
 }

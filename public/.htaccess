@@ -1,3 +1,6 @@
+# Serve correct MIME types for CSS/JS
+AddType text/css .css
+AddType application/javascript .js
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
