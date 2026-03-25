@@ -187,22 +187,34 @@
                     @csrf
 
                     <!-- Cover Letter -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Cover Letter <span class="text-gray-400">(Optional)</span>
-                        </label>
-                        <textarea 
-                            name="cover_letter" 
-                            rows="6" 
-                            class="field-apn @error('cover_letter') error @enderror"
-                            placeholder="Tell us why you're interested in this position and what makes you a great candidate...">{{ old('cover_letter') }}</textarea>
-                        @error('cover_letter')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                        <p class="mt-1 text-xs text-gray-500">
-                            Maximum 5000 characters. Include your relevant experience and motivation.
-                        </p>
-                    </div>
+                  <!-- Cover Letter -->
+<div class="mb-6">
+    <label class="block text-sm font-medium text-gray-700 mb-2">
+        Cover Letter <span class="text-gray-400">(Optional)</span>
+    </label>
+    <textarea 
+        name="cover_letter" 
+        rows="6" 
+        maxlength="5000"
+        class="field-apn @error('cover_letter') error @enderror"
+        placeholder="Tell us why you're interested in this position and what makes you a great candidate..."
+        oninput="updateCharCount(this)">{{ old('cover_letter') }}</textarea>
+    
+    <!-- Character Counter -->
+    <div class="flex justify-between items-center mt-1">
+        <p class="text-xs text-gray-500">
+            <i class="fas fa-info-circle mr-1"></i>
+            Maximum 5000 characters
+        </p>
+        <p class="text-xs text-gray-500">
+            <span id="charCount">0</span> / 5000 characters
+        </p>
+    </div>
+    
+    @error('cover_letter')
+        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+    @enderror
+</div>
 
                     <!-- Resume Upload with File Validation -->
                     <div class="mb-6">
@@ -360,6 +372,31 @@ function validateFile(input) {
         return true;
     }
 }
+
+function updateCharCount(textarea) {
+    const count = textarea.value.length;
+    const charCountSpan = document.getElementById('charCount');
+    if (charCountSpan) {
+        charCountSpan.textContent = count;
+        
+        // Add warning when approaching limit
+        if (count > 4500) {
+            charCountSpan.style.color = '#ef4444';
+        } else if (count > 4000) {
+            charCountSpan.style.color = '#f59e0b';
+        } else {
+            charCountSpan.style.color = '#6b7280';
+        }
+    }
+}
+
+// Initialize char count on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const coverLetter = document.querySelector('textarea[name="cover_letter"]');
+    if (coverLetter) {
+        updateCharCount(coverLetter);
+    }
+});
 
 function validateForm(event) {
     event.preventDefault();
