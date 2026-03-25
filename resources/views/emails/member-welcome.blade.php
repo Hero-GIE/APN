@@ -349,7 +349,6 @@
         <!-- Header -->
         <div class="header">
             <img src="{{asset('images/logo/APN-Logo-01-white.png')}}" width="100" class="img-fluid my-2" alt="">
-            {{-- <h1 class="header-title">Africa Prosperity Network</h1> --}}
             <h1 class="header-title">Africa Prosperity Network</h1>
             <p class="header-sub">Your membership is building a prosperous Africa</p>
         </div>

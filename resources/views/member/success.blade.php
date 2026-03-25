@@ -103,7 +103,7 @@
             <i class="fas fa-star text-[#4f46e5] text-lg mt-0.5"></i>
             <div class="flex-1">
                 <strong class="text-blue-900 block mb-1">Member Benefits Activated</strong>
-                <p class="m-0 leading-relaxed text-blue-800">You now have access to exclusive member benefits. Check your email for membership details and login credentials.</p>
+                <p class="m-0 leading-relaxed text-blue-800">You now have access to exclusive member benefits. Please check your email for your membership details and login credentials. After logging in, you can update your password from your dashboard using the default password provided in the email</p>
             </div>
         </div>
         @endif
@@ -113,11 +113,11 @@
             <span>Go to Member Dashboard</span>
             <i class="fas fa-arrow-right transition-transform duration-300 group-hover:translate-x-1"></i>
         </a>
-        
+{{--         
         <a href="{{ route('donor.login') }}" class="w-full py-4 bg-slate-50 text-[#4f46e5] border-2 border-slate-200 rounded-lg font-['Syne'] text-sm font-semibold flex items-center justify-center gap-3 transition-all duration-300 hover:bg-blue-50 hover:border-[#4f46e5] hover:-translate-y-0.5">
             <i class="fas fa-user"></i>
             <span>Login to Account</span>
-        </a>
+        </a> --}}
 
         <!-- Security Note -->
         <div class="flex items-center justify-center gap-2 mt-8 text-xs text-slate-400">
