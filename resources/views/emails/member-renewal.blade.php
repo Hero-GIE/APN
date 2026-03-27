@@ -6,11 +6,10 @@
     <title>APN Membership Renewal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;200;300;400;500;600;700;800&family=Lora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;200;300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', 'Lora', Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
             line-height: 1.7;
             color: #1a1f36;
             background: #f1f5f9;
@@ -18,47 +17,41 @@
             padding: 20px;
         }
         .email-container {
-            max-width: 420px;
+            max-width: 520px;
             margin: 0 auto;
             background: white;
-            border-radius: 12px;
+            border-radius: 24px;
             overflow: hidden;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
         }
         .header {
-            /* background: linear-gradient(135deg, #3730a3 0%, #4f46e5 60%, #6366f1 100%); */
-            background: url('images/backgrounds/interoperability-1.webp');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: top center;
-            padding: 20px 10px;
+            background: linear-gradient(135deg, #1e1b4b 0%, #4f46e5 100%);
+            padding: 40px 20px;
             text-align: center;
             position: relative;
             overflow: hidden;
         }
-
         .header::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
-            animation: pulse 4s ease-in-out infinite;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
         }
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
-        .header-brand {
-            margin: 0 0 10px;
-            font-size: 13px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: #ffffff;
-            font-weight: 400;
+        .header-content {
             position: relative;
+            z-index: 2;
+        }
+        .logo {
+            width: 80px;
+            margin-bottom: 20px;
         }
         .header-title {
             color: white;
@@ -67,50 +60,41 @@
             font-size: 28px;
             font-weight: 800;
             letter-spacing: -0.5px;
-            position: relative;
         }
         .header-sub {
             color: #c7d2fe;
-            margin: 8px 0 0;
-            font-size: 18px;
-            letter-spacing: 0.7px;
-            font-family: 'Urbanist', serif;
-            position: relative;
+            margin: 10px 0 0;
+            font-size: 16px;
         }
-
-        .header img{
-            width: 90px;
-        }
-
         .content {
             padding: 40px 35px;
             background: white;
         }
         .greeting {
             font-family: 'Urbanist', sans-serif;
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
             color: #1a1f36;
-            margin: 0 0 15px;
+            margin: 0 0 12px;
         }
         .greeting-message {
             color: #64748b;
             font-size: 15px;
             margin: 0 0 30px;
-            line-height: 1.7;
+            line-height: 1.6;
         }
         .renewal-card {
             background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
             padding: 28px;
             margin-bottom: 30px;
             text-align: center;
         }
         .renewal-badge {
-            background: #4e46e513;
-            color: #3f32b7;
-            padding: 4px 8px;
+            background: #e0e7ff;
+            color: #4f46e5;
+            padding: 6px 12px;
             border-radius: 30px;
             font-size: 12px;
             font-weight: 600;
@@ -127,17 +111,17 @@
         }
         .renewal-amount small {
             font-size: 16px;
-            font-weight: 300;
+            font-weight: 400;
             color: #64748b;
         }
         .renewal-ref {
-            font-size: 13px;
+            font-size: 12px;
             color: #64748b;
             background: white;
             display: inline-block;
             padding: 6px 16px;
             border-radius: 30px;
-            border: 2px solid #e2e8f0;
+            border: 1px solid #e2e8f0;
             font-family: monospace;
             margin: 10px 0;
         }
@@ -149,8 +133,8 @@
         }
         .info-box {
             background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
             padding: 15px;
             text-align: left;
         }
@@ -159,7 +143,7 @@
             color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin: 0 0 4px;
+            margin: 0 0 6px;
         }
         .info-value {
             font-family: 'Urbanist', sans-serif;
@@ -169,9 +153,8 @@
             margin: 0;
         }
         .membership-dates {
-            background: #e8f0fe;
-            border: 2px solid #c7d2fe;
-            border-radius: 12px;
+            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+            border-radius: 16px;
             padding: 20px;
             margin: 25px 0;
             text-align: center;
@@ -181,7 +164,8 @@
             color: #4f46e5;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin: 0 0 5px;
+            margin: 0 0 8px;
+            font-weight: 600;
         }
         .date-value {
             font-family: 'Urbanist', sans-serif;
@@ -192,7 +176,7 @@
         }
         .button {
             display: inline-block;
-            background: #4f46e5;
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
             color: white;
             padding: 14px 40px;
             text-decoration: none;
@@ -202,15 +186,37 @@
             font-size: 15px;
             margin: 20px 0;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
         }
         .button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.3);
+            box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.4);
+        }
+        .benefits-list {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        .benefits-list h4 {
+            font-family: 'Urbanist', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1f36;
+            margin: 0 0 12px;
+        }
+        .benefits-list ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .benefits-list li {
+            font-size: 13px;
+            color: #475569;
+            margin-bottom: 8px;
         }
         .footer {
             background: #f8fafc;
-            border-top: 2px solid #e2e8f0;
+            border-top: 1px solid #e2e8f0;
             padding: 30px 35px;
             text-align: center;
         }
@@ -228,101 +234,104 @@
             text-decoration: none;
             font-weight: 500;
         }
-        .footer-email a:hover {
-            text-decoration: underline;
-        }
         .footer-auto {
             font-size: 11px;
             color: #94a3b8;
             margin: 0;
         }
-        .footer-auto i {
-            font-style: normal;
-            color: #4f46e5;
-            margin: 0 4px;
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            .renewal-amount {
+                font-size: 36px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="email-container">
 
-        {{-- Header with gradient and orb effect --}}
         <div class="header">
-            <img src="{{asset('images/logo/APN-Logo-01-white.png')}}" class="img-fluid" alt="">
-            {{-- <h1 class="header-title">Africa Prosperity Network</h1> --}}
-            <div class="header-brand mt-3">MEMBERSHIP RENEWAL</div>
-            {{-- <p class="header-sub">Thank you for renewing your membership</p> --}}
+            <div class="header-content">
+                <img src="{{ asset('images/logo/APN-Logo-01-white.png') }}" class="logo" alt="APN Logo">
+                <h1 class="header-title">Membership Renewed! 🎉</h1>
+                <p class="header-sub">Thank you for continuing your journey with us</p>
+            </div>
         </div>
 
-        {{-- Body --}}
         <div class="content">
-
-            {{-- Greeting --}}
-            <h2 class="greeting">Thank you for renewing, {{ $member->donor->firstname ?? $donor->firstname ?? 'Valued Member' }}! 🎉</h2>
+            <h2 class="greeting">Welcome back, {{ $donor->firstname ?? 'Valued Member' }}!</h2>
             
             <p class="greeting-message">
-                Your membership has been successfully renewed. We're thrilled to have you continue as part of the APN community. Below is a summary of your renewal.
+                Your membership has been successfully renewed. We're thrilled to have you continue as part of the APN community. Your support helps us build Africa's prosperity together.
             </p>
 
-            {{-- Renewal Card --}}
             <div class="renewal-card">
                 <div class="renewal-badge">✓ RENEWAL COMPLETE</div>
                 <div class="renewal-amount">
-                    {{ $donation->currency ?? 'GHS' }} {{ number_format($donation->amount ?? 0, 2) }}
-                    <br><small>{{ ucfirst($membership_type ?? $member->membership_type ?? 'monthly') }} plan</small>
+                    ${{ number_format($payment->amount ?? 0, 2) }}
+                    <br><small>{{ ucfirst($member->membership_type ?? 'monthly') }} plan</small>
                 </div>
                 <div class="renewal-ref">
-                    Ref: {{ $donation->transaction_id ?? 'N/A' }}
+                    Transaction: {{ $payment->transaction_id ?? 'N/A' }}
                 </div>
             </div>
 
-            {{-- Membership Details --}}
             <div class="info-grid">
                 <div class="info-box">
                     <div class="info-label">Member Since</div>
-                    <div class="info-value">{{ \Carbon\Carbon::parse($member->start_date ?? now())->format('M d, Y') }}</div>
+                    <div class="info-value">{{ \Carbon\Carbon::parse($member->start_date)->format('M d, Y') }}</div>
                 </div>
                 <div class="info-box">
                     <div class="info-label">Renewal Count</div>
-                    <div class="info-value">{{ ($member->renewal_count ?? 0) + 1 }}</div>
+                    <div class="info-value">{{ $member->renewal_count }} {{ $member->renewal_count == 1 ? 'time' : 'times' }}</div>
                 </div>
             </div>
 
-            {{-- New Membership Period --}}
             <div class="membership-dates">
-                <div class="date-label">New Membership Period</div>
+                <div class="date-label">Your New Membership Period</div>
                 <div class="date-value">
-                    {{ \Carbon\Carbon::parse($member->start_date ?? now())->format('M d, Y') }} — 
-                    {{ \Carbon\Carbon::parse($member->end_date ?? now()->addMonth())->format('M d, Y') }}
+                    {{ \Carbon\Carbon::parse($member->start_date)->format('M d, Y') }} — 
+                    {{ \Carbon\Carbon::parse($member->end_date)->format('M d, Y') }}
                 </div>
             </div>
 
-            {{-- Call to Action --}}
+            <div class="benefits-list">
+                <h4>✨ Your Active Benefits Include:</h4>
+                <ul>
+                    <li>✓ 10% discount on APN Gala tickets and merchandise</li>
+                    <li>✓ Exclusive access to APN Magazine (digital edition)</li>
+                    <li>✓ Monthly newsletters with insider updates</li>
+                    <li>✓ Visibility and branding opportunities</li>
+                    <li>✓ Access to APN events and conference materials</li>
+                    <li>✓ Eligibility for awards and nominations</li>
+                </ul>
+            </div>
+
             <div style="text-align: center;">
                 <a href="{{ route('member.dashboard') }}" class="button">
                     Go to Your Dashboard →
                 </a>
             </div>
 
-            {{-- Impact message --}}
-            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #e2e8f0;">
+            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
                 <p style="color: #64748b; font-size: 14px; margin: 0 0 5px; font-style: italic;">
-                    "Alone we can do so little; together we can do so much."
+                    "Together, we are building Africa's prosperity."
                 </p>
                 <p style="color: #4f46e5; font-size: 12px; font-weight: 600; margin: 0;">
-                    — Building Africa's Prosperity, Together —
+                    — Africa Prosperity Network —
                 </p>
             </div>
         </div>
 
-        {{-- Footer --}}
         <div class="footer">
             <p class="footer-copyright">© {{ date('Y') }} Africa Prosperity Network · All rights reserved</p>
             <p class="footer-email">
-                <a href="mailto:membership@africaprosperitynetwork.com">membership@africaprosperitynetwork.com</a>
+                Need help? <a href="mailto:membership@africaprosperitynetwork.com">membership@africaprosperitynetwork.com</a>
             </p>
             <p class="footer-auto">
-                 This is an automated email. Please do not reply directly. 
+                This is an automated confirmation. Please keep this email for your records.
             </p>
         </div>
 

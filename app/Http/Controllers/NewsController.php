@@ -28,7 +28,6 @@ class NewsController extends Controller
                     ->where('is_published', true)
                     ->firstOrFail();
 
-        // Fetch ALL published news for the sidebar 
         $allNews = News::where('is_published', true)
                        ->where('id', '!=', $news->id)
                        ->orderBy('published_date', 'desc')

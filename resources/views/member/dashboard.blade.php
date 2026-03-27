@@ -944,6 +944,37 @@
         gap: 0.5rem;
         align-items: flex-start;
     }
+
+      /* Additional styles for expired content */
+    .expired-content-card {
+        background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
+        border: 1px solid #fee2e2;
+        border-radius: 1rem;
+        padding: 3rem 2rem;
+        text-align: center;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    }
+    
+    .expired-icon {
+        background: linear-gradient(135deg, #fecaca, #fee2e2);
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+    }
+    
+    .renew-button {
+        background: linear-gradient(135deg, #dc2626, #ef4444);
+        transition: all 0.3s ease;
+    }
+    
+    .renew-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.3);
+    }
     
     .carousel-meta-item {
         font-size: 0.85rem;
@@ -1283,49 +1314,66 @@
 
     <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">Welcome back, {{ $donor->firstname }}!</h1>
-                <p class="text-gray-600 mt-2">Here's your membership overview and benefits.</p>
+                <p class="text-gray-600 mt-2">
+                    @if($member->status == 'active')
+                        Here's your membership overview and benefits.
+                    @elseif($member->status == 'expired')
+                        Your membership has expired. Renew to continue enjoying member benefits.
+                    @elseif($member->status == 'cancelled')
+                        Your membership has been cancelled. You can rejoin anytime.
+                    @endif
+                </p>
             </div>
             <div class="flex items-center space-x-3">
                 <!-- User Dropdown Menu -->
-            <div class="relative" x-data="{ open: false }">
-    <button @click="open = !open" class="flex items-center space-x-3 focus:outline-none">
-      <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden flex-shrink-0" id="navAvatar">
-      @if(isset($latestFilteredImage) && $latestFilteredImage)
-     <img src="{{ url('storage/' . $latestFilteredImage->filtered_image) }}"
-             alt="{{ $donor->firstname }}"
-             class="w-full h-full object-cover rounded-full">
-                  @else
-              <span class="text-indigo-600 font-semibold text-lg">
-                {{ strtoupper(substr($donor->firstname, 0, 1)) }}{{ strtoupper(substr($donor->lastname, 0, 1)) }}
-        </span>
-    @endif
-    </div>
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" class="flex items-center space-x-3 focus:outline-none">
+                        <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden flex-shrink-0" id="navAvatar">
+                            @if(isset($latestFilteredImage) && $latestFilteredImage)
+                                <img src="{{ url('storage/' . $latestFilteredImage->filtered_image) }}"
+                                     alt="{{ $donor->firstname }}"
+                                     class="w-full h-full object-cover rounded-full">
+                            @else
+                                <span class="text-indigo-600 font-semibold text-lg">
+                                    {{ strtoupper(substr($donor->firstname, 0, 1)) }}{{ strtoupper(substr($donor->lastname, 0, 1)) }}
+                                </span>
+                            @endif
+                        </div>
                         <span class="text-gray-700 font-medium">{{ $donor->firstname }} {{ $donor->lastname }}</span>
                         <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
-                        <div x-show="open"
-                             x-cloak
-                             x-transition:enter="transition ease-out duration-100"
-                             x-transition:enter-start="opacity-0 scale-95"
-                             x-transition:enter-end="opacity-100 scale-100"
-                             x-transition:leave="transition ease-in duration-75"
-                             x-transition:leave-start="opacity-100 scale-100"
-                             x-transition:leave-end="opacity-0 scale-95"
-                             @click.away="open = false"
-                             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-[9999]">
+                    <div x-show="open"
+                         x-cloak
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-95"
+                         @click.away="open = false"
+                         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-[9999]">
+                        
+                        <!-- Always show these -->
                         <a href="{{ route('member.profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
-                        <a href="{{ route('member.benefits') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Member Benefits</a>
-                        <a href="{{ route('member.payments') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Payment History</a>
+                        <a href="{{ route('member.support') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Help & Support</a>
+                        
+                        <!-- Only show Member Benefits if membership is active -->
+                        @if($member->status == 'active')
+                            <a href="{{ route('member.benefits') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Member Benefits</a>
+                            <a href="{{ route('member.payments') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Payment History</a>
+                            <a href="{{ route('member.badges') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Digital Badge</a>
+                        @endif
+                        
+                        <!-- Always show Switch to Donor Dashboard -->
                         <a href="{{ route('donor.dashboard') }}" class="block px-4 py-2 text-sm text-indigo-600 hover:bg-gray-100 font-medium">
                             Switch to Donor Dashboard
                         </a>
-                        <a href="{{ route('member.badges') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Digital Badge</a>
-                        <a href="{{ route('member.support') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Help & Support</a>
+                        
                         <div class="border-t border-gray-100"></div>
                         <button @click="open = false; $dispatch('open-logout-modal')" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
                             Logout
@@ -1335,74 +1383,127 @@
             </div>
         </div>
 
-      <!-- Static Donation Banner  -->
-<div class="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 sm:p-5 md:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-    <div class="flex items-start sm:items-center w-full sm:w-auto">
-        <div class="bg-blue-100 rounded-full p-2 mr-3 flex-shrink-0">
-            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-            </svg>
+         <!-- EXPIRATION BANNER -->
+        @if($member->status == 'active' && $member->isExpiringSoon())
+        <div class="mb-6 bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500 rounded-lg shadow-sm overflow-hidden">
+            <div class="p-5">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 flex-1">
+                        <div class="bg-amber-100 rounded-full p-2.5 flex-shrink-0">
+                            <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-amber-800 font-semibold text-base">
+                                ⚠️ Your membership expires in <strong>{{ $member->daysLeft() }} days</strong>
+                                @if($member->end_date)
+                                <span class="text-amber-600 text-sm font-normal ml-1">({{ $member->end_date->format('M d, Y') }})</span>
+                                @endif
+                            </p>
+                            <p class="text-amber-600 text-sm mt-0.5">Renew now to continue enjoying all member benefits without interruption.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 flex-shrink-0">
+                        <a href="{{ route('donor.membership', ['renew' => true, 'type' => $member->membership_type]) }}" 
+                           class="px-5 py-2.5 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-all duration-200 font-medium text-sm shadow-sm whitespace-nowrap flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            Renew Now →
+                        </a>
+                        <a href="{{ route('member.benefits') }}" 
+                           class="px-4 py-2.5 bg-white text-amber-700 border border-amber-200 rounded-lg hover:bg-amber-50 transition-all duration-200 text-sm font-medium whitespace-nowrap">
+                            View Benefits
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-amber-100/50 px-5 pb-3">
+                <div class="flex justify-between text-xs text-amber-700 mb-1">
+                    <span>Expiring soon</span>
+                    <span>{{ $member->daysLeft() }} days remaining</span>
+                </div>
+                <div class="w-full bg-amber-200 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-amber-600 h-1.5 rounded-full transition-all duration-500" 
+                         style="width: {{ min(100, ($member->daysLeft() / 7) * 100) }}%"></div>
+                </div>
+            </div>
         </div>
-        <div class="flex-1">
-            <p class="text-sm sm:text-base text-blue-800">
-                <span class="font-lg block sm:inline">Want to make an additional donation?</span> 
-                <span class="font-lg sm:text-sm block sm:inline sm:ml-1">Your support helps us expand our impact across Africa.</span>
-            </p>
+        @endif
+         <!-- ========== END OF EXPIRATION BANNER ========== -->
+
+     <!-- STATIC DONATION BANNER - Always visible -->
+        <div class="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 sm:p-5 md:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-start sm:items-center w-full sm:w-auto">
+                <div class="bg-blue-100 rounded-full p-2 mr-3 flex-shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm sm:text-base text-blue-800">
+                        <span class="font-lg block sm:inline">Want to make an additional donation?</span> 
+                        <span class="font-lg sm:text-sm block sm:inline sm:ml-1">Your support helps us expand our impact across Africa.</span>
+                    </p>
+                </div>
+            </div>
+            <button onclick="openDonationModal()" class="w-full sm:w-auto text-md font-medium text-blue-600 hover:text-blue-700 hover:underline flex items-center justify-center sm:justify-start px-4 py-2 sm:px-0 sm:py-0 bg-blue-50 sm:bg-transparent rounded-lg sm:rounded-none">
+                Donate Now
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
         </div>
-    </div>
-    <button onclick="openDonationModal()" class="w-full sm:w-auto text-md font-medium text-blue-600 hover:text-blue-700 hover:underline flex items-center justify-center sm:justify-start px-4 py-2 sm:px-0 sm:py-0 bg-blue-50 sm:bg-transparent rounded-lg sm:rounded-none">
-        Donate Now
-        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>
-    </button>
-</div>
 
 
-<div x-data="{ 
-    activeTab: localStorage.getItem('dashboard_active_tab') || 'dashboard',
-    init() {
-        // Restore active tab on page load
-        const returnTab = sessionStorage.getItem('return_to_dashboard_tab');
-        if (returnTab) {
-            this.activeTab = returnTab;
-            localStorage.setItem('dashboard_active_tab', returnTab);
-            sessionStorage.removeItem('return_to_dashboard_tab');
+
+     <!-- CONTENT -->
+@if($member->status == 'active')
+    <!-- ACTIVE MEMBERSHIP -->
+    <div x-data="{ 
+        activeTab: localStorage.getItem('dashboard_active_tab') || 'dashboard',
+        init() {
+            const returnTab = sessionStorage.getItem('return_to_dashboard_tab');
+            if (returnTab) {
+                this.activeTab = returnTab;
+                localStorage.setItem('dashboard_active_tab', returnTab);
+                sessionStorage.removeItem('return_to_dashboard_tab');
+            }
+            this.$watch('activeTab', value => {
+                localStorage.setItem('dashboard_active_tab', value);
+            });
         }
-        
-        // Watch for tab changes
-        this.$watch('activeTab', value => {
-            localStorage.setItem('dashboard_active_tab', value);
-        });
-    }
-}" x-cloak>
+    }" x-cloak>
 
-  <!-- Navigation Tabs -->
-<div class="flex justify-center mb-8">
-    <div class="dashboard-tabs inline-flex flex-wrap justify-center gap-1 border-b-2 border-gray-200 pb-0">
-        <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('dashboard')" id="tab-dashboard">
-            <i class="fas fa-chart-pie mr-2"></i>Dashboard
-        </button>
-        <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('news')" id="tab-news">
-            <i class="fas fa-newspaper mr-2"></i>News
-        </button>
-        <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('calendar')" id="tab-calendar">
-            <i class="fas fa-calendar-alt mr-2"></i>Event Calendar
-        </button>
-        <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('jobs')" id="tab-jobs">
-            <i class="fas fa-briefcase mr-2"></i>Job Opportunities
-        </button>
-        <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('resources')" id="tab-resources">
-            <i class="fas fa-book-open mr-2"></i>Resources
-        </button>
-        <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('games')" id="tab-games">
-            <i class="fas fa-puzzle-piece mr-2"></i>Games & Puzzles
-        </button>
-    </div>
-</div>
+        <!-- Navigation Tabs -->
+        <div class="flex justify-center mb-8">
+            <div class="dashboard-tabs inline-flex flex-wrap justify-center gap-1 border-b-2 border-gray-200 pb-0">
+                <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('dashboard')" id="tab-dashboard">
+                    <i class="fas fa-chart-pie mr-2"></i>Dashboard
+                </button>
+                <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('news')" id="tab-news">
+                    <i class="fas fa-newspaper mr-2"></i>News
+                </button>
+                <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('calendar')" id="tab-calendar">
+                    <i class="fas fa-calendar-alt mr-2"></i>Event Calendar
+                </button>
+                <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('jobs')" id="tab-jobs">
+                    <i class="fas fa-briefcase mr-2"></i>Job Opportunities
+                </button>
+                <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('resources')" id="tab-resources">
+                    <i class="fas fa-book-open mr-2"></i>Resources
+                </button>
+                <button class="tab-button px-4 py-2 md:px-6 md:py-3 font-semibold text-sm md:text-base transition-all duration-200 hover:text-indigo-600" onclick="switchTab('games')" id="tab-games">
+                    <i class="fas fa-puzzle-piece mr-2"></i>Games & Puzzles
+                </button>
+            </div>
+        </div>
 
-<!-- Tab Content - Dashboard -->
-<div id="content-dashboard" class="tab-content active">
+
+
+        <!-- Tab Content - Dashboard -->
+       <div id="content-dashboard" class="tab-content active">
     <!-- Membership Card -->
     <div class="bg-white rounded-lg shadow p-6 md:p-8 mb-6 md:mb-8 membership-card">
         <div class="flex flex-col lg:flex-row justify-between items-start gap-4 lg:gap-6">
@@ -2412,11 +2513,114 @@
             </a>
         </div>
     </div>
+
+ @elseif($member->status == 'expired')
+    <!-- EXPIRED MEMBERSHIP - Show renewal div -->
+    <div class="expired-content-card">
+        <div class="expired-icon">
+            <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+        </div>
+        
+        <h2 class="text-2xl font-bold text-gray-900 mb-3">
+            Your Membership Has Expired
+        </h2>
+        
+        <p class="text-gray-600 mb-4 max-w-md mx-auto">
+            Your membership expired on <strong class="text-red-600">{{ $member->end_date ? $member->end_date->format('M d, Y') : 'N/A' }}</strong>.
+            You've lost access to member benefits including news, events, job opportunities, resources, and games.
+        </p>
+        
+        <div class="bg-red-50 rounded-lg p-4 mb-6 max-w-md mx-auto">
+            <p class="text-sm text-red-700">
+                <i class="fas fa-info-circle mr-2"></i>
+                Renew your membership to:
+            </p>
+            <ul class="text-sm text-red-600 mt-2 space-y-1 text-left inline-block">
+                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Access exclusive member content</li>
+                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Get 10% discount on events</li>
+                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Receive APN Magazine digitally</li>
+                <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Network with fellow members</li>
+            </ul>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ route('donor.membership') }}" 
+               class="renew-button inline-flex items-center justify-center px-6 py-3 bg-red-600 text-white rounded-xl font-semibold text-base shadow-md transition-all duration-300 gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Renew Membership Now
+            </a>
+            <a href="{{ route('donor.membership') }}" 
+               class="inline-flex items-center justify-center px-6 py-3 bg-white text-red-600 border-2 border-red-200 rounded-xl font-semibold text-base hover:bg-red-50 transition-all duration-300 gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                View Membership Plans
+            </a>
+        </div>
+        
+        <div class="mt-6 pt-6 border-t border-gray-200">
+            <p class="text-xs text-gray-500">
+                <i class="fas fa-lock mr-1"></i> Secure payment via Paystack
+            </p>
+        </div>
+    </div>
+
+@elseif($member->status == 'cancelled')
+    <!-- CANCELLED MEMBERSHIP -->
+    <div class="expired-content-card">
+        <div class="expired-icon">
+            <svg class="w-10 h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+            </svg>
+        </div>
+        
+        <h2 class="text-2xl font-bold text-gray-900 mb-3">
+            Your Membership is Cancelled
+        </h2>
+        
+        <p class="text-gray-600 mb-4 max-w-md mx-auto">
+            Your membership was cancelled on <strong class="text-orange-600">{{ $member->updated_at->format('M d, Y') }}</strong>.
+            You can rejoin at any time to regain access to member benefits.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ route('donor.membership') }}" 
+               class="inline-flex items-center justify-center px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold text-base shadow-md transition-all duration-300 gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Rejoin as Member
+            </a>
+        </div>
+    </div>
+
+@else
+    <!-- PENDING OR OTHER STATUS -->
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-8 text-center">
+        <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-hourglass-half text-2xl text-yellow-600"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Membership {{ ucfirst($member->status) }}</h2>
+        <p class="text-gray-600">
+            @if($member->status == 'pending')
+                Your membership is being processed. This typically takes 24-48 hours.
+            @else
+                Your membership status is {{ $member->status }}. Please contact support if you have questions.
+            @endif
+        </p>
+    </div>
+@endif
 </div>
 
 </div>
 
 </div>
+
+
 {{-- DONATION MODAL --}}
 <div id="donationModal" class="modal-overlay">
     <div class="modal-container p-6">
@@ -2876,20 +3080,20 @@ function nextSlide() { showSlide(currentSlide + 1); }
 function prevSlide() { showSlide(currentSlide - 1); }
 function goToSlide(i) { showSlide(i); }
 
-document.querySelector('.carousel-container').addEventListener('click', function(e) {
-    const btn = e.target.closest('.carousel-button');
-    if (btn) {
-        const route = btn.getAttribute('href');
-        if (route) window.location.href = route;
-    }
-});
+const carouselContainer = document.querySelector('.carousel-container');
+if (carouselContainer) {
+    carouselContainer.addEventListener('click', function(e) {
+        const btn = e.target.closest('.carousel-button');
+        if (btn) {
+            const route = btn.getAttribute('href');
+            if (route) window.location.href = route;
+        }
+    });
+}
 
-// Pause on hover
+// Wrap ALL carousel JS in a guard
 const carouselEl = document.querySelector('.carousel-container');
 if (carouselEl) {
-    carouselEl.addEventListener('mouseenter', () => {});
-    carouselEl.addEventListener('mouseleave', () => {});
-
     // Touch swipe
     let touchStartX = 0;
     carouselEl.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
@@ -2897,9 +3101,8 @@ if (carouselEl) {
         const diff = touchStartX - e.changedTouches[0].screenX;
         if (Math.abs(diff) > 50) diff > 0 ? nextSlide() : prevSlide();
     });
-}
-
-showSlide(0);
+    showSlide(0);
+} 
 
 // ==================== TAB SWITCHING WITH PERSISTENCE ====================
 function switchTab(tabName) {
@@ -2961,7 +3164,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (savedTab && document.getElementById(`tab-${savedTab}`)) {
             switchTab(savedTab);
         } else {
-            switchTab('dashboard');
+               const dashTab = document.getElementById('tab-dashboard');
+    if (dashTab) switchTab('dashboard');
         }
     }
     
@@ -2971,9 +3175,10 @@ document.addEventListener('DOMContentLoaded', function() {
         switchTab('games');
     }
     
-    if (document.getElementById('tab-resources').classList.contains('active')) {
-        loadResources();
-    }
+  const resourcesTab = document.getElementById('tab-resources');
+if (resourcesTab && resourcesTab.classList.contains('active')) {
+    loadResources();
+}
 });
 
 // Add this to your existing JavaScript

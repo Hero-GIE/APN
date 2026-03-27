@@ -368,77 +368,106 @@ class PaystackCallbackController extends Controller
         }
     }
 
-    private function processMembership($donor, $reference, $data, $metadata, $membershipType, $amount)
-    {
-        $now = Carbon::now();
-        
-        if ($membershipType === 'annual') {
-            $startDate = $now->copy();
-            $endDate = $now->copy()->addYear();
-        } else { 
-            $startDate = $now->copy();
-            $endDate = $now->copy()->addMonth();
-        }
+   private function processMembership($donor, $reference, $data, $metadata, $membershipType, $amount)
+{
+    $now = Carbon::now();
+    
+    if ($membershipType === 'annual') {
+        $startDate = $now->copy();
+        $endDate = $now->copy()->addYear();
+    } else { 
+        $startDate = $now->copy();
+        $endDate = $now->copy()->addMonth();
+    }
 
-        $existingMember = Member::where('donor_id', $donor->id)
-            ->where('status', 'active')
-            ->first();
+    $existingMember = Member::where('donor_id', $donor->id)
+        ->where('status', 'active')
+        ->first();
 
-        if ($existingMember) {
-            // Renew existing membership
-            $existingMember->update([
-                'end_date' => $membershipType === 'annual' 
-                    ? $existingMember->end_date->addYear() 
-                    : $existingMember->end_date->addMonth(),
-                'renewal_count' => $existingMember->renewal_count + 1,
-            ]);
-            
-            $member = $existingMember;
-            
-            Log::info('Membership renewed', [
-                'donor_id' => $donor->id,
-                'member_id' => $member->id,
-                'new_end_date' => $member->end_date,
-                'renewal_count' => $member->renewal_count
-            ]);
-        } else {
-            // Create new membership
-            $member = Member::create([
-                'donor_id' => $donor->id,
-                'membership_type' => $membershipType,
-                'status' => 'active',
-                'start_date' => $startDate,
-                'end_date' => $endDate,
-                'renewal_count' => 0,
-            ]);
-            
-            Log::info('New membership created', [
-                'donor_id' => $donor->id,
-                'member_id' => $member->id,
-                'membership_type' => $membershipType,
-                'start_date' => $startDate,
-                'end_date' => $endDate
-            ]);
-        }
+    $isRenewal = false;
+    $oldEndDate = null;
+
+    if ($existingMember) {
+        // This is a RENEWAL
+        $isRenewal = true;
+        $oldEndDate = $existingMember->end_date;
         
-        // Record membership payment
-        MemberPayment::create([
+        // Extend the end date
+        $existingMember->update([
+            'end_date' => $membershipType === 'annual' 
+                ? $existingMember->end_date->addYear() 
+                : $existingMember->end_date->addMonth(),
+            'renewal_count' => $existingMember->renewal_count + 1,
+            'status' => 'active',
+        ]);
+        
+        $member = $existingMember;
+        
+        Log::info('Membership renewed', [
             'donor_id' => $donor->id,
             'member_id' => $member->id,
-            'transaction_id' => $reference,
-            'membership_type' => $membershipType,
-            'amount' => $amount,
-            'currency' => $data['currency'] ?? 'USD',
-            'payment_method' => $data['authorization']['channel'] ?? 'card',
-            'payment_status' => 'success',
-            'paystack_response' => $data,
-            'payment_date' => $now,
-            'period_start' => $startDate,
-            'period_end' => $endDate,
+            'old_end_date' => $oldEndDate,
+            'new_end_date' => $member->end_date,
+            'renewal_count' => $member->renewal_count
         ]);
-
-        return $member;
+    } else {
+        // New membership
+        $member = Member::create([
+            'donor_id' => $donor->id,
+            'membership_type' => $membershipType,
+            'status' => 'active',
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'renewal_count' => 0,
+        ]);
+        
+        Log::info('New membership created', [
+            'donor_id' => $donor->id,
+            'member_id' => $member->id,
+            'membership_type' => $membershipType,
+            'start_date' => $startDate,
+            'end_date' => $endDate
+        ]);
     }
+    
+    // Record membership payment
+    $payment = MemberPayment::create([
+        'donor_id' => $donor->id,
+        'member_id' => $member->id,
+        'transaction_id' => $reference,
+        'membership_type' => $membershipType,
+        'amount' => $amount,
+        'currency' => $data['currency'] ?? 'USD',
+        'payment_method' => $data['authorization']['channel'] ?? 'card',
+        'payment_status' => 'success',
+        'paystack_response' => $data,
+        'payment_date' => $now,
+        'period_start' => $member->start_date,
+        'period_end' => $member->end_date,
+    ]);
+
+    // Send renewal email if this is a renewal
+    if ($isRenewal && function_exists('sendEmail')) {
+        sendEmail(
+            'emails.membership-renewal',
+            [
+                'donor' => $donor,
+                'member' => $member,
+                'payment' => $payment,
+                'old_end_date' => $oldEndDate
+            ],
+            $donor->email,
+            'Your APN Membership Has Been Renewed'
+        );
+        
+        Log::info('Membership renewal email sent', [
+            'donor_id' => $donor->id,
+            'email' => $donor->email
+        ]);
+    }
+
+    return $member;
+}
 
     private function updateDonorIfNeeded(Donor $donor, array $metadata): void
     {

@@ -24,142 +24,154 @@ class MemberController extends Controller
     /**
      * Member Dashboard
      */
-    public function dashboard()
-    {
-        $donor = Auth::guard('donor')->user();
-        $member = Member::where('donor_id', $donor->id)->first();
-     
-        if (!$member) {
-            return redirect()->route('donor.membership')
-                ->with('error', 'You are not a member yet. Please purchase a membership.');
-        }
-     
-        $payments = MemberPayment::where('donor_id', $donor->id)
-            ->orderBy('payment_date', 'desc')
-            ->take(5)
-            ->get();
-     
-        $donations = Donation::where('donor_id', $donor->id)
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get();
-     
-        $news = News::where('is_published', true)
-                    ->orderBy('published_date', 'desc')
-                    ->take(4)
-                    ->get();
-     
-        $events = Event::where('is_published', true)
-                       ->where('start_date', '>=', now())
-                       ->orderBy('start_date', 'asc')
-                       ->take(4)
-                       ->get();
-     
-        $jobs = JobOpportunity::where('is_published', true)
-                              ->orderBy('posted_date', 'desc')
-                              ->take(4)
-                              ->get();
-     
-        // ===== CAROUSEL DATA =====
-        $featuredNews = News::where('is_published', true)
-            ->where('is_featured', true)
-            ->orderBy('published_date', 'desc')
-            ->take(2)
-            ->get();
-        
-        $featuredEvents = Event::where('is_published', true)
-            ->where('is_featured', true)
-            ->where('start_date', '>=', now())
-            ->orderBy('start_date', 'asc')
-            ->take(2)
-            ->get();
-        
-        $featuredJobs = JobOpportunity::where('is_published', true)
-            ->where('is_featured', true)
-            ->orderBy('posted_date', 'desc')
-            ->take(2)
-            ->get();
-     
-        // ===== PUZZLE DATA FOR GAMES TAB =====
-        $featuredQuizzes = Puzzle::where('type', 'quiz')
-            ->where('is_active', true)
-            ->where('is_featured', true)
-            ->orderBy('created_at', 'desc')
-            ->limit(3)
-            ->get();
-        
-        $featuredWordsearches = Puzzle::where('type', 'wordsearch')
-            ->where('is_active', true)
-            ->where('is_featured', true)
-            ->orderBy('created_at', 'desc')
-            ->limit(3)
-            ->get();
-        
-        $popularPuzzles = Puzzle::where('is_active', true)
-            ->orderBy('play_count', 'desc')
-            ->limit(6)
-            ->get();
-     
-        $stats = [
-            'total_payments'  => MemberPayment::where('donor_id', $donor->id)->count(),
-            'total_spent'     => MemberPayment::where('donor_id', $donor->id)->sum('amount'),
-            'days_left'       => $member->daysLeft(),
-            'renewals'        => $member->renewal_count,
-            'total_donations' => Donation::where('donor_id', $donor->id)->count(),
-            'total_donated'   => Donation::where('donor_id', $donor->id)->sum('amount'),
-        ];
-     
-        $statusConfig = [
-            'color' => match($member->status) {
-                'active'    => 'green',
-                'expired'   => 'red',
-                'cancelled' => 'orange',
-                'pending'   => 'yellow',
-                default     => 'gray'
-            },
-            'text'  => strtoupper($member->status),
-            'pulse' => in_array($member->status, ['active', 'pending'])
-        ];
-     
-        // Latest filtered image for avatar
-        $latestFilteredImage = FilteredImage::where('user_id', $donor->id)
-            ->latest()
-            ->first();
-     
-            // Debug - Check what's being fetched
-\Log::info('Featured News Query', [
-    'count' => $featuredNews->count(),
-    'items' => $featuredNews->pluck('title', 'slug')->toArray()
-]);
-
-\Log::info('Featured Events Query', [
-    'count' => $featuredEvents->count(),
-    'items' => $featuredEvents->pluck('title', 'slug')->toArray()
-]);
-
-\Log::info('Featured Jobs Query', [
-    'count' => $featuredJobs->count(),
-    'items' => $featuredJobs->pluck('title', 'slug')->toArray()
-]);
-        return view('member.dashboard', compact(
-            'donor',
-            'member',
-            'payments',
-            'donations',
-            'stats',
-            'statusConfig',
-            'news',
-            'events',
-            'jobs',
-            'latestFilteredImage',
-            'featuredQuizzes',
-            'featuredWordsearches',
-            'popularPuzzles',
-            'featuredNews',
-            'featuredEvents',
-            'featuredJobs'
-        ));
+/**
+ * Member Dashboard
+ */
+public function dashboard()
+{
+    $donor = Auth::guard('donor')->user();
+    
+    // Get the MOST RECENT membership (active or expired) for display
+    // This ensures we have a member object to work with even if expired
+    $member = Member::where('donor_id', $donor->id)
+        ->orderBy('created_at', 'desc')
+        ->first();
+    
+    // If no membership record exists at all
+    if (!$member) {
+        return redirect()->route('donor.membership')
+            ->with('error', 'You are not a member yet. Please purchase a membership to access this page.');
     }
+    
+    // Check if there's an active membership for data queries
+    $activeMember = Member::where('donor_id', $donor->id)
+        ->where('status', 'active')
+        ->orderBy('end_date', 'asc')
+        ->first();
+    
+    // If there's no active membership, we still have $member (expired/cancelled)
+    // but we won't show active-only content
+    
+    // Get recent payments (last 5) - only if there are payments
+    $payments = MemberPayment::where('donor_id', $donor->id)
+        ->orderBy('payment_date', 'desc')
+        ->take(5)
+        ->get();
+    
+    // Get recent donations (last 5)
+    $donations = Donation::where('donor_id', $donor->id)
+        ->orderBy('created_at', 'desc')
+        ->take(5)
+        ->get();
+    
+    // Get news for the news tab (available to all, but shown only if active)
+    $news = News::where('is_published', true)
+        ->orderBy('published_date', 'desc')
+        ->take(4)
+        ->get();
+    
+    // Get upcoming events for the calendar tab
+    $events = Event::where('is_published', true)
+        ->where('start_date', '>=', now())
+        ->orderBy('start_date', 'asc')
+        ->take(4)
+        ->get();
+    
+    // Get jobs for the jobs tab
+    $jobs = JobOpportunity::where('is_published', true)
+        ->orderBy('posted_date', 'desc')
+        ->take(4)
+        ->get();
+    
+    // ===== CAROUSEL DATA =====
+    $featuredNews = News::where('is_published', true)
+        ->where('is_featured', true)
+        ->orderBy('published_date', 'desc')
+        ->take(2)
+        ->get();
+    
+    $featuredEvents = Event::where('is_published', true)
+        ->where('is_featured', true)
+        ->where('start_date', '>=', now())
+        ->orderBy('start_date', 'asc')
+        ->take(2)
+        ->get();
+    
+    $featuredJobs = JobOpportunity::where('is_published', true)
+        ->where('is_featured', true)
+        ->orderBy('posted_date', 'desc')
+        ->take(2)
+        ->get();
+    
+    // ===== PUZZLE DATA FOR GAMES TAB =====
+    $featuredQuizzes = Puzzle::where('type', 'quiz')
+        ->where('is_active', true)
+        ->where('is_featured', true)
+        ->orderBy('created_at', 'desc')
+        ->limit(3)
+        ->get();
+    
+    $featuredWordsearches = Puzzle::where('type', 'wordsearch')
+        ->where('is_active', true)
+        ->where('is_featured', true)
+        ->orderBy('created_at', 'desc')
+        ->limit(3)
+        ->get();
+    
+    $popularPuzzles = Puzzle::where('is_active', true)
+        ->orderBy('play_count', 'desc')
+        ->limit(6)
+        ->get();
+    
+    // Calculate statistics for the dashboard (only if active)
+    $stats = [
+        'total_payments'  => MemberPayment::where('donor_id', $donor->id)->count(),
+        'total_spent'     => MemberPayment::where('donor_id', $donor->id)->sum('amount'),
+        'days_left'       => $activeMember ? $activeMember->daysLeft() : 0,
+        'renewals'        => $activeMember ? $activeMember->renewal_count : 0,
+        'total_donations' => Donation::where('donor_id', $donor->id)->count(),
+        'total_donated'   => Donation::where('donor_id', $donor->id)->sum('amount'),
+    ];
+    
+    // Status configuration for the membership badge
+    $statusConfig = [
+        'color' => match($member->status) {
+            'active'    => 'green',
+            'expired'   => 'red',
+            'cancelled' => 'orange',
+            'pending'   => 'yellow',
+            default     => 'gray'
+        },
+        'text'  => strtoupper($member->status),
+        'pulse' => in_array($member->status, ['active', 'pending'])
+    ];
+    
+    // Latest filtered image for avatar
+    $latestFilteredImage = FilteredImage::where('user_id', $donor->id)
+        ->latest()
+        ->first();
+
+    // Return the view with all data
+    return view('member.dashboard', compact(
+        'donor',
+        'member',
+        'activeMember',  // Pass the active member separately
+        'payments',
+        'donations',
+        'stats',
+        'statusConfig',
+        'news',
+        'events',
+        'jobs',
+        'latestFilteredImage',
+        'featuredQuizzes',
+        'featuredWordsearches',
+        'popularPuzzles',
+        'featuredNews',
+        'featuredEvents',
+        'featuredJobs'
+    ));
+}
 
     /**
      * Member Benefits Page
@@ -488,6 +500,17 @@ class MemberController extends Controller
         return redirect()->route('member.support')
             ->with('success', 'Support ticket submitted successfully. We\'ll get back to you within 24 hours.');
     }
+
+  /**
+  * Membership Page
+  */
+  public function membership()
+  {
+    $donor = Auth::guard('donor')->user();
+    $member = Member::where('donor_id', $donor->id)->first();
+
+    return view('member.membership', compact('donor', 'member'));
+  }
 
     /**
      * Cancel Membership

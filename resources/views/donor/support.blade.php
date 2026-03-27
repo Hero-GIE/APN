@@ -39,6 +39,175 @@
         font-size: 0.95rem;
     }
     
+
+    /* Carousel Styles */
+.carousel-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem;
+}
+
+.carousel-wrapper {
+    overflow: hidden;
+    border-radius: 1rem;
+}
+
+.carousel-slides {
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.carousel-slide {
+    flex: 0 0 100%;
+    position: relative;
+}
+
+.carousel-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 400px;
+}
+
+.carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(4px) brightness(0.7);
+    transform: scale(1.05);
+    transition: filter 0.5s ease, transform 0.5s ease;
+}
+
+.carousel-slide:hover .carousel-image {
+    filter: blur(2px) brightness(0.75);
+    transform: scale(1.08);
+}
+
+/* Gradient overlay for better text readability */
+.carousel-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.2), rgba(0,0,0,0.3));
+}
+
+.carousel-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    color: white;
+    text-align: center;
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+}
+
+.carousel-slide:hover .carousel-caption {
+    transform: translateY(-10px);
+}
+
+.carousel-caption h3 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.carousel-caption p {
+    font-size: 1rem;
+    opacity: 0.9;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
+    border-radius: 9999px;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.carousel-button:hover {
+    background: white;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.carousel-button:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.carousel-button.left-4 {
+    left: 1rem;
+}
+
+.carousel-button.right-4 {
+    right: 1rem;
+}
+
+.carousel-dots {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.75rem;
+    z-index: 10;
+}
+
+.carousel-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background-color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.carousel-dot:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    transform: scale(1.2);
+}
+
+.carousel-dot.active {
+    width: 1.5rem;
+    background-color: white;
+}
+
+@media (max-width: 768px) {
+    .carousel-image-wrapper {
+        height: 300px;
+    }
+    
+    .carousel-caption h3 {
+        font-size: 1.25rem;
+    }
+    
+    .carousel-caption p {
+        font-size: 0.875rem;
+    }
+    
+    .carousel-caption {
+        padding: 1rem;
+    }
+    
+    .carousel-button {
+        padding: 0.5rem;
+    }
+    
+    .carousel-button svg {
+        width: 1rem;
+        height: 1rem;
+    }
+}
+    
     .stat-label {
         font-size: 0.8rem;
         letter-spacing: 0.02em;
@@ -144,6 +313,8 @@
         background: #cbd5e0;
         border-radius: 3px;
     }
+
+    
     
     #ticketDetails::-webkit-scrollbar-thumb:hover {
         background: #94a3b8;
@@ -159,6 +330,149 @@
     .form-input {
         font-size: 0.95rem;
     }
+
+    /* Carousel Styles - Unified Dark Theme (Matching Member Carousel) */
+.carousel-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    height: 280px;
+    background: #0f172a;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+}
+
+.carousel-wrapper {
+    overflow: hidden;
+    border-radius: 1rem;
+    height: 100%;
+}
+
+.carousel-slides {
+    display: flex;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.carousel-slide {
+    min-width: 100%;
+    height: 100%;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.carousel-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+}
+
+.carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(4px) brightness(0.45);
+    transform: scale(1.05);
+    transition: filter 0.5s ease, transform 0.5s ease;
+    opacity: 0.65;
+}
+
+.carousel-slide:hover .carousel-image {
+    filter: blur(2px) brightness(0.55);
+    transform: scale(1.08);
+    opacity: 0.75;
+}
+
+/* Darker gradient overlay for better text readability */
+.carousel-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.4), rgba(0,0,0,0.3));
+}
+
+.carousel-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    color: white;
+    text-align: center;
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+    z-index: 5;
+}
+
+.carousel-slide:hover .carousel-caption {
+    transform: translateY(-10px);
+}
+
+.carousel-caption h3 {
+    font-size: 1.45rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    font-family: 'Urbanist', sans-serif;
+}
+
+.carousel-caption p {
+    font-size: 0.88rem;
+    opacity: 0.85;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    max-width: 80%;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+.carousel-dots {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.75rem;
+    z-index: 10;
+}
+
+.carousel-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background-color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.carousel-dot:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    transform: scale(1.2);
+}
+
+.carousel-dot.active {
+    width: 1.5rem;
+    background-color: white;
+}
+
+@media (max-width: 768px) {
+    .carousel-container {
+        height: 300px;
+    }
+    
+    .carousel-caption h3 {
+        font-size: 1.25rem;
+    }
+    
+    .carousel-caption p {
+        font-size: 0.75rem;
+        max-width: 90%;
+    }
+    
+    .carousel-caption {
+        padding: 1rem;
+    }
+}
 </style>
 
 <div class="min-h-screen bg-gray-50 py-8">
@@ -234,6 +548,105 @@
                     </svg>
                 </a>
             </div>
+        </div>
+
+             <!-- Support Services Carousel - Matching Member Carousel Design -->
+        <div style="position:relative;border-radius:1rem;overflow:hidden;margin-bottom:2rem;height:280px;background:var(--color-background-secondary);box-shadow:0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -1px rgba(0,0,0,0.06);">
+
+            <!-- Slides -->
+            <div id="support-sc-track" style="display:flex;height:100%;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1);">
+
+                <!-- Slide 1 - 24/7 Customer Support -->
+                <div style="min-width:100%;height:100%;position:relative;flex-shrink:0">
+                    <div style="position:absolute;inset:0;background:linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)"></div>
+                    <div style="position:absolute;inset:0;background:url('https://media.istockphoto.com/id/1059088660/photo/well-ensure-your-query-gets-answered.jpg?s=2048x2048&w=is&k=20&c=Oz8fAEN0065QxomDrCKW69SjqZfVUO2ocLx4j8ftGrg=') center/cover no-repeat;opacity:0.12"></div>
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;padding:0 3rem;gap:2rem">
+                        <div style="width:64px;height:64px;background:rgba(255,255,255,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(255,255,255,0.15)">
+                            <svg width="28" height="28" fill="none" stroke="white" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        </div>
+                        <div style="flex:1">
+                            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:999px;padding:3px 12px;margin-bottom:10px">
+                                <span style="width:5px;height:5px;background:#3b82f6;border-radius:50%;display:inline-block"></span>
+                                <span style="font-size:11px;font-weight:500;color:white;letter-spacing:0.1em;text-transform:uppercase">24/7 Support</span>
+                            </div>
+                            <h3 style="color:white;font-size:1.45rem;font-weight:700;margin:0 0 8px;font-family:'Urbanist',sans-serif;line-height:1.2">24/7 Customer Support</h3>
+                            <p style="color:rgba(255,255,255,0.7);font-size:0.88rem;margin:0 0 16px;line-height:1.55;max-width:480px">Our team is available around the clock to assist you with any questions or concerns. We're here whenever you need us.</p>
+                            <a href="mailto:support@africaprosperitynetwork.com" style="display:inline-flex;align-items:center;gap:6px;background:#3b82f6;color:white;padding:8px 20px;border-radius:8px;font-size:0.82rem;font-weight:600;text-decoration:none;font-family:'Urbanist',sans-serif;transition:background 0.2s" onmouseenter="this.style.background='#2563eb'" onmouseleave="this.style.background='#3b82f6'">
+                                Contact Support
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2 - Dedicated Support Team -->
+                <div style="min-width:100%;height:100%;position:relative;flex-shrink:0">
+                    <div style="position:absolute;inset:0;background:linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)"></div>
+                    <div style="position:absolute;inset:0;background:url('https://plus.unsplash.com/premium_photo-1726797757852-d718e284b86d?q=80&w=2694&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover no-repeat;opacity:0.12"></div>
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;padding:0 3rem;gap:2rem">
+                        <div style="width:64px;height:64px;background:rgba(255,255,255,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(255,255,255,0.15)">
+                            <svg width="28" height="28" fill="none" stroke="white" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </div>
+                        <div style="flex:1">
+                            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:999px;padding:3px 12px;margin-bottom:10px">
+                                <span style="width:5px;height:5px;background:#10b981;border-radius:50%;display:inline-block"></span>
+                                <span style="font-size:11px;font-weight:500;color:white;letter-spacing:0.1em;text-transform:uppercase">Expert Team</span>
+                            </div>
+                            <h3 style="color:white;font-size:1.45rem;font-weight:700;margin:0 0 8px;font-family:'Urbanist',sans-serif;line-height:1.2">Dedicated Support Team</h3>
+                            <p style="color:rgba(255,255,255,0.7);font-size:0.88rem;margin:0 0 16px;line-height:1.55;max-width:480px">Expert professionals ready to help you succeed with personalized assistance. We respond within 24 hours to all inquiries.</p>
+                            <a href="mailto:support@africaprosperitynetwork.com" style="display:inline-flex;align-items:center;gap:6px;background:#10b981;color:white;padding:8px 20px;border-radius:8px;font-size:0.82rem;font-weight:600;text-decoration:none;font-family:'Urbanist',sans-serif;transition:background 0.2s" onmouseenter="this.style.background='#059669'" onmouseleave="this.style.background='#10b981'">
+                                Email Us
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3 - Comprehensive Resources -->
+                <div style="min-width:100%;height:100%;position:relative;flex-shrink:0">
+                    <div style="position:absolute;inset:0;background:linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)"></div>
+                    <div style="position:absolute;inset:0;background:url('https://plus.unsplash.com/premium_photo-1661347931139-3cef3e00329d?q=80&w=2370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover no-repeat;opacity:0.12"></div>
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;padding:0 3rem;gap:2rem">
+                        <div style="width:64px;height:64px;background:rgba(255,255,255,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(255,255,255,0.15)">
+                            <svg width="28" height="28" fill="none" stroke="white" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        </div>
+                        <div style="flex:1">
+                            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:999px;padding:3px 12px;margin-bottom:10px">
+                                <span style="width:5px;height:5px;background:#8b5cf6;border-radius:50%;display:inline-block"></span>
+                                <span style="font-size:11px;font-weight:500;color:white;letter-spacing:0.1em;text-transform:uppercase">Resources</span>
+                            </div>
+                            <h3 style="color:white;font-size:1.45rem;font-weight:700;margin:0 0 8px;font-family:'Urbanist',sans-serif;line-height:1.2">Comprehensive Resources</h3>
+                            <p style="color:rgba(255,255,255,0.7);font-size:0.88rem;margin:0 0 16px;line-height:1.55;max-width:480px">Access guides, tutorials, and FAQs anytime to help you make the most of your membership and support experience.</p>
+                            <a href="#faqs" style="display:inline-flex;align-items:center;gap:6px;background:#8b5cf6;color:white;padding:8px 20px;border-radius:8px;font-size:0.82rem;font-weight:600;text-decoration:none;font-family:'Urbanist',sans-serif;transition:background 0.2s" onmouseenter="this.style.background='#7c3aed'" onmouseleave="this.style.background='#8b5cf6'">
+                                Browse FAQs
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Prev / Next arrows -->
+            <button id="support-sc-prev" onclick="supportScMove(-1)" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);width:36px;height:36px;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:white;transition:all 0.2s;z-index:10" onmouseenter="this.style.background='rgba(0,0,0,0.7)';this.style.transform='translateY(-50%) scale(1.05)'" onmouseleave="this.style.background='rgba(0,0,0,0.5)';this.style.transform='translateY(-50%) scale(1)'">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button id="support-sc-next" onclick="supportScMove(1)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);width:36px;height:36px;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:white;transition:all 0.2s;z-index:10" onmouseenter="this.style.background='rgba(0,0,0,0.7)';this.style.transform='translateY(-50%) scale(1.05)'" onmouseleave="this.style.background='rgba(0,0,0,0.5)';this.style.transform='translateY(-50%) scale(1)'">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+
+            <!-- Dot navigation -->
+            <div style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;z-index:10">
+                <button class="support-sc-dot" onclick="supportScGo(0)" style="width:22px;height:6px;border-radius:3px;background:white;border:none;cursor:pointer;transition:all 0.3s;opacity:0.9"></button>
+                <button class="support-sc-dot" onclick="supportScGo(1)" style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.5);border:none;cursor:pointer;transition:all 0.3s"></button>
+                <button class="support-sc-dot" onclick="supportScGo(2)" style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.5);border:none;cursor:pointer;transition:all 0.3s"></button>
+            </div>
+
+            <!-- Slide counter -->
+            <div style="position:absolute;top:14px;right:14px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:0.06em;font-family:'Urbanist',sans-serif;background:rgba(0,0,0,0.3);padding:4px 10px;border-radius:20px;backdrop-filter:blur(4px);z-index:10">
+                <span id="support-sc-cur">01</span> / <span>03</span>
+            </div>
+
         </div>
 
         <!-- Success Message -->
@@ -527,25 +940,33 @@
             </div>
         </div>
 
-        <!-- Still Need Help? Section -->
-        <div class="mt-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg shadow-lg p-8 text-center">
-            <h3 class="text-xl font-bold text-white mb-2">Still Need Help?</h3>
-            <p class="text-indigo-100 mb-4">Our support team is always ready to assist you.</p>
-            <div class="flex justify-center space-x-4">
-                <a href="mailto:support@africaprosperitynetwork.com" class="inline-flex items-center px-6 py-3 bg-white text-indigo-600 rounded-lg font-semibold hover:bg-indigo-50 transition-colors">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                    </svg>
-                    Email Us
-                </a>
-                <a href="#" class="inline-flex items-center px-6 py-3 bg-indigo-700 text-white rounded-lg font-semibold hover:bg-indigo-800 transition-colors">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                    </svg>
-                    Live Chat (Soon)
-                </a>
-            </div>
+<!-- Still Need Help? Section -->
+<div class="mt-8 rounded-lg shadow-lg p-8 text-center relative overflow-hidden">
+    <!-- Background Image with built-in dark overlay using background blend mode -->
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" 
+         style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+    </div>
+    
+    <!-- Content -->
+    <div class="relative z-10">
+        <h3 class="text-xl font-bold text-white mb-2">Still Need Help?</h3>
+        <p class="text-gray-200 mb-4">Our support team is always ready to assist you.</p>
+        <div class="flex justify-center space-x-4">
+            <a href="mailto:support@africaprosperitynetwork.com" class="inline-flex items-center px-6 py-3 bg-white text-indigo-600 rounded-lg font-semibold hover:bg-indigo-50 transition-colors shadow-lg">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                Email Us
+            </a>
+            <a href="#" class="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm text-white rounded-lg font-semibold hover:bg-white/30 transition-colors border border-white/30">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                </svg>
+                Live Chat (Soon)
+            </a>
         </div>
+    </div>
+</div>
     </div>
 </div>
 
@@ -785,6 +1206,58 @@
             closeTicketModal();
         }
     });
+      // Support Services Carousel
+    (function() {
+        let supportCur = 0;
+        const supportTotal = 3;
+        const supportTrack = document.getElementById('support-sc-track');
+        const supportDots = document.querySelectorAll('.support-sc-dot');
+        const supportCounter = document.getElementById('support-sc-cur');
+        
+        if (!supportTrack) return;
+        
+        let supportTimer = setInterval(() => supportScMove(1), 5000);
+
+        function supportScUpdate() {
+            supportTrack.style.transform = 'translateX(-' + (supportCur * 100) + '%)';
+            supportCounter.textContent = String(supportCur + 1).padStart(2, '0');
+            supportDots.forEach((d, i) => {
+                if (i === supportCur) {
+                    d.style.width = '22px';
+                    d.style.borderRadius = '3px';
+                    d.style.background = 'white';
+                    d.style.opacity = '1';
+                } else {
+                    d.style.width = '6px';
+                    d.style.borderRadius = '50%';
+                    d.style.background = 'rgba(255,255,255,0.5)';
+                    d.style.opacity = '1';
+                }
+            });
+        }
+
+        window.supportScMove = function(dir) {
+            supportCur = (supportCur + dir + supportTotal) % supportTotal;
+            supportScUpdate();
+            clearInterval(supportTimer);
+            supportTimer = setInterval(() => supportScMove(1), 5000);
+        };
+
+        window.supportScGo = function(i) {
+            supportCur = i;
+            supportScUpdate();
+            clearInterval(supportTimer);
+            supportTimer = setInterval(() => supportScMove(1), 5000);
+        };
+
+        // Touch swipe support
+        let supportTx = 0;
+        supportTrack.addEventListener('touchstart', e => { supportTx = e.touches[0].clientX; }, { passive: true });
+        supportTrack.addEventListener('touchend', e => {
+            const diff = supportTx - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 40) supportScMove(diff > 0 ? 1 : -1);
+        });
+    })();
 </script>
 @endpush
 @endsection

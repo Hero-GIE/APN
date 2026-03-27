@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cookie;
+use App\Models\FilteredImage;
 
 
 class AuthController extends Controller
@@ -172,26 +173,31 @@ public function dashboard()
     
     $stats = [
         'total_donations' => $donations->count(),
-        'total_amount' => $donations->sum('amount'),
-        'member_since' => $member ? $member->start_date->format('M Y') : null,
-        'is_member' => $member ? true : false,
+        'total_amount'    => $donations->sum('amount'),
+        'member_since'    => $member ? $member->start_date->format('M Y') : null,
+        'is_member'       => $member ? true : false,
     ];
     
-    $memberStatus = null;
+    $memberStatus      = null;
     $memberStatusColor = null;
     $memberStatusPulse = false;
     
     if ($member) {
-        $memberStatus = strtoupper($member->status);
+        $memberStatus      = strtoupper($member->status);
         $memberStatusColor = match($member->status) {
-            'active' => 'green',
-            'expired' => 'red',
+            'active'    => 'green',
+            'expired'   => 'red',
             'cancelled' => 'orange',
-            'pending' => 'yellow',
-            default => 'gray'
+            'pending'   => 'yellow',
+            default     => 'gray'
         };
         $memberStatusPulse = in_array($member->status, ['active', 'pending']);
     }
+
+    // Add this ↓
+    $latestFilteredImage = FilteredImage::where('user_id', $donor->id)
+        ->latest()
+        ->first();
     
     return view('donor.dashboard', compact(
         'donor', 
@@ -200,9 +206,12 @@ public function dashboard()
         'stats',
         'memberStatus',
         'memberStatusColor',
-        'memberStatusPulse'
+        'memberStatusPulse',
+        'latestFilteredImage'  // Add this ↓
     ));
 }
+
+
  public function transactions()
 {
     $donor = Auth::guard('donor')->user();

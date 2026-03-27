@@ -65,6 +65,15 @@
         letter-spacing: 0.03em;
     }
     
+    [x-cloak] { 
+    display: none !important; 
+}
+
+/* Optional: smooth transition for dropdown */
+[x-cloak] .dropdown-menu {
+    display: none;
+}
+
     /* Status badges */
     .px-2.py-1.inline-flex.text-xs {
         font-size: 0.8rem !important;
@@ -153,37 +162,50 @@
                 </p>
             </div>
             
-            <!-- User Dropdown Menu -->
-            <div class="relative" x-data="{ open: false }">
-                <button @click="open = !open" class="flex items-center space-x-3 focus:outline-none">
-                    <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                        <span class="text-indigo-600 font-semibold text-lg">
-                            {{ strtoupper(substr($donor->firstname, 0, 1)) }}{{ strtoupper(substr($donor->lastname, 0, 1)) }}
-                        </span>
-                    </div>
-                    <span class="text-gray-700 font-medium">{{ $donor->firstname }} {{ $donor->lastname }}</span>
-                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-                
-                <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-                    <a href="{{ route('donor.profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
-                    <a href="{{ route('donor.transactions') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Transactions</a>
-                    
-                    @if($stats['is_member'] && $member->status == 'active')
-                        <a href="{{ route('member.dashboard') }}" class="block px-4 py-2 text-sm text-indigo-600 hover:bg-gray-100 font-medium">Switch to Member Dashboard →</a>
-                    @else
-                        <a href="{{ route('donor.membership') }}" class="block px-4 py-2 text-sm text-indigo-600 hover:bg-gray-100 font-medium">Become a Member</a>
-                    @endif
-                    
-                    <a href="{{ route('donor.support') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Help & Support</a>
-                    <div class="border-t border-gray-100"></div>
-                    <button @click="open = false; $dispatch('open-logout-modal')" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                        Logout
-                    </button>
-                </div>
-            </div>
+         <!-- User Dropdown Menu -->
+<div class="relative" 
+     x-data="{ open: false }" 
+     x-cloak
+     style="display: block;">
+    <button @click="open = !open" 
+            class="flex items-center space-x-3 focus:outline-none">
+        <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden flex-shrink-0" id="navAvatar">
+            @if(isset($latestFilteredImage) && $latestFilteredImage)
+                <img src="{{ url('storage/' . $latestFilteredImage->filtered_image) }}"
+                     alt="{{ $donor->firstname }}"
+                     class="w-full h-full object-cover rounded-full">
+            @else
+                <span class="text-indigo-600 font-semibold text-lg">
+                    {{ strtoupper(substr($donor->firstname, 0, 1)) }}{{ strtoupper(substr($donor->lastname, 0, 1)) }}
+                </span>
+            @endif
+        </div>
+        <span class="text-gray-700 font-medium">{{ $donor->firstname }} {{ $donor->lastname }}</span>
+        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </button>
+    
+    <div x-show="open" 
+         @click.away="open = false" 
+         x-transition
+         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+        <a href="{{ route('donor.profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
+        <a href="{{ route('donor.transactions') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Transactions</a>
+        
+        @if($stats['is_member'] && $member->status == 'active')
+            <a href="{{ route('member.dashboard') }}" class="block px-4 py-2 text-sm text-indigo-600 hover:bg-gray-100 font-medium">Switch to Member Dashboard →</a>
+        @else
+            <a href="{{ route('donor.membership') }}" class="block px-4 py-2 text-sm text-indigo-600 hover:bg-gray-100 font-medium">Become a Member</a>
+        @endif
+        
+        <a href="{{ route('donor.support') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Help & Support</a>
+        <div class="border-t border-gray-100"></div>
+        <button @click="open = false; $dispatch('open-logout-modal')" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+            Logout
+        </button>
+    </div>
+</div>
         </div>
 
         <!-- Stats Cards Row -->
@@ -407,7 +429,7 @@
                         <tr>
                             <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">
                                 No donations found. 
-                                <a href="{{ route('donate') }}" class="text-indigo-600 font-medium hover:underline">Make your first donation</a>
+                                <a href="{{ route('member.dashboard') }}" class="text-indigo-600 font-medium hover:underline">Make your first donation</a>
                             </td>
                         </tr>
                         @endforelse

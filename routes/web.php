@@ -133,6 +133,7 @@ Route::middleware(['auth:donor', 'member.active'])->prefix('member')->name('memb
     Route::get('/jobs/apply/{slug}', [JobApplicationController::class, 'create'])->name('jobs.apply');
     Route::post('/jobs/apply/{slug}', [JobApplicationController::class, 'store'])->name('jobs.apply.submit');
     Route::get('/my-applications', [JobApplicationController::class, 'myApplications'])->name('jobs.applications');
+    Route::get('/membership', [MemberController::class, 'membership'])->name('membership');
 });
 
 // ===== NEW PUBLIC BADGE ROUTES 
@@ -175,19 +176,6 @@ Route::prefix('quiz')->name('quiz.')->group(function () {
         Route::get('/results/{attempt}', [PuzzleController::class, 'results'])->name('results');
     });
 });
-
-// // Word Search Routes
-// Route::prefix('wordsearch')->name('wordsearch.')->group(function () {
-//     Route::get('/', [PuzzleController::class, 'wordsearchIndex'])->name('index');
-//     Route::get('/{slug}', [PuzzleController::class, 'wordsearchShow'])->name('show');
-    
-//     Route::middleware(['auth:donor'])->group(function () {
-//         Route::match(['GET', 'POST'], '/{slug}/start', [PuzzleController::class, 'wordsearchStart'])->name('start');
-//         Route::get('/play/{attempt}', [PuzzleController::class, 'wordsearchPlay'])->name('play');
-//         Route::post('/submit/{attempt}', [PuzzleController::class, 'submit'])->name('submit');
-//         Route::get('/results/{attempt}', [PuzzleController::class, 'results'])->name('results');
-//     });
-// });
 
 // Word Search Routes
 Route::prefix('wordsearch')->name('wordsearch.')->group(function () {
