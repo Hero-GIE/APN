@@ -3120,6 +3120,61 @@ function switchTab(tabName) {
     }
 }
 
+// ==================== JOB FILTER FUNCTIONALITY ====================
+function filterJobs(category) {
+    const jobCards = document.querySelectorAll('#jobs-list-container .job-card');
+    let visibleCount = 0;
+    
+    // Update active button styling
+    document.querySelectorAll('.filter-job-btn').forEach(btn => {
+        if (btn.dataset.category === category) {
+            btn.classList.remove('bg-gray-100', 'text-gray-700');
+            btn.classList.add('bg-indigo-600', 'text-white');
+        } else {
+            btn.classList.remove('bg-indigo-600', 'text-white');
+            btn.classList.add('bg-gray-100', 'text-gray-700');
+        }
+    });
+    
+    // Filter jobs
+    jobCards.forEach(card => {
+        const jobCategory = card.dataset.jobCategory;
+        
+        if (category === 'all' || jobCategory === category) {
+            card.style.display = 'block';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    // Show/hide empty state message
+    const emptyState = document.querySelector('#jobs-list-container .text-center.py-12');
+    if (emptyState) {
+        if (visibleCount === 0) {
+            emptyState.style.display = 'block';
+        } else {
+            emptyState.style.display = 'none';
+        }
+    }
+}
+
+// Initialize job filters when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click event listeners to filter buttons
+    const filterButtons = document.querySelectorAll('.filter-job-btn');
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const category = this.dataset.category;
+            filterJobs(category);
+        });
+    });
+    
+    // Initialize with "All Jobs" active
+    filterJobs('all');
+});
+
 // ==================== STORE RETURN TAB FOR EXTERNAL LINKS ====================
 document.querySelectorAll('.news-card a[href*="news"]').forEach(link => {
     link.addEventListener('click', function() {
