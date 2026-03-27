@@ -126,6 +126,21 @@ class MemberController extends Controller
             ->latest()
             ->first();
      
+            // Debug - Check what's being fetched
+\Log::info('Featured News Query', [
+    'count' => $featuredNews->count(),
+    'items' => $featuredNews->pluck('title', 'slug')->toArray()
+]);
+
+\Log::info('Featured Events Query', [
+    'count' => $featuredEvents->count(),
+    'items' => $featuredEvents->pluck('title', 'slug')->toArray()
+]);
+
+\Log::info('Featured Jobs Query', [
+    'count' => $featuredJobs->count(),
+    'items' => $featuredJobs->pluck('title', 'slug')->toArray()
+]);
         return view('member.dashboard', compact(
             'donor',
             'member',

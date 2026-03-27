@@ -155,10 +155,12 @@
     background-repeat: no-repeat;
     transform: scale(1.04);
     transition: opacity 1s ease-in-out, transform 8s ease-in-out;
+    pointer-events: none;
 }
 .carousel-slide.active {
     opacity: 1;
     transform: scale(1);
+    pointer-events: auto;
 }
 
 /* Multi-layer overlay — dark base + gold radial + gradient */
@@ -305,6 +307,9 @@
     letter-spacing: 0.02em;
     position: relative;
     overflow: hidden;
+    margin-top: 0 !important;
+    position: relative;
+    top: -17px; 
 }
 .carousel-button::before {
     content: '';
@@ -1530,167 +1535,168 @@
         </div>
     </div>
 
-    <!-- CAROUSEL - Featured Content -->
-    @if((isset($featuredNews) && $featuredNews->count() > 0) || (isset($featuredEvents) && $featuredEvents->count() > 0) || (isset($featuredJobs) && $featuredJobs->count() > 0))
-    <div class="featured-carousel mb-6 md:mb-8">
-        <div class="carousel-container">
+  <!-- CAROUSEL - Featured Content -->
+@if((isset($featuredNews) && $featuredNews->count() > 0) || (isset($featuredEvents) && $featuredEvents->count() > 0) || (isset($featuredJobs) && $featuredJobs->count() > 0))
+<div class="featured-carousel mb-6 md:mb-8">
+    <div class="carousel-container">
 
-            {{-- Kente geometric pattern layer --}}
-            <div class="carousel-kente-pattern"></div>
+        {{-- Kente geometric pattern layer --}}
+        <div class="carousel-kente-pattern"></div>
 
-            {{-- Slide counter --}}
-            <div class="carousel-counter">
-                <span class="current" id="carouselCurrent">01</span>
-                <span> / </span>
-                <span id="carouselTotal">01</span>
-            </div>
+        {{-- Slide counter --}}
+        <div class="carousel-counter">
+            <span class="current" id="carouselCurrent">01</span>
+            <span> / </span>
+            <span id="carouselTotal">01</span>
+        </div>
 
-            @php
-                $featuredItems = collect();
+        @php
+            $featuredItems = collect();
 
-                if(isset($featuredNews)) {
-                    foreach($featuredNews as $newsItem) {
-                        $featuredItems->push([
-                            'type'           => 'news',
-                            'id'             => $newsItem->id,
-                            'title'          => $newsItem->title,
-                            'excerpt'        => $newsItem->excerpt,
-                            'image'          => $newsItem->featured_image ?? 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=1600&q=80',
-                            'category'       => $newsItem->category,
-                            'category_color' => $newsItem->category_color,
-                            'date'           => $newsItem->published_date->format('M d, Y'),
-                            'slug'           => $newsItem->slug,
-                            'route'          => route('member.news.show', $newsItem->slug),
-                            'icon'           => 'fa-newspaper'
-                        ]);
-                    }
+            if(isset($featuredNews)) {
+                foreach($featuredNews as $newsItem) {
+                    $featuredItems->push([
+                        'type'           => 'news',
+                        'id'             => $newsItem->id,
+                        'title'          => $newsItem->title,
+                        'excerpt'        => $newsItem->excerpt,
+                        'image'          => $newsItem->featured_image ?? 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=1600&q=80',
+                        'category'       => $newsItem->category,
+                        'category_color' => $newsItem->category_color,
+                        'date'           => $newsItem->published_date->format('M d, Y'),
+                        'slug'           => $newsItem->slug,
+                        'route'          => route('member.news.show', $newsItem->slug),
+                        'icon'           => 'fa-newspaper'
+                    ]);
                 }
+            }
 
-                if(isset($featuredEvents)) {
-                    foreach($featuredEvents as $event) {
-                        $featuredItems->push([
-                            'type'           => 'event',
-                            'id'             => $event->id,
-                            'title'          => $event->title,
-                            'excerpt'        => $event->description,
-                            'image'          => $event->featured_image ?? 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80',
-                            'category'       => $event->category,
-                            'category_color' => $event->badge_color ?? 'indigo',
-                            'date'           => $event->start_date->format('M d, Y'),
-                            'location'       => $event->location,
-                            'slug'           => $event->slug,
-                            'route'          => route('member.events.show', $event->slug),
-                            'icon'           => 'fa-calendar-alt'
-                        ]);
-                    }
+            if(isset($featuredEvents)) {
+                foreach($featuredEvents as $event) {
+                    $featuredItems->push([
+                        'type'           => 'event',
+                        'id'             => $event->id,
+                        'title'          => $event->title,
+                        'excerpt'        => $event->description,
+                        'image'          => $event->featured_image ?? 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80',
+                        'category'       => $event->category,
+                        'category_color' => $event->badge_color ?? 'indigo',
+                        'date'           => $event->start_date->format('M d, Y'),
+                        'location'       => $event->location,
+                        'slug'           => $event->slug,
+                        'route'          => route('member.events.show', $event->slug),
+                        'icon'           => 'fa-calendar-alt'
+                    ]);
                 }
+            }
 
-                if(isset($featuredJobs)) {
-                    foreach($featuredJobs as $job) {
-                        $featuredItems->push([
-                            'type'           => 'job',
-                            'id'             => $job->id,
-                            'title'          => $job->title,
-                            'excerpt'        => $job->summary,
-                            'image'          => $job->company_logo ?? 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80',
-                            'category'       => $job->category,
-                            'category_color' => $job->category_color,
-                            'date'           => $job->posted_date->format('M d, Y'),
-                            'company'        => $job->company,
-                            'location'       => $job->location,
-                            'slug'           => $job->slug,
-                            'route'          => route('member.jobs.show', $job->slug),
-                            'icon'           => 'fa-briefcase'
-                        ]);
-                    }
+            if(isset($featuredJobs)) {
+                foreach($featuredJobs as $job) {
+                    $featuredItems->push([
+                        'type'           => 'job',
+                        'id'             => $job->id,
+                        'title'          => $job->title,
+                        'excerpt'        => $job->summary,
+                        'image'          => $job->company_logo ?? 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80',
+                        'category'       => $job->category,
+                        'category_color' => $job->category_color,
+                        'date'           => $job->posted_date->format('M d, Y'),
+                        'company'        => $job->company,
+                        'location'       => $job->location,
+                        'slug'           => $job->slug,
+                        'route'          => route('member.jobs.show', $job->slug),
+                        'icon'           => 'fa-briefcase'
+                    ]);
                 }
+            }
 
-                if ($featuredItems->isEmpty()) {
-                    if (isset($news) && $news->isNotEmpty()) {
-                        $newsItem = $news->first();
-                        $featuredItems->push(['type'=>'news','id'=>$newsItem->id,'title'=>$newsItem->title,'excerpt'=>$newsItem->excerpt,'image'=>$newsItem->featured_image ?? 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=1600&q=80','category'=>$newsItem->category,'category_color'=>$newsItem->category_color,'date'=>$newsItem->published_date->format('M d, Y'),'slug'=>$newsItem->slug,'route'=>route('member.news.show', $newsItem->slug),'icon'=>'fa-newspaper']);
-                    }
-                    if (isset($events) && $events->isNotEmpty()) {
-                        $event = $events->first();
-                        $featuredItems->push(['type'=>'event','id'=>$event->id,'title'=>$event->title,'excerpt'=>$event->description,'image'=>$event->featured_image ?? 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80','category'=>$event->category,'category_color'=>$event->badge_color ?? 'indigo','date'=>$event->start_date->format('M d, Y'),'location'=>$event->location,'slug'=>$event->slug,'route'=>route('member.events.show', $event->slug),'icon'=>'fa-calendar-alt']);
-                    }
-                    if (isset($jobs) && $jobs->isNotEmpty()) {
-                        $job = $jobs->first();
-                        $featuredItems->push(['type'=>'job','id'=>$job->id,'title'=>$job->title,'excerpt'=>$job->summary,'image'=>$job->company_logo ?? 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80','category'=>$job->category,'category_color'=>$job->category_color,'date'=>$job->posted_date->format('M d, Y'),'company'=>$job->company,'location'=>$job->location,'slug'=>$job->slug,'route'=>route('member.jobs.show', $job->slug),'icon'=>'fa-briefcase']);
-                    }
+            if ($featuredItems->isEmpty()) {
+                if (isset($news) && $news->isNotEmpty()) {
+                    $newsItem = $news->first();
+                    $featuredItems->push(['type'=>'news','id'=>$newsItem->id,'title'=>$newsItem->title,'excerpt'=>$newsItem->excerpt,'image'=>$newsItem->featured_image ?? 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=1600&q=80','category'=>$newsItem->category,'category_color'=>$newsItem->category_color,'date'=>$newsItem->published_date->format('M d, Y'),'slug'=>$newsItem->slug,'route'=>route('member.news.show', $newsItem->slug),'icon'=>'fa-newspaper']);
                 }
-            @endphp
+                if (isset($events) && $events->isNotEmpty()) {
+                    $event = $events->first();
+                    $featuredItems->push(['type'=>'event','id'=>$event->id,'title'=>$event->title,'excerpt'=>$event->description,'image'=>$event->featured_image ?? 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80','category'=>$event->category,'category_color'=>$event->badge_color ?? 'indigo','date'=>$event->start_date->format('M d, Y'),'location'=>$event->location,'slug'=>$event->slug,'route'=>route('member.events.show', $event->slug),'icon'=>'fa-calendar-alt']);
+                }
+                if (isset($jobs) && $jobs->isNotEmpty()) {
+                    $job = $jobs->first();
+                    $featuredItems->push(['type'=>'job','id'=>$job->id,'title'=>$job->title,'excerpt'=>$job->summary,'image'=>$job->company_logo ?? 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80','category'=>$job->category,'category_color'=>$job->category_color,'date'=>$job->posted_date->format('M d, Y'),'company'=>$job->company,'location'=>$job->location,'slug'=>$job->slug,'route'=>route('member.jobs.show', $job->slug),'icon'=>'fa-briefcase']);
+                }
+            }
+        @endphp
 
-            {{-- Slides --}}
-            @foreach($featuredItems as $index => $item)
-            <div class="carousel-slide {{ $index === 0 ? 'active' : '' }}"
-                 style="background-image: url('{{ $item['image'] }}');"
-                 data-index="{{ $index }}">
-                <div class="carousel-overlay">
-                    <div class="carousel-content">
-                        <div class="carousel-category">
-                            <i class="fas {{ $item['icon'] }}"></i>
-                            {{ $item['category'] }}
-                        </div>
-                        <h2 class="carousel-title">{{ $item['title'] }}</h2>
-                        <p class="carousel-excerpt">{{ Str::limit($item['excerpt'], 130) }}</p>
-                        <div class="carousel-meta">
-                            <span class="carousel-meta-item">
-                                <i class="far fa-calendar-alt"></i>
-                                {{ $item['date'] }}
-                            </span>
-                            @if(isset($item['location']))
-                            <span class="carousel-meta-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                {{ $item['location'] }}
-                            </span>
-                            @endif
-                            @if(isset($item['company']))
-                            <span class="carousel-meta-item">
-                                <i class="fas fa-building"></i>
-                                {{ $item['company'] }}
-                            </span>
-                            @endif
-                        </div>
-                        <a href="{{ $item['route'] }}#from-dashboard-{{ $item['type'] }}" class="carousel-button">
-                            Learn More
-                            <i class="fas fa-arrow-right text-xs"></i>
-                        </a>
+        {{-- Slides --}}
+        @foreach($featuredItems as $index => $item)
+        <div class="carousel-slide {{ $index === 0 ? 'active' : '' }}"
+             style="background-image: url('{{ $item['image'] }}');"
+             data-index="{{ $index }}"
+             data-route="{{ $item['route'] }}">
+            <div class="carousel-overlay">
+                <div class="carousel-content">
+                    <div class="carousel-category">
+                        <i class="fas {{ $item['icon'] }}"></i>
+                        {{ $item['category'] }}
                     </div>
+                    <h2 class="carousel-title">{{ $item['title'] }}</h2>
+                    <p class="carousel-excerpt">{{ Str::limit($item['excerpt'], 130) }}</p>
+                    <div class="carousel-meta">
+                        <span class="carousel-meta-item">
+                            <i class="far fa-calendar-alt"></i>
+                            {{ $item['date'] }}
+                        </span>
+                        @if(isset($item['location']))
+                        <span class="carousel-meta-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            {{ $item['location'] }}
+                        </span>
+                        @endif
+                        @if(isset($item['company']))
+                        <span class="carousel-meta-item">
+                            <i class="fas fa-building"></i>
+                            {{ $item['company'] }}
+                        </span>
+                        @endif
+                    </div>
+                    <a href="{{ $item['route'] }}" class="carousel-button" data-slide-index="{{ $index }}">
+                        Learn More
+                        <i class="fas fa-arrow-right text-xs"></i>
+                    </a>
                 </div>
             </div>
-            @endforeach
-
-            {{-- Arrows --}}
-            <div class="carousel-arrow prev hidden sm:flex" onclick="prevSlide()">
-                <i class="fas fa-chevron-left"></i>
-            </div>
-            <div class="carousel-arrow next hidden sm:flex" onclick="nextSlide()">
-                <i class="fas fa-chevron-right"></i>
-            </div>
-
-            {{-- Dot navigation --}}
-            <div class="carousel-nav">
-                @foreach($featuredItems as $index => $item)
-                <div class="carousel-dot {{ $index === 0 ? 'active' : '' }}"
-                     onclick="goToSlide({{ $index }})"
-                     data-index="{{ $index }}"></div>
-                @endforeach
-            </div>
-
-            {{-- Thumbnail strip --}}
-            <div class="carousel-thumbs hidden md:flex">
-                @foreach($featuredItems as $index => $item)
-                <div class="carousel-thumb {{ $index === 0 ? 'active' : '' }}"
-                     style="background-image: url('{{ $item['image'] }}');"
-                     onclick="goToSlide({{ $index }})"
-                     data-thumb="{{ $index }}"></div>
-                @endforeach
-            </div>
-
         </div>
+        @endforeach
+
+        {{-- Arrows --}}
+        <div class="carousel-arrow prev hidden sm:flex" onclick="prevSlide()">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="carousel-arrow next hidden sm:flex" onclick="nextSlide()">
+            <i class="fas fa-chevron-right"></i>
+        </div>
+
+        {{-- Dot navigation --}}
+        <div class="carousel-nav">
+            @foreach($featuredItems as $index => $item)
+            <div class="carousel-dot {{ $index === 0 ? 'active' : '' }}"
+                 onclick="goToSlide({{ $index }})"
+                 data-index="{{ $index }}"></div>
+            @endforeach
+        </div>
+
+        {{-- Thumbnail strip --}}
+        <div class="carousel-thumbs hidden md:flex">
+            @foreach($featuredItems as $index => $item)
+            <div class="carousel-thumb {{ $index === 0 ? 'active' : '' }}"
+                 style="background-image: url('{{ $item['image'] }}');"
+                 onclick="goToSlide({{ $index }})"
+                 data-thumb="{{ $index }}"></div>
+            @endforeach
+        </div>
+
     </div>
-    @endif
+</div>
+@endif
 
     <!-- Quick Actions Card -->
     <div class="bg-white rounded-lg shadow p-6 mb-8">
@@ -1902,7 +1908,6 @@
     </div>
 </div>
 
-
     <!-- Tab Content - News -->
 <div id="content-news" class="tab-content">
     <div class="flex justify-between items-center mb-6">
@@ -2006,18 +2011,18 @@
 
     <!-- Job Filters -->
     <div class="flex flex-wrap gap-2 mb-6">
-        <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">All Jobs</button>
-        <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">Executive</button>
-        <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">Finance</button>
-        <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">Technology</button>
-        <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">Operations</button>
-        <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">Consulting</button>
+        <button class="filter-job-btn px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium" data-category="all">All Jobs</button>
+        <button class="filter-job-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200" data-category="executive">Executive</button>
+        <button class="filter-job-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200" data-category="finance">Finance</button>
+        <button class="filter-job-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200" data-category="technology">Technology</button>
+        <button class="filter-job-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200" data-category="operations">Operations</button>
+        <button class="filter-job-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200" data-category="consulting">Consulting</button>
     </div>
 
-    <!-- Jobs List -->
-    <div class="space-y-4">
+    <!-- Jobs List Container -->
+    <div id="jobs-list-container" class="space-y-4">
         @forelse($jobs as $job)
-        <div class="job-card">
+        <div class="job-card" data-job-category="{{ strtolower($job->category) }}">
             <div class="flex items-start justify-between">
                 <div>
                     <h3 class="text-lg font-bold text-gray-900">{{ $job->title }}</h3>
@@ -2049,9 +2054,8 @@
                 </span>
             </div>
             <div class="mt-4 flex items-center justify-between">
-                <a href="{{ route('member.jobs.show', $job->slug) }}#from-dashboard-jobs" class="text-sm text-indigo-600 hover:text-indigo-900">View Details →</a>
+                <a href="{{ route('member.jobs.show', $job->slug) }}" class="text-sm text-indigo-600 hover:text-indigo-900">View Details →</a>
                 
-                {{-- INTERNAL APPLICATION SYSTEM --}}
                 @php
                     $hasApplied = $job->hasApplied(Auth::guard('donor')->id());
                 @endphp
@@ -2062,7 +2066,7 @@
                         Application Submitted
                     </span>
                 @else
-                    <a href="{{ route('member.jobs.apply', $job->slug) }}?from=dashboard" 
+                    <a href="{{ route('member.jobs.apply', $job->slug) }}" 
                        class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-sm hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-md flex items-center gap-2">
                         <i class="fas fa-paper-plane"></i>
                         Apply Now
@@ -2070,7 +2074,6 @@
                 @endif
             </div>
             
-            {{-- Show deadline if approaching --}}
             @if($job->application_deadline && $job->application_deadline->diffInDays(now()) < 7)
             <div class="mt-3 text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-1 inline-block">
                 <i class="far fa-clock mr-1"></i> Deadline: {{ $job->application_deadline->format('M d, Y') }}
@@ -2088,42 +2091,6 @@
             <p class="text-gray-500">Check back soon for new opportunities.</p>
         </div>
         @endforelse
-    </div>
-
-    @if($jobs->count() > 0)
-    <div class="text-center mt-8">
-        <a href="{{ route('member.jobs.index') }}" class="inline-block px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-md font-medium">
-            Browse All Job Opportunities
-            <i class="fas fa-arrow-right ml-2"></i>
-        </a>
-    </div>
-    @endif
-
-    {{-- Career Resources Section --}}
-    <div class="mt-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
-        <div class="flex items-center gap-4 mb-4">
-            <div class="bg-white rounded-full p-3 shadow-sm">
-                <i class="fas fa-briefcase text-indigo-600 text-xl"></i>
-            </div>
-            <div>
-                <h3 class="text-lg font-bold text-gray-900">Career Resources</h3>
-                <p class="text-sm text-gray-600">Exclusive resources for APN members</p>
-            </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a href="#" class="flex items-center gap-3 p-3 bg-white rounded-lg hover:shadow-md transition-all">
-                <i class="fas fa-file-pdf text-red-500"></i>
-                <span class="text-sm text-gray-700">Resume Template</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 p-3 bg-white rounded-lg hover:shadow-md transition-all">
-                <i class="fas fa-video text-blue-500"></i>
-                <span class="text-sm text-gray-700">Interview Guide</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 p-3 bg-white rounded-lg hover:shadow-md transition-all">
-                <i class="fas fa-users text-green-500"></i>
-                <span class="text-sm text-gray-700">Mentorship Program</span>
-            </a>
-        </div>
     </div>
 </div>
 
@@ -2875,11 +2842,28 @@ function showSlide(index) {
     if (index < 0) index = totalSlides - 1;
     if (index >= totalSlides) index = 0;
 
-    slides.forEach(s => s.classList.remove('active'));
+    slides.forEach(s => {
+        s.classList.remove('active');
+        s.style.pointerEvents = 'none'; 
+        const btn = s.querySelector('.carousel-button');
+        if (btn) btn.setAttribute('tabindex', '-1'); 
+    });
+    
     dots.forEach(d => d.classList.remove('active'));
     thumbs.forEach(t => t.classList.remove('active'));
 
-    slides[index].classList.add('active');
+    // Activate the correct slide
+    const activeSlide = slides[index];
+    activeSlide.classList.add('active');
+    activeSlide.style.pointerEvents = 'auto'; 
+
+    const route = activeSlide.getAttribute('data-route');
+    const btn = activeSlide.querySelector('.carousel-button');
+    if (btn && route) {
+        btn.setAttribute('href', route);
+        btn.setAttribute('tabindex', '0');
+    }
+
     if (dots[index]) dots[index].classList.add('active');
     if (thumbs[index]) thumbs[index].classList.add('active');
 
@@ -2891,6 +2875,14 @@ function showSlide(index) {
 function nextSlide() { showSlide(currentSlide + 1); }
 function prevSlide() { showSlide(currentSlide - 1); }
 function goToSlide(i) { showSlide(i); }
+
+document.querySelector('.carousel-container').addEventListener('click', function(e) {
+    const btn = e.target.closest('.carousel-button');
+    if (btn) {
+        const route = btn.getAttribute('href');
+        if (route) window.location.href = route;
+    }
+});
 
 // Pause on hover
 const carouselEl = document.querySelector('.carousel-container');
