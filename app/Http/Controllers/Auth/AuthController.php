@@ -24,8 +24,6 @@ public function showLoginForm()
 {
     if (Auth::guard('donor')->check()) {
         $donor = Auth::guard('donor')->user();
-        
-        // Check for ANY membership (not just active)
         $member = Member::where('donor_id', $donor->id)->latest()->first();
         
         if ($member) {
@@ -143,15 +141,20 @@ public function logout(Request $request)
     return $response;
 }
  
-
-   /**
+/**
  * Show donor dashboard
  */
 public function dashboard()
 {
     $donor = Auth::guard('donor')->user();
     
-    $member = Member::where('donor_id', $donor->id)->first();
+    $activeMember = Member::where('donor_id', $donor->id)
+        ->where('status', 'active')
+        ->first();
+
+    $member = Member::where('donor_id', $donor->id)
+        ->orderBy('created_at', 'desc')
+        ->first();
     
     $donations = Donation::where('donor_id', $donor->id)
         ->where('payment_status', 'success')
@@ -166,26 +169,27 @@ public function dashboard()
         'total_donations' => $donations->count(),
         'total_amount'    => $donations->sum('amount'),
         'member_since'    => $member ? $member->start_date->format('M Y') : null,
-        'is_member'       => $member ? true : false,
+        'is_member'       => $activeMember ? true : false,
     ];
     
     $memberStatus      = null;
     $memberStatusColor = null;
     $memberStatusPulse = false;
     
-    if ($member) {
-        $memberStatus      = strtoupper($member->status);
-        $memberStatusColor = match($member->status) {
+    $displayMember = $activeMember ?? $member;
+    
+    if ($displayMember) {
+        $memberStatus      = strtoupper($displayMember->status);
+        $memberStatusColor = match($displayMember->status) {
             'active'    => 'green',
             'expired'   => 'red',
             'cancelled' => 'orange',
             'pending'   => 'yellow',
             default     => 'gray'
         };
-        $memberStatusPulse = in_array($member->status, ['active', 'pending']);
+        $memberStatusPulse = in_array($displayMember->status, ['active', 'pending']);
     }
 
-    // Add this ↓
     $latestFilteredImage = FilteredImage::where('user_id', $donor->id)
         ->latest()
         ->first();
@@ -193,12 +197,13 @@ public function dashboard()
     return view('donor.dashboard', compact(
         'donor', 
         'member', 
+        'activeMember',    
         'recentDonations', 
         'stats',
         'memberStatus',
         'memberStatusColor',
         'memberStatusPulse',
-        'latestFilteredImage'  // Add this ↓
+        'latestFilteredImage'
     ));
 }
 

@@ -162,7 +162,7 @@
                 </p>
             </div>
             
-         <!-- User Dropdown Menu -->
+<!-- User Dropdown Menu -->
 <div class="relative" 
      x-data="{ open: false }" 
      x-cloak
@@ -193,10 +193,15 @@
         <a href="{{ route('donor.profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
         <a href="{{ route('donor.transactions') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Transactions</a>
         
-        @if($stats['is_member'] && $member->status == 'active')
-            <a href="{{ route('member.dashboard') }}" class="block px-4 py-2 text-sm text-indigo-600 hover:bg-gray-100 font-medium">Switch to Member Dashboard →</a>
+        {{-- Check if user has an ACTIVE membership --}}
+        @if($activeMember && $activeMember->status == 'active')
+            <a href="{{ route('member.dashboard') }}" class="block px-4 py-2 text-sm text-indigo-600 hover:bg-gray-100 font-medium">
+                Switch to Member Dashboard →
+            </a>
         @else
-            <a href="{{ route('donor.membership') }}" class="block px-4 py-2 text-sm text-indigo-600 hover:bg-gray-100 font-medium">Become a Member</a>
+            <a href="{{ route('donor.membership') }}" class="block px-4 py-2 text-sm text-indigo-600 hover:bg-gray-100 font-medium">
+                Become a Member
+            </a>
         @endif
         
         <a href="{{ route('donor.support') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Help & Support</a>
@@ -211,63 +216,61 @@
         <!-- Stats Cards Row -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <!-- Membership Status Card - Dynamic from Database -->
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="p-3 bg-yellow-100 rounded-full">
-                        <svg class="h-8 w-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-gray-500 text-sm">Membership Status</p>
-                        <p class="text-xl font-semibold text-gray-900">
-                            @if($member)
-                                @if($member->status == 'active')
-                                    <span class="text-green-600">● Active {{ ucfirst($member->membership_type) }} Member</span>
-                                @elseif($member->status == 'expired')
-                                    <span class="text-red-600">● Expired</span>
-                                @elseif($member->status == 'cancelled')
-                                    <span class="text-orange-600">● Cancelled</span>
-                                @elseif($member->status == 'pending')
-                                    <span class="text-yellow-600">● Pending</span>
-                                @endif
-                            @else
-                                <span class="text-gray-600">● Not a Member</span>
-                            @endif
-                        </p>
-                    </div>
-                </div>
-                
-                <div class="mt-4 text-sm">
-                    @if($member)
-                        @if($member->status == 'active')
-                            <p class="text-gray-600">Plan: <span class="font-medium">{{ ucfirst($member->membership_type) }} Plan</span></p>
-                            <p class="text-gray-600">Valid Until: <span class="font-medium">{{ $member->end_date ? $member->end_date->format('M d, Y') : 'N/A' }}</span></p>
-                            <a href="{{ route('member.dashboard') }}" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium mt-2 inline-block">
-                                Go to Member Dashboard →
-                            </a>
-                        @elseif($member->status == 'expired')
-                            <p class="text-gray-600">Your membership expired on {{ $member->end_date ? $member->end_date->format('M d, Y') : 'N/A' }}</p>
-                            <a href="{{ route('donor.membership') }}" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium mt-2 inline-block">
-                                Renew Membership →
-                            </a>
-                        @elseif($member->status == 'cancelled')
-                            <p class="text-gray-600">Your membership was cancelled on {{ $member->updated_at->format('M d, Y') }}</p>
-                            <a href="{{ route('donor.membership') }}" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium mt-2 inline-block">
-                                Rejoin →
-                            </a>
-                        @elseif($member->status == 'pending')
-                            <p class="text-gray-600">Your membership is being processed</p>
-                            <p class="text-xs text-gray-500 mt-1">This may take 24-48 hours</p>
-                        @endif
-                    @else
-                        <p class="text-gray-600">You are not currently a member.</p>
-                        <a href="{{ route('donor.membership') }}" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium mt-2 inline-block">
-                            Become a Member →
-                        </a>
-                    @endif
-                </div>
-            </div>
+       <!-- Membership Status Card - Dynamic from Database -->
+<div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center">
+        <div class="p-3 bg-yellow-100 rounded-full">
+            <svg class="h-8 w-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+        </div>
+        <div class="ml-4">
+            <p class="text-gray-500 text-sm">Membership Status</p>
+            <p class="text-xl font-semibold text-gray-900">
+                @if($activeMember && $activeMember->status == 'active')
+                    <span class="text-green-600">● Active {{ ucfirst($activeMember->membership_type) }} Member</span>
+                @elseif($member && $member->status == 'expired')
+                    <span class="text-red-600">● Expired</span>
+                @elseif($member && $member->status == 'cancelled')
+                    <span class="text-orange-600">● Cancelled</span>
+                @elseif($member && $member->status == 'pending')
+                    <span class="text-yellow-600">● Pending</span>
+                @else
+                    <span class="text-gray-600">● Not a Member</span>
+                @endif
+            </p>
+        </div>
+    </div>
+    
+    <div class="mt-4 text-sm">
+        @if($activeMember && $activeMember->status == 'active')
+            <p class="text-gray-600">Plan: <span class="font-medium">{{ ucfirst($activeMember->membership_type) }} Plan</span></p>
+            <p class="text-gray-600">Valid Until: <span class="font-medium">{{ $activeMember->end_date ? $activeMember->end_date->format('M d, Y') : 'N/A' }}</span></p>
+            <p class="text-gray-600">Renewal Count: <span class="font-medium">{{ $activeMember->renewal_count }} times</span></p>
+            <a href="{{ route('member.dashboard') }}" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium mt-2 inline-block">
+                Go to Member Dashboard →
+            </a>
+        @elseif($member && $member->status == 'expired')
+            <p class="text-gray-600">Your membership expired on {{ $member->end_date ? $member->end_date->format('M d, Y') : 'N/A' }}</p>
+            <a href="{{ route('donor.membership') }}" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium mt-2 inline-block">
+                Renew Membership →
+            </a>
+        @elseif($member && $member->status == 'cancelled')
+            <p class="text-gray-600">Your membership was cancelled on {{ $member->updated_at->format('M d, Y') }}</p>
+            <a href="{{ route('donor.membership') }}" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium mt-2 inline-block">
+                Rejoin →
+            </a>
+        @elseif($member && $member->status == 'pending')
+            <p class="text-gray-600">Your membership is being processed</p>
+            <p class="text-xs text-gray-500 mt-1">This may take 24-48 hours</p>
+        @else
+            <p class="text-gray-600">You are not currently a member.</p>
+            <a href="{{ route('donor.membership') }}" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium mt-2 inline-block">
+                Become a Member →
+            </a>
+        @endif
+    </div>
+</div>
 
             <!-- Payment History Summary -->
             <div class="bg-white rounded-lg shadow p-6">
@@ -351,27 +354,43 @@
             </div>
         </div>
 
-        <!-- Member CTA Banner (for non-members) -->
-        @if(!$stats['is_member'])
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg shadow-lg p-6 mb-8">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <div class="bg-white/20 rounded-full p-3">
-                        <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-white font-bold text-xl">Become an APN Member Today!</h3>
-                        <p class="text-indigo-100">Get access to exclusive events, networking opportunities, and more.</p>
-                    </div>
-                </div>
-                <a href="{{ route('donor.membership') }}" class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-indigo-50 transition-colors">
-                    Join Now
-                </a>
+     <!-- Member CTA Banner (for non-members and expired members) -->
+@if(!$activeMember || $activeMember->status != 'active')
+<div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg shadow-lg p-6 mb-8">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <div class="bg-white/20 rounded-full p-3">
+                <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-white font-bold text-xl">
+                    @if($member && $member->status == 'expired')
+                        Renew Your Membership Today!
+                    @else
+                        Become an APN Member Today!
+                    @endif
+                </h3>
+                <p class="text-indigo-100">
+                    @if($member && $member->status == 'expired')
+                        Your membership has expired. Renew now to regain access to exclusive benefits.
+                    @else
+                        Get access to exclusive events, networking opportunities, and more.
+                    @endif
+                </p>
             </div>
         </div>
-        @endif
+        <a href="{{ route('donor.membership') }}" class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-indigo-50 transition-colors">
+            @if($member && $member->status == 'expired')
+                Renew Now
+            @else
+                Join Now
+            @endif
+        </a>
+    </div>
+</div>
+@endif
 
         <!-- Recent Donations Table -->
         <div class="bg-white rounded-lg shadow overflow-hidden">
