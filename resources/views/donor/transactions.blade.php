@@ -13,10 +13,10 @@
     
     /* Text size adjustments */
     .text-xs {
-        font-size: 0.8rem !important;
+        font-size: 0.75rem !important;
     }
     .text-sm {
-        font-size: 0.95rem !important;
+        font-size: 0.875rem !important;
     }
     .text-base {
         font-size: 1rem !important;
@@ -25,85 +25,188 @@
         font-size: 1.125rem !important;
     }
     .text-xl {
-        font-size: 1.3rem !important;
+        font-size: 1.25rem !important;
     }
     .text-2xl {
-        font-size: 1.65rem !important;
+        font-size: 1.5rem !important;
     }
     .text-3xl {
-        font-size: 2rem !important;
+        font-size: 1.875rem !important;
     }
     
     .breadcrumb-link {
         font-family: 'Open Sans', sans-serif;
-        font-size: 0.95rem;
+        font-size: 0.875rem;
     }
     
     .stat-label {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         letter-spacing: 0.02em;
     }
     
     .stat-value {
-        font-size: 1.65rem;
+        font-size: 1.5rem;
         font-family: 'Urbanist', sans-serif;
         font-weight: 600;
     }
     
     .table-header {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-family: 'Urbanist', sans-serif;
         font-weight: 600;
         letter-spacing: 0.03em;
     }
     
-    .table-date {
-        font-size: 0.95rem;
-    }
-    
-    .table-time {
-        font-size: 0.8rem;
-    }
-    
-    .table-transaction {
-        font-size: 0.9rem;
-        font-family: monospace;
-    }
-    
-    .table-amount {
-        font-size: 0.95rem;
-        font-weight: 600;
-    }
-    
     .badge-status {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 600;
-        padding: 0.25rem 0.75rem;
+        padding: 0.2rem 0.6rem;
     }
     
-    .empty-state-title {
-        font-family: 'Urbanist', sans-serif;
-        font-size: 0.95rem;
-        font-weight: 500;
+    /* Mobile card view for transactions */
+    @media (max-width: 768px) {
+        .transaction-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .transaction-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .transaction-amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        
+        .transaction-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .transaction-detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .transaction-detail-label {
+            font-size: 0.7rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            margin-bottom: 0.25rem;
+        }
+        
+        .transaction-detail-value {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #1f2937;
+            word-break: break-word;
+        }
+        
+        .transaction-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #f3f4f6;
+        }
+        
+        .desktop-table {
+            display: none;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 1rem !important;
+        }
+        
+        .filter-controls {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .filter-controls select,
+        .filter-controls input {
+            width: 100%;
+        }
     }
     
-    .empty-state-text {
-        font-size: 0.9rem;
+    @media (min-width: 769px) {
+        .mobile-cards {
+            display: none;
+        }
+        
+        .desktop-table {
+            display: block;
+        }
     }
     
-    /* Responsive adjustments */
-    @media (max-width: 640px) {
-        body {
-            font-size: 15px;
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: 1fr !important;
         }
-        .text-xs {
-            font-size: 0.75rem !important;
+        
+        .transaction-details {
+            grid-template-columns: 1fr !important;
         }
-        .text-sm {
-            font-size: 0.875rem !important;
+        
+        .transaction-header {
+            flex-direction: column;
+            gap: 0.5rem;
         }
+        
+        .transaction-amount {
+            font-size: 1.125rem;
+        }
+        
+        .stat-value {
+            font-size: 1.25rem;
+        }
+        
+        .stat-label {
+            font-size: 0.7rem;
+        }
+        
+        .breadcrumb-link {
+            font-size: 0.75rem;
+        }
+        
         h1 {
-            font-size: 1.75rem !important;
+            font-size: 1.5rem !important;
+        }
+        
+        .download-section {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+        
+        .download-section .flex {
+            width: 100%;
+            flex-direction: column;
+        }
+        
+        .download-section select,
+        .download-section button {
+            width: 100%;
         }
     }
 
@@ -144,75 +247,88 @@
     #transactionDetails::-webkit-scrollbar-thumb:hover {
         background: #94a3b8;
     }
+    
+    /* Modal responsive */
+    @media (max-width: 640px) {
+        .modal-container {
+            margin: 1rem !important;
+            width: calc(100% - 2rem) !important;
+        }
+        
+        .modal-grid {
+            grid-template-columns: 1fr !important;
+            gap: 0.75rem !important;
+        }
+    }
 </style>
 
-<div class="min-h-screen bg-gray-50 py-8">
+<div class="min-h-screen bg-gray-50 py-4 sm:py-6 md:py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header with breadcrumb -->
-        <div class="mb-8">
-            <div class="flex items-center text-sm text-gray-500 mb-2 breadcrumb-link">
+        <div class="mb-6 md:mb-8">
+            <div class="flex items-center text-sm text-gray-500 mb-2 breadcrumb-link flex-wrap">
                 <a href="{{ route('donor.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
-                <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="w-4 h-4 mx-1 sm:mx-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                 </svg>
                 <span class="text-gray-700">Transactions</span>
             </div>
-            <h1 class="text-3xl font-bold text-gray-900">Transaction History</h1>
-            <p class="text-gray-600 mt-2">View all your donation transactions and payment history.</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Transaction History</h1>
+            <p class="text-sm sm:text-base text-gray-600 mt-2">View all your donation transactions and payment history.</p>
         </div>
 
         <!-- Stats Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white rounded-lg shadow p-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 md:mb-8 stats-grid">
+            <div class="bg-white rounded-lg shadow p-4 sm:p-6">
                 <div class="flex items-center">
-                    <div class="p-3 bg-indigo-100 rounded-full">
-                        <svg class="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="p-2 sm:p-3 bg-indigo-100 rounded-full flex-shrink-0">
+                        <svg class="h-5 w-5 sm:h-6 sm:w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                         </svg>
                     </div>
-                    <div class="ml-4">
+                    <div class="ml-3 sm:ml-4">
                         <p class="text-gray-500 stat-label">Total Transactions</p>
                         <p class="stat-value text-gray-900">{{ $transactions->total() }}</p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow p-6">
+            <div class="bg-white rounded-lg shadow p-4 sm:p-6">
                 <div class="flex items-center">
-                    <div class="p-3 bg-green-100 rounded-full">
-                        <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="p-2 sm:p-3 bg-green-100 rounded-full flex-shrink-0">
+                        <svg class="h-5 w-5 sm:h-6 sm:w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
-                    <div class="ml-4">
+                    <div class="ml-3 sm:ml-4">
                         <p class="text-gray-500 stat-label">Total Amount</p>
                         <p class="stat-value text-gray-900">${{ number_format($transactions->sum('amount'), 2) }}</p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow p-6">
+            <div class="bg-white rounded-lg shadow p-4 sm:p-6">
                 <div class="flex items-center">
-                    <div class="p-3 bg-yellow-100 rounded-full">
-                        <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="p-2 sm:p-3 bg-yellow-100 rounded-full flex-shrink-0">
+                        <svg class="h-5 w-5 sm:h-6 sm:w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                         </svg>
                     </div>
-                    <div class="ml-4">
+                    <div class="ml-3 sm:ml-4">
                         <p class="text-gray-500 stat-label">Payment Methods</p>
                         <p class="stat-value text-gray-900">{{ $transactions->pluck('payment_method')->unique()->count() }}</p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow p-6">
+            <div class="bg-white rounded-lg shadow p-4 sm:p-6">
                 <div class="flex items-center">
-                    <div class="p-3 bg-purple-100 rounded-full">
-                        <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="p-2 sm:p-3 bg-purple-100 rounded-full flex-shrink-0">
+                        <svg class="h-5 w-5 sm:h-6 sm:w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
-                    <div class="ml-4">
+                    <div class="ml-3 sm:ml-4">
                         <p class="text-gray-500 stat-label">Successful</p>
                         <p class="stat-value text-green-600">{{ $transactions->where('payment_status', 'success')->count() }}</p>
                     </div>
@@ -220,88 +336,81 @@
             </div>
         </div>
 
-        <!-- Transactions Table -->
+        <!-- Transactions Table (Desktop) & Cards (Mobile) -->
         <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                <h2 class="text-xl font-semibold text-gray-800">All Transactions</h2>
-                <div class="flex space-x-2">
-                    <select class="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                        <option>All Status</option>
-                        <option>Success</option>
-                        <option>Pending</option>
-                        <option>Failed</option>
-                    </select>
-                    <input type="text" placeholder="Search transactions..." 
-                           class="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 filter-controls">
+                    <h2 class="text-lg sm:text-xl font-semibold text-gray-800">All Transactions</h2>
+                    <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                        <select class="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2">
+                            <option>All Status</option>
+                            <option>Success</option>
+                            <option>Pending</option>
+                            <option>Failed</option>
+                        </select>
+                        <input type="text" placeholder="Search transactions..." 
+                               class="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2">
+                    </div>
                 </div>
             </div>
             
-            <div class="overflow-x-auto">
+            <!-- Desktop Table View -->
+            <div class="desktop-table overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Date & Time</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Transaction ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Reason</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Payment Method</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Actions</th>
+                            <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Date & Time</th>
+                            <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Transaction ID</th>
+                            <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Reason</th>
+                            <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Amount</th>
+                            <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Payment Method</th>
+                            <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Status</th>
+                            <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider table-header">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($transactions as $transaction)
                         <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="table-date text-gray-900">{{ $transaction->created_at->format('M d, Y') }}</div>
-                                <div class="table-time text-gray-500">{{ $transaction->created_at->format('h:i A') }}</div>
+                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ $transaction->created_at->format('M d, Y') }}</div>
+                                <div class="text-xs text-gray-500">{{ $transaction->created_at->format('h:i A') }}</div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="table-transaction text-gray-600">{{ $transaction->transaction_id }}</span>
+                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                <span class="text-xs sm:text-sm font-mono text-gray-600">{{ substr($transaction->transaction_id, 0, 12) }}...</span>
                             </td>
-                        <td class="px-6 py-4">
-    <div class="table-date text-gray-900">
-        @if($transaction->donation_reason)
-            @if($transaction->donation_reason === 'campaign')
-                Campaign Support
-            @elseif($transaction->donation_reason === 'youth')
-                Youth Initiatives
-            @elseif($transaction->donation_reason === 'events')
-                Events
-            @elseif($transaction->donation_reason === 'advocacy')
-                Advocacy Work
-            @elseif($transaction->donation_reason === 'projects')
-                Special Projects
-            @elseif($transaction->donation_reason === 'other' && $transaction->custom_reason)
-                {{ $transaction->custom_reason }}
-            @else
-                General Donation
-            @endif
-        @else
-            General Donation
-        @endif
-    </div>
-    <div class="table-time text-gray-500 mt-1">
-        @if($transaction->donation_reason)
-            <span class="px-2 py-0.5 inline-flex text-xs leading-4 font-semibold rounded-full 
-                @if($transaction->donation_reason === 'campaign') bg-purple-100 text-purple-800
-                @elseif($transaction->donation_reason === 'youth') bg-blue-100 text-blue-800
-                @elseif($transaction->donation_reason === 'events') bg-green-100 text-green-800
-                @elseif($transaction->donation_reason === 'advocacy') bg-orange-100 text-orange-800
-                @elseif($transaction->donation_reason === 'projects') bg-indigo-100 text-indigo-800
-                @else bg-gray-100 text-gray-800
-                @endif">
-                Donation
-            </span>
-        @else
-            <span class="text-gray-400">-</span>
-        @endif
-    </div>
-</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="table-amount text-gray-900">${{ number_format($transaction->amount, 2) }}</span>
+                            <td class="px-4 sm:px-6 py-4">
+                                <div class="text-sm text-gray-900">
+                                    @if($transaction->donation_reason)
+                                        @if($transaction->donation_reason === 'campaign') Campaign Support
+                                        @elseif($transaction->donation_reason === 'youth') Youth Initiatives
+                                        @elseif($transaction->donation_reason === 'events') Events
+                                        @elseif($transaction->donation_reason === 'advocacy') Advocacy Work
+                                        @elseif($transaction->donation_reason === 'projects') Special Projects
+                                        @elseif($transaction->donation_reason === 'other' && $transaction->custom_reason) {{ $transaction->custom_reason }}
+                                        @else General Donation
+                                        @endif
+                                    @else General Donation
+                                    @endif
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">
+                                    @if($transaction->donation_reason)
+                                        <span class="px-2 py-0.5 inline-flex text-xs leading-4 font-semibold rounded-full 
+                                            @if($transaction->donation_reason === 'campaign') bg-purple-100 text-purple-800
+                                            @elseif($transaction->donation_reason === 'youth') bg-blue-100 text-blue-800
+                                            @elseif($transaction->donation_reason === 'events') bg-green-100 text-green-800
+                                            @elseif($transaction->donation_reason === 'advocacy') bg-orange-100 text-orange-800
+                                            @elseif($transaction->donation_reason === 'projects') bg-indigo-100 text-indigo-800
+                                            @else bg-gray-100 text-gray-800
+                                            @endif">
+                                            Donation
+                                        </span>
+                                    @endif
+                                </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                <span class="text-sm font-semibold text-gray-900">${{ number_format($transaction->amount, 2) }}</span>
+                            </td>
+                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     @if($transaction->payment_method == 'card')
                                         <svg class="w-4 h-4 text-blue-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -314,43 +423,31 @@
                                             <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"></path>
                                         </svg>
                                     @endif
-                                    <span class="text-sm text-gray-600">{{ ucfirst($transaction->payment_method ?? 'Card') }}</span>
+                                    <span class="text-xs sm:text-sm text-gray-600">{{ ucfirst($transaction->payment_method ?? 'Card') }}</span>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                                 @if($transaction->payment_status == 'success')
-                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 badge-status">
-                                        Success
-                                    </span>
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 badge-status">Success</span>
                                 @elseif($transaction->payment_status == 'pending')
-                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 badge-status">
-                                        Pending
-                                    </span>
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 badge-status">Pending</span>
                                 @else
-                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 badge-status">
-                                        Failed
-                                    </span>
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 badge-status">Failed</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                <button onclick="openTransactionModal({{ $transaction->id }})" 
-                                        class="text-indigo-600 hover:text-indigo-900 mr-3 font-medium">
-                                    View
-                                </button>
-                                <button onclick="downloadReceipt('{{ $transaction->transaction_id }}', {{ $transaction->amount }}, '{{ $transaction->created_at }}', '{{ $transaction->payment_method ?? 'Card' }}', '{{ $transaction->purpose ?? 'General Donation' }}')" 
-                                        class="text-gray-600 hover:text-gray-900 font-medium">
-                                    Receipt
-                                </button>
+                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-sm">
+                                <button onclick="openTransactionModal({{ $transaction->id }})" class="text-indigo-600 hover:text-indigo-900 mr-2 sm:mr-3 font-medium text-xs sm:text-sm">View</button>
+                                <button onclick="downloadReceipt('{{ $transaction->transaction_id }}', {{ $transaction->amount }}, '{{ $transaction->created_at }}', '{{ $transaction->payment_method ?? 'Card' }}', '{{ $transaction->purpose ?? 'General Donation' }}')" class="text-gray-600 hover:text-gray-900 font-medium text-xs sm:text-sm">Receipt</button>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-12 text-center">
+                            <td colspan="7" class="px-4 sm:px-6 py-12 text-center">
                                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                                 </svg>
-                                <h3 class="mt-2 empty-state-title text-gray-900">No transactions</h3>
-                                <p class="mt-1 empty-state-text text-gray-500">You haven't made any donations yet.</p>
+                                <h3 class="mt-2 text-sm font-medium text-gray-900">No transactions</h3>
+                                <p class="mt-1 text-sm text-gray-500">You haven't made any donations yet.</p>
                             </td>
                         </tr>
                         @endforelse
@@ -358,23 +455,99 @@
                 </table>
             </div>
 
+            <!-- Mobile Card View -->
+            <div class="mobile-cards p-4">
+                @forelse($transactions as $transaction)
+                <div class="transaction-card">
+                    <div class="transaction-header">
+                        <div>
+                            <div class="text-xs text-gray-500">{{ $transaction->created_at->format('M d, Y') }} at {{ $transaction->created_at->format('h:i A') }}</div>
+                            <div class="text-xs font-mono text-gray-500 mt-1">{{ substr($transaction->transaction_id, 0, 12) }}...</div>
+                        </div>
+                        <div class="transaction-amount">${{ number_format($transaction->amount, 2) }}</div>
+                    </div>
+                    
+                    <div class="transaction-details">
+                        <div class="transaction-detail-item">
+                            <span class="transaction-detail-label">Purpose</span>
+                            <span class="transaction-detail-value">
+                                @if($transaction->donation_reason)
+                                    @if($transaction->donation_reason === 'campaign') Campaign Support
+                                    @elseif($transaction->donation_reason === 'youth') Youth Initiatives
+                                    @elseif($transaction->donation_reason === 'events') Events
+                                    @elseif($transaction->donation_reason === 'advocacy') Advocacy Work
+                                    @elseif($transaction->donation_reason === 'projects') Special Projects
+                                    @elseif($transaction->donation_reason === 'other' && $transaction->custom_reason) {{ $transaction->custom_reason }}
+                                    @else General Donation
+                                    @endif
+                                @else General Donation
+                                @endif
+                            </span>
+                        </div>
+                        <div class="transaction-detail-item">
+                            <span class="transaction-detail-label">Payment Method</span>
+                            <span class="transaction-detail-value flex items-center gap-1">
+                                @if($transaction->payment_method == 'card')
+                                    <svg class="w-3 h-3 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
+                                        <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"></path>
+                                    </svg>
+                                @else
+                                    <svg class="w-3 h-3 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
+                                        <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"></path>
+                                    </svg>
+                                @endif
+                                {{ ucfirst($transaction->payment_method ?? 'Card') }}
+                            </span>
+                        </div>
+                        <div class="transaction-detail-item">
+                            <span class="transaction-detail-label">Status</span>
+                            <span class="transaction-detail-value">
+                                @if($transaction->payment_status == 'success')
+                                    <span class="px-2 py-0.5 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800">Success</span>
+                                @elseif($transaction->payment_status == 'pending')
+                                    <span class="px-2 py-0.5 inline-flex text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                @else
+                                    <span class="px-2 py-0.5 inline-flex text-xs font-semibold rounded-full bg-red-100 text-red-800">Failed</span>
+                                @endif
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="transaction-actions">
+                        <button onclick="openTransactionModal({{ $transaction->id }})" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">View Details</button>
+                        <button onclick="downloadReceipt('{{ $transaction->transaction_id }}', {{ $transaction->amount }}, '{{ $transaction->created_at }}', '{{ $transaction->payment_method ?? 'Card' }}', '{{ $transaction->purpose ?? 'General Donation' }}')" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Download Receipt</button>
+                    </div>
+                </div>
+                @empty
+                <div class="text-center py-12">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">No transactions</h3>
+                    <p class="mt-1 text-sm text-gray-500">You haven't made any donations yet.</p>
+                </div>
+                @endforelse
+            </div>
+
             <!-- Pagination -->
             @if($transactions->hasPages())
-            <div class="px-6 py-4 bg-white border-t border-gray-200">
+            <div class="px-4 sm:px-6 py-4 bg-white border-t border-gray-200">
                 {{ $transactions->links() }}
             </div>
             @endif
         </div>
 
         <!-- Download Statement Section -->
-        <div class="mt-8 bg-white rounded-lg shadow p-6">
-            <div class="flex items-center justify-between">
+        <div class="mt-6 md:mt-8 bg-white rounded-lg shadow p-4 sm:p-6 download-section">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <h3 class="text-lg font-semibold text-gray-800">Download Statement</h3>
-                    <p class="text-sm text-gray-500 mt-1">Get a complete statement of all your transactions</p>
+                    <h3 class="text-base sm:text-lg font-semibold text-gray-800">Download Statement</h3>
+                    <p class="text-xs sm:text-sm text-gray-500 mt-1">Get a complete statement of all your transactions</p>
                 </div>
-                <div class="flex space-x-3">
-                    <select id="statementPeriod" class="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+                    <select id="statementPeriod" class="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2">
                         <option value="30">Last 30 days</option>
                         <option value="90">Last 3 months</option>
                         <option value="180">Last 6 months</option>
@@ -382,7 +555,7 @@
                         <option value="all">All time</option>
                     </select>
                     <button onclick="downloadStatement()" 
-                            class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
+                            class="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                         </svg>
@@ -400,13 +573,12 @@
         <div id="modalOverlay" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
 
         <!-- Modal panel -->
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full w-full modal-container">
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-        
                 <div class="flex justify-between items-center border-b border-gray-200 pb-4">
-                    <h3 class="text-lg font-semibold text-gray-900" id="modal-title">Transaction Details</h3>
+                    <h3 class="text-base sm:text-lg font-semibold text-gray-900" id="modal-title">Transaction Details</h3>
                     <button onclick="closeTransactionModal()" class="text-gray-400 hover:text-gray-500">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
@@ -425,61 +597,61 @@
                     <!-- Transaction Info (populated by JavaScript) -->
                     <div id="transactionContent" class="hidden">
                         <!-- Status Badge -->
-                        <div class="flex justify-center mb-6">
-                            <span id="statusBadge" class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full badge-status"></span>
+                        <div class="flex justify-center mb-4 sm:mb-6">
+                            <span id="statusBadge" class="px-2 sm:px-3 py-1 inline-flex text-xs sm:text-sm leading-5 font-semibold rounded-full badge-status"></span>
                         </div>
 
                         <!-- Transaction ID -->
-                        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                        <div class="bg-gray-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
                             <p class="text-xs text-gray-500 mb-1">Transaction ID</p>
-                            <p id="transactionId" class="text-sm font-mono text-gray-900 break-all"></p>
+                            <p id="transactionId" class="text-xs sm:text-sm font-mono text-gray-900 break-all"></p>
                         </div>
 
                         <!-- Amount -->
-                        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-4 mb-4">
+                        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
                             <p class="text-xs text-gray-500 mb-1">Amount</p>
-                            <p id="transactionAmount" class="text-2xl font-bold text-gray-900"></p>
+                            <p id="transactionAmount" class="text-xl sm:text-2xl font-bold text-gray-900"></p>
                         </div>
 
                         <!-- Details Grid -->
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div class="bg-gray-50 rounded-lg p-3">
+                        <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4 modal-grid">
+                            <div class="bg-gray-50 rounded-lg p-2 sm:p-3">
                                 <p class="text-xs text-gray-500 mb-1">Date</p>
-                                <p id="transactionDate" class="text-sm font-medium text-gray-900"></p>
+                                <p id="transactionDate" class="text-xs sm:text-sm font-medium text-gray-900"></p>
                             </div>
-                            <div class="bg-gray-50 rounded-lg p-3">
+                            <div class="bg-gray-50 rounded-lg p-2 sm:p-3">
                                 <p class="text-xs text-gray-500 mb-1">Time</p>
-                                <p id="transactionTime" class="text-sm font-medium text-gray-900"></p>
+                                <p id="transactionTime" class="text-xs sm:text-sm font-medium text-gray-900"></p>
                             </div>
-                            <div class="bg-gray-50 rounded-lg p-3">
+                            <div class="bg-gray-50 rounded-lg p-2 sm:p-3">
                                 <p class="text-xs text-gray-500 mb-1">Payment Method</p>
-                                <p id="paymentMethod" class="text-sm font-medium text-gray-900"></p>
+                                <p id="paymentMethod" class="text-xs sm:text-sm font-medium text-gray-900"></p>
                             </div>
-                            <div class="bg-gray-50 rounded-lg p-3">
+                            <div class="bg-gray-50 rounded-lg p-2 sm:p-3">
                                 <p class="text-xs text-gray-500 mb-1">Purpose</p>
-                                <p id="purpose" class="text-sm font-medium text-gray-900">General Donation</p>
+                                <p id="purpose" class="text-xs sm:text-sm font-medium text-gray-900">General Donation</p>
                             </div>
                         </div>
 
                         <!-- Donor Information -->
-                        <div class="border-t border-gray-200 pt-4">
-                            <h4 class="text-sm font-semibold text-gray-700 mb-3">Donor Information</h4>
-                            <div class="grid grid-cols-2 gap-4">
+                        <div class="border-t border-gray-200 pt-3 sm:pt-4">
+                            <h4 class="text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3">Donor Information</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                 <div>
                                     <p class="text-xs text-gray-500 mb-1">Name</p>
-                                    <p id="donorName" class="text-sm font-medium text-gray-900"></p>
+                                    <p id="donorName" class="text-xs sm:text-sm font-medium text-gray-900"></p>
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-500 mb-1">Email</p>
-                                    <p id="donorEmail" class="text-sm font-medium text-gray-900 break-all"></p>
+                                    <p id="donorEmail" class="text-xs sm:text-sm font-medium text-gray-900 break-all"></p>
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-500 mb-1">Phone</p>
-                                    <p id="donorPhone" class="text-sm font-medium text-gray-900"></p>
+                                    <p id="donorPhone" class="text-xs sm:text-sm font-medium text-gray-900"></p>
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-500 mb-1">Location</p>
-                                    <p id="donorLocation" class="text-sm font-medium text-gray-900"></p>
+                                    <p id="donorLocation" class="text-xs sm:text-sm font-medium text-gray-900"></p>
                                 </div>
                             </div>
                         </div>
@@ -490,14 +662,14 @@
             <!-- Modal Footer -->
             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button onclick="downloadReceiptFromModal()" 
-                        class="w-full inline-flex justify-center items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        class="w-full inline-flex justify-center items-center px-3 sm:px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                     </svg>
                     Download Receipt
                 </button>
                 <button onclick="closeTransactionModal()" 
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-3 sm:px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                     Close
                 </button>
             </div>
@@ -532,83 +704,64 @@
         document.getElementById('transactionContent').classList.add('hidden');
         
         setTimeout(() => {
-
             document.getElementById('modalLoading').classList.add('hidden');
             document.getElementById('transactionContent').classList.remove('hidden');
-            
             populateTransactionModal(transaction);
         }, 500);
     }
 
- function populateTransactionModal(transaction) {
-    // Set status badge
-    const statusBadge = document.getElementById('statusBadge');
-    statusBadge.textContent = transaction.payment_status.charAt(0).toUpperCase() + transaction.payment_status.slice(1);
-    statusBadge.className = 'px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full badge-status';
-    
-    if (transaction.payment_status === 'success') {
-        statusBadge.classList.add('bg-green-100', 'text-green-800');
-    } else if (transaction.payment_status === 'pending') {
-        statusBadge.classList.add('bg-yellow-100', 'text-yellow-800');
-    } else {
-        statusBadge.classList.add('bg-red-100', 'text-red-800');
-    }
-
-    document.getElementById('transactionId').textContent = transaction.transaction_id;
-    document.getElementById('transactionAmount').textContent = `$${parseFloat(transaction.amount).toFixed(2)}`;
-    
-    const date = new Date(transaction.created_at);
-    document.getElementById('transactionDate').textContent = date.toLocaleDateString('en-US', { 
-        month: 'long', 
-        day: 'numeric', 
-        year: 'numeric' 
-    });
-    document.getElementById('transactionTime').textContent = date.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-    });
-
-    // Payment method
-    const method = transaction.payment_method || 'card';
-    document.getElementById('paymentMethod').textContent = method.charAt(0).toUpperCase() + method.slice(1);
-    
-    const purposeElement = document.getElementById('purpose');
-    let purposeText = 'General Donation';
-    let reasonBadge = '';
-
-    if (transaction.donation_reason) {
-        if (transaction.donation_reason === 'campaign') {
-            purposeText = 'Campaign Support';
-            reasonBadge = '<span class="ml-2 px-2 py-0.5 bg-purple-100 text-purple-800 text-xs rounded-full">Campaign</span>';
-        } else if (transaction.donation_reason === 'youth') {
-            purposeText = 'Youth Initiatives';
-            reasonBadge = '<span class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">Youth</span>';
-        } else if (transaction.donation_reason === 'events') {
-            purposeText = 'Events';
-            reasonBadge = '<span class="ml-2 px-2 py-0.5 bg-green-100 text-green-800 text-xs rounded-full">Events</span>';
-        } else if (transaction.donation_reason === 'advocacy') {
-            purposeText = 'Advocacy Work';
-            reasonBadge = '<span class="ml-2 px-2 py-0.5 bg-orange-100 text-orange-800 text-xs rounded-full">Advocacy</span>';
-        } else if (transaction.donation_reason === 'projects') {
-            purposeText = 'Special Projects';
-            reasonBadge = '<span class="ml-2 px-2 py-0.5 bg-indigo-100 text-indigo-800 text-xs rounded-full">Projects</span>';
-        } else if (transaction.donation_reason === 'other' && transaction.custom_reason) {
-            purposeText = transaction.custom_reason;
-            reasonBadge = '<span class="ml-2 px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded-full">Custom</span>';
+    function populateTransactionModal(transaction) {
+        const statusBadge = document.getElementById('statusBadge');
+        statusBadge.textContent = transaction.payment_status.charAt(0).toUpperCase() + transaction.payment_status.slice(1);
+        statusBadge.className = 'px-2 sm:px-3 py-1 inline-flex text-xs sm:text-sm leading-5 font-semibold rounded-full badge-status';
+        
+        if (transaction.payment_status === 'success') {
+            statusBadge.classList.add('bg-green-100', 'text-green-800');
+        } else if (transaction.payment_status === 'pending') {
+            statusBadge.classList.add('bg-yellow-100', 'text-yellow-800');
+        } else {
+            statusBadge.classList.add('bg-red-100', 'text-red-800');
         }
-    }
-    
-    purposeElement.innerHTML = purposeText + (reasonBadge ? ` ${reasonBadge}` : '');
 
-    // Donor info
-    document.getElementById('donorName').textContent = '{{ Auth::guard('donor')->user()->firstname }} {{ Auth::guard('donor')->user()->lastname }}';
-    document.getElementById('donorEmail').textContent = '{{ Auth::guard('donor')->user()->email }}';
-    document.getElementById('donorPhone').textContent = '{{ Auth::guard('donor')->user()->phone ?? 'Not provided' }}';
-    
-    const location = '{{ Auth::guard('donor')->user()->city ?? '' }}' + 
-                    ( '{{ Auth::guard('donor')->user()->country ?? '' }}' ? ', {{ Auth::guard('donor')->user()->country }}' : '');
-    document.getElementById('donorLocation').textContent = location || 'Not provided';
-}
+        document.getElementById('transactionId').textContent = transaction.transaction_id;
+        document.getElementById('transactionAmount').textContent = `$${parseFloat(transaction.amount).toFixed(2)}`;
+        
+        const date = new Date(transaction.created_at);
+        document.getElementById('transactionDate').textContent = date.toLocaleDateString('en-US', { 
+            month: 'long', 
+            day: 'numeric', 
+            year: 'numeric' 
+        });
+        document.getElementById('transactionTime').textContent = date.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+
+        const method = transaction.payment_method || 'card';
+        document.getElementById('paymentMethod').textContent = method.charAt(0).toUpperCase() + method.slice(1);
+        
+        const purposeElement = document.getElementById('purpose');
+        let purposeText = 'General Donation';
+
+        if (transaction.donation_reason) {
+            if (transaction.donation_reason === 'campaign') purposeText = 'Campaign Support';
+            else if (transaction.donation_reason === 'youth') purposeText = 'Youth Initiatives';
+            else if (transaction.donation_reason === 'events') purposeText = 'Events';
+            else if (transaction.donation_reason === 'advocacy') purposeText = 'Advocacy Work';
+            else if (transaction.donation_reason === 'projects') purposeText = 'Special Projects';
+            else if (transaction.donation_reason === 'other' && transaction.custom_reason) purposeText = transaction.custom_reason;
+        }
+        
+        purposeElement.textContent = purposeText;
+
+        document.getElementById('donorName').textContent = '{{ Auth::guard('donor')->user()->firstname }} {{ Auth::guard('donor')->user()->lastname }}';
+        document.getElementById('donorEmail').textContent = '{{ Auth::guard('donor')->user()->email }}';
+        document.getElementById('donorPhone').textContent = '{{ Auth::guard('donor')->user()->phone ?? 'Not provided' }}';
+        
+        const location = '{{ Auth::guard('donor')->user()->city ?? '' }}' + 
+                        ( '{{ Auth::guard('donor')->user()->country ?? '' }}' ? ', {{ Auth::guard('donor')->user()->country }}' : '');
+        document.getElementById('donorLocation').textContent = location || 'Not provided';
+    }
 
     function closeTransactionModal() {
         document.getElementById('transactionModal').classList.add('hidden');
@@ -616,51 +769,45 @@
         currentTransaction = null;
     }
 
- function downloadReceipt(transactionId, amount, date, paymentMethod, purpose) {
-    const button = event.target.closest('button');
-    const originalText = button.innerHTML;
-    button.innerHTML = '<svg class="animate-spin h-4 w-4 mr-2 inline" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...';
-    button.disabled = true;
+    function downloadReceipt(transactionId, amount, date, paymentMethod, purpose) {
+        const button = event.target.closest('button');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<svg class="animate-spin h-4 w-4 mr-2 inline" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...';
+        button.disabled = true;
 
-    setTimeout(() => {
-        const receiptDate = new Date(date);
-        const formattedDate = receiptDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        setTimeout(() => {
+            const receiptDate = new Date(date);
+            const formattedDate = receiptDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-        const transaction = transactions.find(t => t.transaction_id === transactionId);
-        let purposeDisplay = purpose;
-        
-        if (transaction && transaction.donation_reason) {
-            if (transaction.donation_reason === 'campaign') {
-                purposeDisplay = 'Campaign Support';
-            } else if (transaction.donation_reason === 'youth') {
-                purposeDisplay = 'Youth Initiatives';
-            } else if (transaction.donation_reason === 'events') {
-                purposeDisplay = 'Events';
-            } else if (transaction.donation_reason === 'advocacy') {
-                purposeDisplay = 'Advocacy Work';
-            } else if (transaction.donation_reason === 'projects') {
-                purposeDisplay = 'Special Projects';
-            } else if (transaction.donation_reason === 'other' && transaction.custom_reason) {
-                purposeDisplay = transaction.custom_reason;
+            const transaction = transactions.find(t => t.transaction_id === transactionId);
+            let purposeDisplay = purpose;
+            
+            if (transaction && transaction.donation_reason) {
+                if (transaction.donation_reason === 'campaign') purposeDisplay = 'Campaign Support';
+                else if (transaction.donation_reason === 'youth') purposeDisplay = 'Youth Initiatives';
+                else if (transaction.donation_reason === 'events') purposeDisplay = 'Events';
+                else if (transaction.donation_reason === 'advocacy') purposeDisplay = 'Advocacy Work';
+                else if (transaction.donation_reason === 'projects') purposeDisplay = 'Special Projects';
+                else if (transaction.donation_reason === 'other' && transaction.custom_reason) purposeDisplay = transaction.custom_reason;
             }
-        }
 
-        const receiptHTML = generateReceiptHTML(transactionId, amount, formattedDate, paymentMethod, purposeDisplay);
-        
-        const blob = new Blob([receiptHTML], { type: 'text/html' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `receipt-${transactionId}.html`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
+            const receiptHTML = generateReceiptHTML(transactionId, amount, formattedDate, paymentMethod, purposeDisplay);
+            
+            const blob = new Blob([receiptHTML], { type: 'text/html' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `receipt-${transactionId}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
 
-        button.innerHTML = originalText;
-        button.disabled = false;
-    }, 1000);
-}
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }, 1000);
+    }
+    
     function downloadReceiptFromModal() {
         if (!currentTransaction) return;
         
@@ -678,21 +825,29 @@
             <!DOCTYPE html>
             <html>
             <head>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>Donation Receipt</title>
                 <style>
-                    body { font-family: 'Open Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: #f9fafb; }
+                    body { font-family: 'Open Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f9fafb; }
                     h1, h2, h3, h4, h5, h6 { font-family: 'Urbanist', sans-serif; }
-                    .receipt-container { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+                    .receipt-container { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
                     .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #e5e7eb; padding-bottom: 20px; }
-                    .logo { font-size: 24px; font-weight: bold; color: #4f46e5; font-family: 'Urbanist', sans-serif; }
-                    .receipt-title { font-size: 20px; margin-top: 10px; color: #1f2937; font-family: 'Urbanist', sans-serif; }
+                    .logo { font-size: 20px; font-weight: bold; color: #4f46e5; font-family: 'Urbanist', sans-serif; }
+                    .receipt-title { font-size: 18px; margin-top: 8px; color: #1f2937; font-family: 'Urbanist', sans-serif; }
                     .details { margin: 20px 0; }
-                    .row { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 8px 0; border-bottom: 1px dashed #e5e7eb; }
+                    .row { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 8px 0; border-bottom: 1px dashed #e5e7eb; flex-wrap: wrap; gap: 8px; }
                     .label { font-weight: 600; color: #4b5563; font-family: 'Urbanist', sans-serif; }
-                    .value { color: #1f2937; }
-                    .amount { font-size: 24px; font-weight: bold; color: #059669; text-align: center; margin: 20px 0; font-family: 'Urbanist', sans-serif; }
-                    .footer { margin-top: 30px; text-align: center; color: #6b7280; font-size: 14px; border-top: 2px solid #e5e7eb; padding-top: 20px; }
-                    .thank-you { font-size: 18px; color: #4f46e5; margin-bottom: 10px; font-family: 'Urbanist', sans-serif; }
+                    .value { color: #1f2937; word-break: break-word; }
+                    .amount { font-size: 20px; font-weight: bold; color: #059669; text-align: center; margin: 20px 0; font-family: 'Urbanist', sans-serif; }
+                    .footer { margin-top: 30px; text-align: center; color: #6b7280; font-size: 12px; border-top: 2px solid #e5e7eb; padding-top: 20px; }
+                    .thank-you { font-size: 16px; color: #4f46e5; margin-bottom: 10px; font-family: 'Urbanist', sans-serif; }
+                    @media (max-width: 480px) {
+                        body { padding: 10px; }
+                        .receipt-container { padding: 15px; }
+                        .logo { font-size: 18px; }
+                        .amount { font-size: 18px; }
+                        .row { flex-direction: column; gap: 4px; }
+                    }
                 </style>
             </head>
             <body>
@@ -732,12 +887,9 @@
         button.innerHTML = '<svg class="animate-spin h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...';
         button.disabled = true;
 
-        // Simulate statement generation
         setTimeout(() => {
-            // Generate statement HTML
             const statementHTML = generateStatementHTML(period);
             
-            // Create download
             const blob = new Blob([statementHTML], { type: 'text/html' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -748,7 +900,6 @@
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
 
-            // Reset button
             button.innerHTML = originalText;
             button.disabled = false;
         }, 2000);
@@ -787,6 +938,7 @@
             <!DOCTYPE html>
             <html>
             <head>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>Transaction Statement</title>
                 <style>
                     body { font-family: 'Open Sans', sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; background: #f9fafb; }
@@ -800,6 +952,15 @@
                     td { padding: 12px; border-bottom: 1px solid #e5e7eb; }
                     .total { margin-top: 20px; text-align: right; font-size: 18px; font-weight: bold; font-family: 'Urbanist', sans-serif; }
                     .footer { margin-top: 30px; text-align: center; color: #6b7280; font-size: 14px; }
+                    @media (max-width: 640px) {
+                        body { padding: 10px; }
+                        table, thead, tbody, th, td, tr { display: block; }
+                        thead { display: none; }
+                        tr { margin-bottom: 15px; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; }
+                        td { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #e5e7eb; }
+                        td:last-child { border-bottom: none; }
+                        td:before { content: attr(data-label); font-weight: 600; margin-right: 10px; }
+                    }
                 </style>
             </head>
             <body>
@@ -839,7 +1000,7 @@
     }
 
     // Close modal when clicking outside
-    document.getElementById('modalOverlay').addEventListener('click', function() {
+    document.getElementById('modalOverlay')?.addEventListener('click', function() {
         closeTransactionModal();
     });
 

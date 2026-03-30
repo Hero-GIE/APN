@@ -3,7 +3,6 @@
 @section('content')
 
 <style>
-
     @keyframes orbFloat {
         0% { transform: translate(0, 0) scale(1); }
         100% { transform: translate(40px, 20px) scale(1.1); }
@@ -17,11 +16,6 @@
     @keyframes iconPop {
         from { opacity: 0; transform: scale(0.5); }
         to { opacity: 1; transform: scale(1); }
-    }
-
-    @keyframes particleFloat {
-        from { transform: translateY(100vh) rotate(0deg); }
-        to { transform: translateY(-100px) rotate(360deg); }
     }
 
     .btn-primary::before {
@@ -41,7 +35,6 @@
 </style>
 
 <div class="fixed inset-0 z-0 overflow-hidden bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100">
-    <!-- Floating orbs -->
     <div class="orb-1 absolute w-[600px] h-[600px] -top-200 -right-200 rounded-full"
          style="background: radial-gradient(circle, rgba(79,70,229,0.15) 0%, transparent 70%); filter: blur(60px); opacity: 0.4; animation: orbFloat 25s infinite alternate;"></div>
     <div class="orb-2 absolute w-[500px] h-[500px] -bottom-200 -left-100 rounded-full"
@@ -67,12 +60,21 @@
         <!-- Success Icon -->
         <div class="w-20 h-20 bg-gradient-to-br from-[#3730a3] to-[#4f46e5] rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_20px_30px_-10px_rgba(79,70,229,0.4)]"
              style="animation: iconPop 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;">
-            <i class="fas fa-check text-white text-4xl"></i>
+            @if(isset($wasRenewal) && $wasRenewal)
+                <i class="fas fa-sync-alt text-white text-4xl"></i>
+            @else
+                <i class="fas fa-check text-white text-4xl"></i>
+            @endif
         </div>
 
         <!-- Header -->
-        <h1 class="font-['Syne'] text-4xl font-bold text-[#1a1f36] mb-2 text-center leading-tight">Welcome to APN!</h1>
-        <p class="text-[#64748b] text-sm mb-8 text-center font-['Lora']">Your membership has been created successfully.</p>
+        @if(isset($wasRenewal) && $wasRenewal)
+            <h1 class="font-['Syne'] text-4xl font-bold text-[#1a1f36] mb-2 text-center leading-tight">Membership Renewed!</h1>
+            <p class="text-[#64748b] text-sm mb-8 text-center font-['Lora']">Your membership has been successfully renewed.</p>
+        @else
+            <h1 class="font-['Syne'] text-4xl font-bold text-[#1a1f36] mb-2 text-center leading-tight">Welcome to APN!</h1>
+            <p class="text-[#64748b] text-sm mb-8 text-center font-['Lora']">Your membership has been created successfully.</p>
+        @endif
 
         @if(isset($membership) && $membership)
         <!-- Receipt Card -->
@@ -85,10 +87,18 @@
                 <span class="text-[#64748b] font-['Lora']">Amount</span>
                 <span class="text-[#1a1f36] font-['Syne'] font-semibold">${{ number_format($membership->amount, 2) }}</span>
             </div>
+            @if($membership->member)
             <div class="flex justify-between items-center py-3 border-b-2 border-slate-200 text-sm">
                 <span class="text-[#64748b] font-['Lora']">Valid Until</span>
-                <span class="text-[#1a1f36] font-['Syne'] font-semibold">{{ \Carbon\Carbon::parse($membership->end_date)->format('d M Y') }}</span>
+                <span class="text-[#1a1f36] font-['Syne'] font-semibold">{{ \Carbon\Carbon::parse($membership->member->end_date)->format('d M Y') }}</span>
             </div>
+            @if($membership->member->renewal_count > 0)
+            <div class="flex justify-between items-center py-3 border-b-2 border-slate-200 text-sm">
+                <span class="text-[#64748b] font-['Lora']">Renewal Count</span>
+                <span class="text-[#4f46e5] font-['Syne'] font-semibold">{{ $membership->member->renewal_count }} {{ $membership->member->renewal_count == 1 ? 'time' : 'times' }}</span>
+            </div>
+            @endif
+            @endif
             <div class="flex justify-between items-center py-3 text-sm">
                 <span class="text-[#64748b] font-['Lora']">Status</span>
                 <span class="bg-green-100 text-green-800 text-xs font-bold px-4 py-1 rounded-full flex items-center gap-1">
@@ -98,12 +108,24 @@
             </div>
         </div>
 
-        <!-- Info Box -->
+        <!-- Info Box - Different messages for new vs renewal -->
         <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-5 mb-6 flex items-start gap-3 text-sm text-blue-900">
             <i class="fas fa-star text-[#4f46e5] text-lg mt-0.5"></i>
             <div class="flex-1">
-                <strong class="text-blue-900 block mb-1">Member Benefits Activated</strong>
-                <p class="m-0 leading-relaxed text-blue-800">You now have access to exclusive member benefits. Please check your email for your membership details and login credentials. After logging in, you can update your password from your dashboard using the default password provided in the email</p>
+                @if(isset($wasRenewal) && $wasRenewal)
+                    <strong class="text-blue-900 block mb-1">Membership Renewed Successfully!</strong>
+                    <p class="m-0 leading-relaxed text-blue-800">
+                        @if($membership && $membership->member)
+                            Your membership has been renewed and extended until <strong>{{ \Carbon\Carbon::parse($membership->member->end_date)->format('d M Y') }}</strong>.
+                        @endif
+                        Thank you for continuing your support of APN's mission to build Africa's prosperity.
+                    </p>
+                @else
+                    <strong class="text-blue-900 block mb-1">Member Benefits Activated</strong>
+                    <p class="m-0 leading-relaxed text-blue-800">
+                        You now have access to exclusive member benefits. Please check your email for your membership details and login credentials. After logging in, you can update your password from your dashboard.
+                    </p>
+                @endif
             </div>
         </div>
         @endif
@@ -113,18 +135,13 @@
             <span>Go to Member Dashboard</span>
             <i class="fas fa-arrow-right transition-transform duration-300 group-hover:translate-x-1"></i>
         </a>
-{{--         
-        <a href="{{ route('donor.login') }}" class="w-full py-4 bg-slate-50 text-[#4f46e5] border-2 border-slate-200 rounded-lg font-['Syne'] text-sm font-semibold flex items-center justify-center gap-3 transition-all duration-300 hover:bg-blue-50 hover:border-[#4f46e5] hover:-translate-y-0.5">
-            <i class="fas fa-user"></i>
-            <span>Login to Account</span>
-        </a> --}}
 
         <!-- Security Note -->
         <div class="flex items-center justify-center gap-2 mt-8 text-xs text-slate-400">
             <i class="fas fa-circle text-[#4f46e5] text-[0.6rem] animate-pulse"></i>
-            <span>Membership activated</span>
+            <span>Membership {{ isset($wasRenewal) && $wasRenewal ? 'renewed' : 'activated' }}</span>
             <i class="fas fa-circle text-[#4f46e5] text-[0.6rem] animate-pulse"></i>
-            <span>Welcome to APN</span>
+            <span>Welcome {{ isset($wasRenewal) && $wasRenewal ? 'back to' : 'to' }} APN</span>
         </div>
 
         <!-- Footer -->
@@ -136,6 +153,7 @@
 // Create floating particles
 function createParticles() {
     const scene = document.querySelector('.fixed.inset-0');
+    if (!scene) return;
     for (let i = 0; i < 20; i++) {
         const particle = document.createElement('div');
         particle.className = 'absolute rounded-full bg-[rgba(79,70,229,0.1)] pointer-events-none';

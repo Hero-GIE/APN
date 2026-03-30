@@ -19,7 +19,7 @@ class Member extends Model
         'end_date',
         'renewal_reminder_sent_at',
         'renewal_count',
-        'last_reminder_sent_at', // Add this field if you have it
+        'last_reminder_sent_at', 
     ];
 
     protected $casts = [
@@ -86,10 +86,9 @@ class Member extends Model
         if (!$this->isActive()) {
             return 0;
         }
-        
-        // If no end date (lifetime membership)
+    
         if (!$this->end_date) {
-            return 999; // Or some large number, or return 0
+            return 999; 
         }
         
         // Calculate days difference (positive if end_date is in future)

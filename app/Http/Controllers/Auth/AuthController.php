@@ -20,20 +20,13 @@ class AuthController extends Controller
     /**
      * Show donor login form
      */
-   public function showLoginForm()
+public function showLoginForm()
 {
-    Log::info('Login form accessed', [
-        'url' => request()->fullUrl(),
-        'previous' => url()->previous(),
-        'authenticated' => Auth::guard('donor')->check(),
-        'session' => session()->all()
-    ]);
-
     if (Auth::guard('donor')->check()) {
         $donor = Auth::guard('donor')->user();
-        $member = Member::where('donor_id', $donor->id)
-                        ->where('status', 'active')
-                        ->first();
+        
+        // Check for ANY membership (not just active)
+        $member = Member::where('donor_id', $donor->id)->latest()->first();
         
         if ($member) {
             return redirect()->route('member.dashboard');
@@ -95,17 +88,15 @@ public function login(Request $request)
      
         $donor = Auth::guard('donor')->user();
      
-        $member = Member::where('donor_id', $donor->id)
-                        ->where('status', 'active')
-                        ->first();
+       $member = Member::where('donor_id', $donor->id)->latest()->first();
 
         $message = 'Welcome back, ' . $donor->firstname . '! You have successfully logged in.';
         
-        if ($member) {
-            return redirect()->intended(route('member.dashboard'))->with('login_success', $message);
-        }
+      if ($member) {
+        return redirect()->intended(route('member.dashboard'))->with('login_success', $message);
+       }
         
-        return redirect()->intended(route('donor.dashboard'))->with('login_success', $message);
+       return redirect()->intended(route('donor.dashboard'))->with('login_success', $message);
     }
     // Fallback error 
     return back()->withErrors([

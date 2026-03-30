@@ -31,26 +31,26 @@ public function dashboard()
 {
     $donor = Auth::guard('donor')->user();
     
-    // Get the MOST RECENT membership (active or expired) for display
-    // This ensures we have a member object to work with even if expired
     $member = Member::where('donor_id', $donor->id)
         ->orderBy('created_at', 'desc')
         ->first();
-    
-    // If no membership record exists at all
+
     if (!$member) {
         return redirect()->route('donor.membership')
             ->with('error', 'You are not a member yet. Please purchase a membership to access this page.');
     }
     
+      if ($member->status === 'active' 
+        && $member->end_date 
+        && $member->end_date->lte(Carbon::now()->endOfDay())) {
+        $member->update(['status' => 'expired']);
+        $member->refresh();
+    }
     // Check if there's an active membership for data queries
     $activeMember = Member::where('donor_id', $donor->id)
         ->where('status', 'active')
         ->orderBy('end_date', 'asc')
         ->first();
-    
-    // If there's no active membership, we still have $member (expired/cancelled)
-    // but we won't show active-only content
     
     // Get recent payments (last 5) - only if there are payments
     $payments = MemberPayment::where('donor_id', $donor->id)
@@ -64,7 +64,7 @@ public function dashboard()
         ->take(5)
         ->get();
     
-    // Get news for the news tab (available to all, but shown only if active)
+    // Get news for the news tab 
     $news = News::where('is_published', true)
         ->orderBy('published_date', 'desc')
         ->take(4)
@@ -123,7 +123,7 @@ public function dashboard()
         ->limit(6)
         ->get();
     
-    // Calculate statistics for the dashboard (only if active)
+    // Calculate statistics for the dashboard 
     $stats = [
         'total_payments'  => MemberPayment::where('donor_id', $donor->id)->count(),
         'total_spent'     => MemberPayment::where('donor_id', $donor->id)->sum('amount'),

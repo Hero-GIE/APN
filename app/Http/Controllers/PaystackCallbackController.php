@@ -356,16 +356,25 @@ class PaystackCallbackController extends Controller
             ]);
         }
 
-        Auth::guard('donor')->login($donor);
+Auth::guard('donor')->login($donor);
 
-        // ── 10. Redirect to appropriate success page
-        if ($isMembership) {
-            return redirect()->route('member.success', ['reference' => $reference])
-                ->with('success', 'Membership payment successful! Welcome to APN!');
-        } else {
-            return redirect()->route('donation.success', ['reference' => $reference])
-                ->with('success', 'Donation successful! Thank you for your support!');
-        }
+$isRenewal = false;
+if ($isMembership && isset($existingMember) && $existingMember) {
+    // Check if the member's renewal_count increased
+    $member = Member::where('donor_id', $donor->id)->first();
+    $isRenewal = $member && $member->renewal_count > 0;
+}
+
+// ── 10. Redirect to appropriate success page
+if ($isMembership) {
+    return redirect()->route('member.success', [
+        'reference' => $reference,
+        'is_renewal' => $isRenewal ? 'true' : 'false'
+    ])->with('success', $isRenewal ? 'Membership renewed successfully!' : 'Membership payment successful! Welcome to APN!');
+} else {
+    return redirect()->route('donation.success', ['reference' => $reference])
+        ->with('success', 'Donation successful! Thank you for your support!');
+}
     }
 
    private function processMembership($donor, $reference, $data, $metadata, $membershipType, $amount)

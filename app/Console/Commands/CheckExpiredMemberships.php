@@ -3,11 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\Member;
-use App\Mail\MembershipExpired;
-use App\Mail\MembershipExpirationReminder;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
 
 class CheckExpiredMemberships extends Command
 {
@@ -16,38 +13,56 @@ class CheckExpiredMemberships extends Command
 
     public function handle()
     {
-        // Update expired memberships (status: active but end_date passed)
-        $expiredMembers = Member::where('status', 'active')
-            ->where('end_date', '<', Carbon::now())
-            ->get();
+        // Update expired memberships
+      $expiredMembers = Member::where('status', 'active')
+       ->where('end_date', '<=', Carbon::now()->endOfDay())
+       ->with('donor')
+       ->get();
 
         foreach ($expiredMembers as $member) {
             $member->update(['status' => 'expired']);
-            
-            // Send expiration notice email
+
+            // Send expiration notice using your existing sendEmail helper
             try {
-                Mail::to($member->donor->email)->send(new MembershipExpired($member));
+                sendEmail(
+                    'emails.membership-expiration-reminder',
+                    [
+                        'donor'  => $member->donor,
+                        'member' => $member,
+                    ],
+                    $member->donor->email,
+                    'Your APN Membership Has Expired'
+                );
                 $this->info("Expired membership and sent email for donor: {$member->donor_id}");
             } catch (\Exception $e) {
                 $this->error("Failed to send email for donor {$member->donor_id}: {$e->getMessage()}");
             }
         }
 
-        // Send reminder for members expiring in 7 days
+        // Send reminders for members expiring within 7 days
         $expiringSoon = Member::where('status', 'active')
             ->where('end_date', '>', Carbon::now())
             ->where('end_date', '<', Carbon::now()->addDays(7))
+            ->with('donor')
             ->get();
 
         foreach ($expiringSoon as $member) {
             $daysLeft = Carbon::now()->diffInDays($member->end_date);
-            
-            // Only send if reminder hasn't been sent in the last 3 days
+
             $lastReminder = $member->last_reminder_sent_at;
             if (!$lastReminder || Carbon::parse($lastReminder)->diffInDays(now()) >= 3) {
                 try {
-                    Mail::to($member->donor->email)->send(new MembershipExpirationReminder($member, $daysLeft));
-                    
+                    sendEmail(
+                        'emails.membership-expired',
+                        [
+                            'donor'    => $member->donor,
+                            'member'   => $member,
+                            'daysLeft' => $daysLeft,
+                        ],
+                        $member->donor->email,
+                        "Your APN Membership Expires in {$daysLeft} Days"
+                    );
+
                     $member->update(['last_reminder_sent_at' => now()]);
                     $this->info("Sent reminder to donor: {$member->donor_id} ({$daysLeft} days left)");
                 } catch (\Exception $e) {
@@ -57,8 +72,8 @@ class CheckExpiredMemberships extends Command
         }
 
         $this->info("Processed {$expiredMembers->count()} expired memberships");
-        $this->info("Sent {$expiringSoon->count()} expiration reminders");
-        
+        $this->info("Processed {$expiringSoon->count()} expiration reminders");
+
         return Command::SUCCESS;
     }
 }

@@ -3008,16 +3008,12 @@ let selectedFile = null;
 let selectedDonationReason = '';
 
 function selectDonationReason(reason) {
-    // Remove selected class from all options
     document.querySelectorAll('.donation-reason-option').forEach(opt => {
         opt.classList.remove('selected');
     });
-    
-    // Add selected class to clicked option
     event.currentTarget.classList.add('selected');
     selectedDonationReason = reason;
-    
-    // Show/hide custom reason input
+
     const customContainer = document.getElementById('customReasonContainer');
     if (reason === 'other') {
         customContainer.classList.remove('hidden');

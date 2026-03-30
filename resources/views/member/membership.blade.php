@@ -321,13 +321,13 @@
                     <h4 class="font-semibold text-gray-900 heading-font mb-2">Member Dashboard</h4>
                     <p class="text-sm text-gray-600">Exclusive member-only area with benefits</p>
                 </div>
-                <div class="flex flex-col items-center text-center group">
+                {{-- <div class="flex flex-col items-center text-center group">
                     <div class="bg-white rounded-2xl p-4 mb-4 shadow-md group-hover:shadow-lg transition-all group-hover:-translate-y-1">
                         <i class="fas fa-ticket-alt text-3xl text-indigo-600"></i>
                     </div>
                     <h4 class="font-semibold text-gray-900 heading-font mb-2">Event Discounts</h4>
                     <p class="text-sm text-gray-600">10% off all APN events</p>
-                </div>
+                </div> --}}
                 <div class="flex flex-col items-center text-center group">
                     <div class="bg-white rounded-2xl p-4 mb-4 shadow-md group-hover:shadow-lg transition-all group-hover:-translate-y-1">
                         <i class="fas fa-users text-3xl text-indigo-600"></i>
