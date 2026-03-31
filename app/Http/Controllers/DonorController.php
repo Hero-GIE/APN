@@ -63,11 +63,23 @@ class DonorController extends Controller
         ]);
 
         messageAdmin([
-            'title' => 'New Support Ticket',
-            'message' => "New support ticket from {$donor->firstname} {$donor->lastname}",
-            'user_info' => "Subject: {$request->subject} - Priority: {$request->priority}",
-            'time' => now()->format('d M Y, h:i A'),
-        ]);
+        'title' => '🆘 New Support Ticket',
+        'message' => "New support ticket from {$donor->firstname} {$donor->lastname}",
+        'user_info' => "Ticket #: {$ticket->ticket_number}<br>Subject: {$request->subject}<br>Priority: {$request->priority}<br>Category: {$request->category}",
+        'time' => now()->format('d M Y, h:i A'),
+        'type' => 'support_ticket',
+        'details' => [
+            'ticket_number' => $ticket->ticket_number,
+            'subject' => $request->subject,
+            'priority' => $request->priority,
+            'category' => $request->category,
+            'message_preview' => substr($request->message, 0, 200) . (strlen($request->message) > 200 ? '...' : ''),
+            'donor_name' => $donor->firstname . ' ' . $donor->lastname,
+            'donor_email' => $donor->email
+        ],
+        'action_url' => route('admin.support-tickets.show', $ticket->id),
+        'subject' => "New Support Ticket: {$ticket->ticket_number}"
+    ]);
 
         return back()->with('success', 'Your support ticket has been submitted successfully. We\'ll get back to you soon.');
     }

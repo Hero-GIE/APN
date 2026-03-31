@@ -27,25 +27,5 @@ class DatabaseSeeder extends Seeder
         // Generate 10 random users
         User::factory(10)->create();
 
-        // Call all other seeders
-        $this->call([
-<<<<<<< Updated upstream
-            JobOpportunitySeeder::class,
-            MagazineSeeder::class,
-            MemberBadgeTokenSeeder::class,
-            NewsSeeder::class,
-            PuzzleAchievementSeeder::class,
-            PuzzleSeeder::class,
-            EventSeeder::class,
-=======
-            // JobOpportunitySeeder::class,
-            MagazineSeeder::class,
-            // MemberBadgeTokenSeeder::class,
-            // NewsSeeder::class,
-            // PuzzleAchievementSeeder::class,
-            // PuzzleSeeder::class,
-            // EventSeeder::class,
->>>>>>> Stashed changes
-        ]);
     }
 }

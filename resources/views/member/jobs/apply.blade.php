@@ -22,7 +22,87 @@
         background: white;
         border-radius: 1rem;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
     }
+    .application-card:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Circular Badge Styles matching show page */
+    .circular-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 80px;
+        width: auto;
+        height: 80px;
+        border-radius: 50%;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-align: center;
+        line-height: 1.2;
+        padding: 0.5rem 0.8rem;
+        word-break: break-word;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: transform 0.2s ease;
+        white-space: nowrap;
+    }
+    
+    .circular-badge:hover {
+        transform: scale(1.05);
+    }
+    
+    .badge-green { 
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0); 
+        color: #065f46;
+        box-shadow: 0 2px 8px rgba(6, 95, 70, 0.2);
+    }
+    .badge-orange { 
+        background: linear-gradient(135deg, #fed7aa, #fed7aa); 
+        color: #9a3412;
+        box-shadow: 0 2px 8px rgba(154, 52, 18, 0.2);
+    }
+    .badge-blue { 
+        background: linear-gradient(135deg, #dbeafe, #bfdbfe); 
+        color: #1e40af;
+        box-shadow: 0 2px 8px rgba(30, 64, 175, 0.2);
+    }
+    .badge-purple { 
+        background: linear-gradient(135deg, #ede9fe, #ddd6fe); 
+        color: #5b21b6;
+        box-shadow: 0 2px 8px rgba(91, 33, 182, 0.2);
+    }
+    
+    /* Responsive badge sizes */
+    @media (max-width: 768px) {
+        .circular-badge {
+            min-width: 70px;
+            height: 70px;
+            font-size: 0.7rem;
+            padding: 0.4rem 0.6rem;
+            white-space: normal;
+        }
+    }
+    
+    @media (max-width: 640px) {
+        .circular-badge {
+            min-width: 60px;
+            height: 60px;
+            font-size: 0.65rem;
+            padding: 0.3rem 0.5rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .circular-badge {
+            min-width: 55px;
+            height: 55px;
+            font-size: 0.6rem;
+            padding: 0.25rem 0.4rem;
+        }
+    }
+    
     .field-apn {
         width: 100%;
         padding: 0.8rem 1rem;
@@ -42,6 +122,14 @@
         border-color: #ef4444;
         background: #fef2f2;
     }
+    
+    /* Key Details Grid matching show page */
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
     .resume-upload-area {
         border: 2px dashed #e2e8f0;
         border-radius: 12px;
@@ -102,6 +190,27 @@
     .file-error i {
         font-size: 1rem;
     }
+    
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        .field-apn {
+            padding: 0.7rem 0.875rem;
+            font-size: 0.875rem;
+        }
+        
+        .resume-upload-area {
+            padding: 1.5rem;
+        }
+        
+        .resume-upload-area i {
+            font-size: 2rem !important;
+        }
+        
+        .details-grid {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+    }
 </style>
 
 <!-- Loading Overlay -->
@@ -111,12 +220,12 @@
     <p class="text-sm text-gray-500 mt-2">Please don't close this window</p>
 </div>
 
-<div class="min-h-screen bg-gray-50 py-8">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen bg-gray-50 py-6 sm:py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <!-- Breadcrumb - Updated to match other pages -->
-        <div class="mb-8">
-            <div class="flex items-center text-sm text-gray-500 mb-2 breadcrumb-link">
+        <!-- Breadcrumb - Responsive -->
+        <div class="mb-6 sm:mb-8">
+            <div class="flex flex-wrap items-center text-xs sm:text-sm text-gray-500 mb-2 breadcrumb-link">
                 @php
                     $donor = Auth::guard('donor')->user();
                 @endphp
@@ -125,117 +234,142 @@
                 @else
                     <a href="{{ route('donor.dashboard') }}" class="hover:text-indigo-600">Dashboard</a>
                 @endif
-                <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="w-3 h-3 sm:w-4 sm:h-4 mx-1 sm:mx-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                 </svg>
                 <a href="{{ route('member.jobs.index') }}" class="hover:text-indigo-600">Job Opportunities</a>
-                <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="w-3 h-3 sm:w-4 sm:h-4 mx-1 sm:mx-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                 </svg>
-                <a href="{{ route('member.jobs.show', $job->slug) }}" class="hover:text-indigo-600">{{ $job->title }}</a>
-                <svg class="w-4 h-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
+                <a href="{{ route('member.jobs.show', $job->slug) }}" class="hover:text-indigo-600 truncate max-w-[150px] sm:max-w-none">{{ $job->title }}</a>
+                <svg class="w-3 h-3 sm:w-4 sm:h-4 mx-1 sm:mx-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                 </svg>
                 <span class="text-gray-700">Apply</span>
             </div>
-            <h1 class="text-3xl font-bold text-gray-900 font-urbanist">Submit Your Application</h1>
-            <p class="text-gray-600 mt-2">Complete the form below to apply for {{ $job->title }}</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 font-urbanist">Submit Your Application</h1>
+            <p class="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">Complete the form below to apply for {{ $job->title }}</p>
         </div>
 
         @if(isset($hasApplied) && $hasApplied)
-            <div class="application-card p-8 text-center">
-                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="application-card p-6 sm:p-8 text-center">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 sm:w-10 sm:h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
-                <h2 class="text-xl font-bold text-gray-900 mb-2 font-urbanist">You've Already Applied!</h2>
-                <p class="text-gray-600 mb-6">Your application for {{ $job->title }} at {{ $job->company }} has been received.</p>
-                <div class="flex justify-center gap-4">
+                <h2 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 font-urbanist">You've Already Applied!</h2>
+                <p class="text-gray-600 mb-6 text-sm sm:text-base">Your application for {{ $job->title }} at {{ $job->company }} has been received.</p>
+                <div class="flex flex-col sm:flex-row justify-center gap-3">
                     <a href="{{ route('member.jobs.show', $job->slug) }}" 
-                       class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+                       class="px-4 sm:px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-center">
                         Back to Job
                     </a>
                     <a href="{{ route('member.jobs.applications') }}" 
-                       class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium">
+                       class="px-4 sm:px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium text-center">
                         View My Applications
                     </a>
                 </div>
             </div>
         @else
-            <!-- Job Summary Card -->
-            <div class="bg-white rounded-lg p-6 mb-6 border border-gray-200">
-                <div class="flex items-start justify-between">
-                    <div>
-                        <h2 class="text-xl font-bold text-gray-900 font-urbanist">{{ $job->title }}</h2>
-                        <p class="text-gray-600 mt-1">{{ $job->company }} • {{ $job->location }}</p>
+            <!-- Job Summary Card with Circular Badge (matching show page) -->
+            <div class="bg-white rounded-lg p-4 sm:p-6 mb-6 border border-gray-200 shadow-sm hover:shadow-md transition-all">
+                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                    <div class="flex-1">
+                        <h2 class="text-lg sm:text-xl font-bold text-gray-900 font-urbanist">{{ $job->title }}</h2>
+                        <p class="text-gray-600 mt-1 text-sm sm:text-base">{{ $job->company }} • {{ $job->location }}</p>
                     </div>
-                    <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">
-                        {{ $job->job_type }}
-                    </span>
+                    <div class="flex justify-center sm:justify-end">
+                        @if($job->badge_type)
+                        <span class="circular-badge 
+                            @if($job->badge_color == 'green') badge-green
+                            @elseif($job->badge_color == 'orange') badge-orange
+                            @elseif($job->badge_color == 'blue') badge-blue
+                            @else badge-green
+                            @endif">
+                            {{ $job->badge_type }}
+                        </span>
+                        @else
+                        <span class="circular-badge badge-blue">
+                            {{ $job->job_type }}
+                        </span>
+                        @endif
+                    </div>
                 </div>
-                <div class="flex flex-wrap gap-4 mt-4 text-sm text-gray-500">
-                    <span><i class="far fa-clock mr-1"></i> {{ $job->experience_level }}</span>
-                    <span><i class="far fa-money-bill-alt mr-1"></i> {{ $job->salary_range }}</span>
-                    <span><i class="far fa-calendar mr-1"></i> Posted {{ $job->formatted_posted_date }}</span>
+                
+                <!-- Key Details Grid matching show page -->
+                <div class="details-grid mt-4">
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <p class="text-xs text-gray-500 mb-1">Experience Level</p>
+                        <p class="font-semibold text-gray-900 text-sm">{{ $job->experience_level }}</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <p class="text-xs text-gray-500 mb-1">Salary Range</p>
+                        <p class="font-semibold text-gray-900 text-sm">{{ $job->salary_range }}</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <p class="text-xs text-gray-500 mb-1">Posted Date</p>
+                        <p class="font-semibold text-gray-900 text-sm">{{ $job->formatted_posted_date }}</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <p class="text-xs text-gray-500 mb-1">Job Type</p>
+                        <p class="font-semibold text-gray-900 text-sm">{{ $job->job_type }}</p>
+                    </div>
                 </div>
             </div>
 
             <!-- Application Form -->
-            <div class="application-card p-6">
+            <div class="application-card p-4 sm:p-6">
                 <form id="applicationForm" action="{{ route('member.jobs.apply.submit', $job->slug) }}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm(event)">
                     @csrf
 
                     <!-- Cover Letter -->
-                  <!-- Cover Letter -->
-<div class="mb-6">
-    <label class="block text-sm font-medium text-gray-700 mb-2">
-        Cover Letter <span class="text-gray-400">(Optional)</span>
-    </label>
-    <textarea 
-        name="cover_letter" 
-        rows="6" 
-        maxlength="5000"
-        class="field-apn @error('cover_letter') error @enderror"
-        placeholder="Tell us why you're interested in this position and what makes you a great candidate..."
-        oninput="updateCharCount(this)">{{ old('cover_letter') }}</textarea>
-    
-    <!-- Character Counter -->
-    <div class="flex justify-between items-center mt-1">
-        <p class="text-xs text-gray-500">
-            <i class="fas fa-info-circle mr-1"></i>
-            Maximum 5000 characters
-        </p>
-        <p class="text-xs text-gray-500">
-            <span id="charCount">0</span> / 5000 characters
-        </p>
-    </div>
-    
-    @error('cover_letter')
-        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-    @enderror
-</div>
+                    <div class="mb-5 sm:mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Cover Letter <span class="text-gray-400">(Optional)</span>
+                        </label>
+                        <textarea 
+                            name="cover_letter" 
+                            rows="5" 
+                            maxlength="5000"
+                            class="field-apn @error('cover_letter') error @enderror"
+                            placeholder="Tell us why you're interested in this position and what makes you a great candidate..."
+                            oninput="updateCharCount(this)">{{ old('cover_letter') }}</textarea>
+                        
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 sm:gap-0 mt-1">
+                            <p class="text-xs text-gray-500">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Maximum 5000 characters
+                            </p>
+                            <p class="text-xs text-gray-500">
+                                <span id="charCount">0</span> / 5000 characters
+                            </p>
+                        </div>
+                        
+                        @error('cover_letter')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
 
                     <!-- Resume Upload with File Validation -->
-                    <div class="mb-6">
+                    <div class="mb-5 sm:mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Resume/CV <span class="text-gray-400">(Optional)</span>
                         </label>
                         
                         <div class="resume-upload-area" id="resumeUploadArea" onclick="document.getElementById('resume').click()">
                             <input type="file" id="resume" name="resume" class="hidden" accept=".pdf,.doc,.docx" onchange="validateFile(this)">
-                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3" id="uploadIcon"></i>
-                            <p class="text-gray-600 mb-2" id="uploadText">
+                            <i class="fas fa-cloud-upload-alt text-3xl sm:text-4xl text-gray-400 mb-2 sm:mb-3" id="uploadIcon"></i>
+                            <p class="text-gray-600 mb-1 sm:mb-2 text-sm sm:text-base" id="uploadText">
                                 Drag & drop your resume here or <span class="text-indigo-600 font-semibold">browse</span>
                             </p>
                             <p class="text-xs text-gray-500" id="fileTypes">
                                 <i class="fas fa-info-circle mr-1"></i>
                                 Supports: PDF, DOC, DOCX (Max 5MB)
                             </p>
-                            <div id="fileInfo" class="hidden mt-3 text-left bg-white p-3 rounded-lg"></div>
+                            <div id="fileInfo" class="hidden mt-2 sm:mt-3 text-left bg-white p-2 sm:p-3 rounded-lg"></div>
                         </div>
                         
-                        <!-- File Error Message -->
                         <div id="fileErrorMessage" class="file-error hidden">
                             <i class="fas fa-exclamation-circle"></i>
                             <span id="fileErrorText"></span>
@@ -247,7 +381,7 @@
                     </div>
 
                     <!-- Additional Notes -->
-                    <div class="mb-6">
+                    <div class="mb-5 sm:mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Additional Notes <span class="text-gray-400">(Optional)</span>
                         </label>
@@ -262,8 +396,8 @@
                     </div>
 
                     <!-- Disclaimer -->
-                    <div class="bg-blue-50 rounded-lg p-4 mb-6">
-                        <p class="text-sm text-blue-800 flex items-start gap-2">
+                    <div class="bg-blue-50 rounded-lg p-3 sm:p-4 mb-5 sm:mb-6">
+                        <p class="text-xs sm:text-sm text-blue-800 flex items-start gap-2">
                             <i class="fas fa-info-circle mt-0.5 flex-shrink-0"></i>
                             <span>
                                 By submitting this application, you agree that APN may share your information with 
@@ -274,10 +408,10 @@
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="flex gap-3">
+                    <div class="flex flex-col sm:flex-row gap-3">
                         <button type="submit" 
                                 id="submitBtn"
-                                class="flex-1 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-urbanist font-bold hover:from-indigo-700 hover:to-purple-700 transition-all duration-300">
+                                class="flex-1 py-2.5 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-urbanist font-bold hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 text-sm sm:text-base">
                             <span id="submitText">Submit Application</span>
                             <span id="submitSpinner" class="hidden">
                                 <i class="fas fa-spinner fa-spin mr-2"></i>
@@ -285,7 +419,7 @@
                             </span>
                         </button>
                         <a href="{{ route('member.jobs.show', $job->slug) }}" 
-                           class="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-urbanist font-bold text-center hover:bg-gray-200 transition-all duration-300">
+                           class="flex-1 py-2.5 sm:py-3 bg-gray-100 text-gray-700 rounded-xl font-urbanist font-bold text-center hover:bg-gray-200 transition-all duration-300 text-sm sm:text-base">
                             Cancel
                         </a>
                     </div>
@@ -294,7 +428,7 @@
         @endif
 
         <!-- Security Footer Note -->
-        <div class="flex items-center justify-center gap-3 mt-8 text-xs text-gray-400">
+        <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-6 sm:mt-8 text-xs text-gray-400">
             <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
             <span>256-bit encrypted</span>
             <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
@@ -328,7 +462,7 @@ function validateFile(input) {
             errorMessage.classList.remove('hidden');
             input.value = '';
             area.classList.remove('has-file');
-            icon.className = 'fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3';
+            icon.className = 'fas fa-cloud-upload-alt text-3xl sm:text-4xl text-gray-400 mb-2 sm:mb-3';
             uploadText.innerHTML = 'Drag & drop your resume here or <span class="text-indigo-600 font-semibold">browse</span>';
             fileTypes.innerHTML = '<i class="fas fa-info-circle mr-1"></i>Supports: PDF, DOC, DOCX (Max 5MB)';
             fileInfo.classList.add('hidden');
@@ -345,7 +479,7 @@ function validateFile(input) {
             errorMessage.classList.remove('hidden');
             input.value = '';
             area.classList.remove('has-file');
-            icon.className = 'fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3';
+            icon.className = 'fas fa-cloud-upload-alt text-3xl sm:text-4xl text-gray-400 mb-2 sm:mb-3';
             uploadText.innerHTML = 'Drag & drop your resume here or <span class="text-indigo-600 font-semibold">browse</span>';
             fileTypes.innerHTML = '<i class="fas fa-info-circle mr-1"></i>Supports: PDF, DOC, DOCX (Max 5MB)';
             fileInfo.classList.add('hidden');
@@ -354,16 +488,16 @@ function validateFile(input) {
         
         area.classList.remove('has-error');
         area.classList.add('has-file');
-        icon.className = 'fas fa-check-circle text-4xl text-green-500 mb-3';
+        icon.className = 'fas fa-check-circle text-3xl sm:text-4xl text-green-500 mb-2 sm:mb-3';
         uploadText.innerHTML = 'File selected:';
         fileTypes.innerHTML = '';
         
         fileInfo.classList.remove('hidden');
         fileInfo.innerHTML = `
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between flex-wrap gap-2">
                 <div class="flex items-center">
                     <i class="fas fa-file-pdf text-red-500 mr-2"></i>
-                    <span class="font-medium">${file.name}</span>
+                    <span class="font-medium text-sm sm:text-base">${file.name}</span>
                 </div>
                 <span class="text-xs text-gray-500">${(file.size / 1024).toFixed(2)} KB</span>
             </div>
@@ -379,7 +513,6 @@ function updateCharCount(textarea) {
     if (charCountSpan) {
         charCountSpan.textContent = count;
         
-        // Add warning when approaching limit
         if (count > 4500) {
             charCountSpan.style.color = '#ef4444';
         } else if (count > 4000) {
@@ -390,7 +523,6 @@ function updateCharCount(textarea) {
     }
 }
 
-// Initialize char count on page load
 document.addEventListener('DOMContentLoaded', function() {
     const coverLetter = document.querySelector('textarea[name="cover_letter"]');
     if (coverLetter) {
@@ -460,18 +592,5 @@ if (dropZone) {
         validateFile(input);
     }
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('applicationForm');
-    if (form) {
-        form.addEventListener('submit', function() {
-            const submitBtn = document.getElementById('submitBtn');
-            if (submitBtn.disabled) {
-                event.preventDefault();
-                return false;
-            }
-        });
-    }
-});
 </script>
 @endsection

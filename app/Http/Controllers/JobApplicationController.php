@@ -140,47 +140,52 @@ class JobApplicationController extends Controller
     /**
      * Send notifications for job application
      */
-    private function sendNotifications($application, $job)
-    {
-        try {
-            // Send email notification to admin
-            if (function_exists('messageAdmin')) {
-                messageAdmin([
-                    'title' => 'New Job Application',
-                    'message' => "A new application has been submitted for: {$job->title} at {$job->company}",
-                    'user_info' => Auth::guard('donor')->user()->firstname . ' ' . 
-                                  Auth::guard('donor')->user()->lastname,
-                    'time' => now()->format('d M Y, h:i A'),
-                    'application_id' => $application->id
-                ]);
-            }
-
-            // Send confirmation email to applicant
-            if (function_exists('sendEmail')) {
-                sendEmail(
-                    'emails.job-application-confirmation',
-                    [
-                        'applicant' => Auth::guard('donor')->user(),
-                        'job' => $job,
-                        'application' => $application,
-                        'submission_date' => now()->format('F j, Y')
-                    ],
-                    Auth::guard('donor')->user()->email,
-                    'Application Received - ' . $job->title
-                );
-            }
-            
-            // Optional: Send SMS notification
-            if (function_exists('sendText') && Auth::guard('donor')->user()->phone) {
-                $message = "Thank you for applying for {$job->title} at {$job->company}. We'll review your application and get back to you soon. - APN";
-                sendText('APN', Auth::guard('donor')->user()->phone, $message);
-            }
-            
-        } catch (\Exception $e) {
-            // Don't let notification failures affect the application process
-            Log::error('Failed to send notifications for job application: ' . $e->getMessage());
+   private function sendNotifications($application, $job)
+{
+    try {
+        // Send email notification to admin with more details
+        if (function_exists('messageAdmin')) {
+            messageAdmin([
+                'title' => '📝 New Job Application',
+                'message' => "A new application has been submitted for: {$job->title} at {$job->company}",
+                'user_info' => "Applicant: " . Auth::guard('donor')->user()->firstname . ' ' . 
+                              Auth::guard('donor')->user()->lastname . " (" . Auth::guard('donor')->user()->email . ")",
+                'time' => now()->format('d M Y, h:i A'),
+                'type' => 'job_application',
+                'details' => [
+                    'job_title' => $job->title,
+                    'company' => $job->company,
+                    'location' => $job->location,
+                    'job_type' => $job->job_type,
+                    'application_id' => $application->id,
+                    'has_cover_letter' => !empty($application->cover_letter),
+                    'has_resume' => !empty($application->resume_path),
+                    'applicant_phone' => Auth::guard('donor')->user()->phone ?? 'Not provided'
+                ],
+                'action_url' => route('admin.job-applications.show', $application->id),
+                'subject' => "New Job Application: {$job->title} at {$job->company}"
+            ]);
         }
+
+        // Send confirmation email to applicant
+        if (function_exists('sendEmail')) {
+            sendEmail(
+                'emails.job-application-confirmation',
+                [
+                    'applicant' => Auth::guard('donor')->user(),
+                    'job' => $job,
+                    'application' => $application,
+                    'submission_date' => now()->format('F j, Y')
+                ],
+                Auth::guard('donor')->user()->email,
+                'Application Received - ' . $job->title
+            );
+        }
+        
+    } catch (\Exception $e) {
+        Log::error('Failed to send notifications for job application: ' . $e->getMessage());
     }
+}
 
     public function myApplications()
     {

@@ -103,6 +103,57 @@
         cursor: not-allowed;
     }
     
+    /* Flag container styles */
+    .flag-container {
+        margin-bottom: 2rem;
+        text-align: center;
+        min-height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .flag-image {
+        width: 180px;
+        height: auto;
+        max-height: 120px;
+        object-fit: contain;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        background: white;
+        padding: 0.5rem;
+        transition: transform 0.2s ease;
+    }
+    
+    .flag-image:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    /* Question image styles */
+    .question-image {
+        max-width: 100%;
+        max-height: 200px;
+        object-fit: contain;
+        margin: 0 auto;
+        border-radius: 8px;
+    }
+    
+    /* Error fallback for images */
+    .flag-error {
+        background: #f3f4f6;
+        border: 2px dashed #d1d5db;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        color: #6b7280;
+        font-size: 0.875rem;
+        width: 100%;
+        max-width: 250px;
+        margin: 0 auto;
+    }
+    
     @media (max-width: 640px) {
         body { font-size: 15px; }
         .text-xs { font-size: 0.75rem !important; }
@@ -110,6 +161,14 @@
         h1 { font-size: 1.75rem !important; }
         .game-container { margin: 1rem; }
         .question-header { padding: 1.5rem; }
+        .flag-image {
+            width: 140px;
+            max-height: 90px;
+            padding: 0.35rem;
+        }
+        .flag-container {
+            min-height: 140px;
+        }
     }
 </style>
 
@@ -288,7 +347,7 @@ function loadQuestion() {
     
     // Restore previously selected answer
     if (answers[currentQuestion] !== null && answers[currentQuestion] !== undefined && answers[currentQuestion] !== '') {
-        const selectedDiv = document.querySelector(`.option-item[data-value="${answers[currentQuestion].replace(/'/g, "\\'")}"]`);
+        const selectedDiv = document.querySelector(`.option-item[data-value="${answers[currentQuestion].replace(/'/g, "\\'").replace(/"/g, '&quot;')}"]`);
         if (selectedDiv) {
             selectedDiv.classList.add('selected');
             hasAnswered = true;
@@ -308,14 +367,14 @@ function renderMultipleChoiceQuestion(question) {
     for (let i = 0; i < question.options.length; i++) {
         const option = question.options[i];
         const letter = String.fromCharCode(65 + i);
-        const escapedOption = option.replace(/'/g, "\\'");
+        const escapedOption = option.replace(/'/g, "\\'").replace(/"/g, '&quot;');
         optionsHtml += `
             <div class="option-item" data-value="${escapedOption}" onclick="selectOption('${escapedOption}')">
                 <div class="flex items-center">
                     <span class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 mr-3 font-semibold">
                         ${letter}
                     </span>
-                    <span class="text-gray-800">${option}</span>
+                    <span class="text-gray-800">${escapeHtml(option)}</span>
                 </div>
             </div>
         `;
@@ -323,8 +382,8 @@ function renderMultipleChoiceQuestion(question) {
     
     return `
         <div class="question-body">
-            ${question.image ? `<div class="mb-6 text-center"><img src="${question.image}" class="w-40 h-40 object-contain mx-auto border rounded-lg"></div>` : ''}
-            <h2 class="text-xl font-bold text-gray-900 mb-6">${question.question}</h2>
+            ${question.image ? `<div class="flag-container"><img src="${question.image}" class="question-image" onerror="this.style.display='none'"></div>` : ''}
+            <h2 class="text-xl font-bold text-gray-900 mb-6">${escapeHtml(question.question)}</h2>
             <div class="options-list">
                 ${optionsHtml}
             </div>
@@ -337,30 +396,79 @@ function renderFlagMatchQuestion(question) {
     for (let i = 0; i < question.options.length; i++) {
         const option = question.options[i];
         const letter = String.fromCharCode(65 + i);
-        const escapedOption = option.replace(/'/g, "\\'");
+        const escapedOption = option.replace(/'/g, "\\'").replace(/"/g, '&quot;');
         optionsHtml += `
             <div class="option-item" data-value="${escapedOption}" onclick="selectOption('${escapedOption}')">
                 <div class="flex items-center">
                     <span class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 mr-3 font-semibold">
                         ${letter}
                     </span>
-                    <span class="text-gray-800">${option}</span>
+                    <span class="text-gray-800">${escapeHtml(option)}</span>
                 </div>
             </div>
         `;
     }
     
+    // Use flagpedia.net URL format
+    const flagUrl = question.question;
+    
     return `
         <div class="question-body">
-            <div class="mb-6 text-center">
-                <img src="${question.question}" alt="Flag" class="w-40 h-40 object-contain mx-auto border-2 border-gray-200 rounded-lg shadow-md bg-white p-2">
+            <div class="flag-container">
+                <img src="${flagUrl}" 
+                     alt="Flag" 
+                     class="flag-image" 
+                     loading="lazy"
+                     onerror="handleFlagError(this, '${getCountryCodeFromUrl(flagUrl)}')">
             </div>
-            <h2 class="text-xl font-bold text-gray-900 mb-6">Which country does this flag belong to?</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-6 text-center">Which country does this flag belong to?</h2>
             <div class="options-list">
                 ${optionsHtml}
             </div>
         </div>
     `;
+}
+
+// Helper function to handle flag loading errors
+function handleFlagError(img, countryCode) {
+    img.onerror = null;
+    
+    // Try alternative flagpedia URL format
+    const currentUrl = img.src;
+    if (currentUrl.includes('flagpedia.net')) {
+        // Try different size or format
+        const altUrl = currentUrl.replace('/w320/', '/w160/');
+        img.src = altUrl;
+        img.onerror = function() {
+            this.onerror = null;
+            // Show error message if still fails
+            this.style.display = 'none';
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'flag-error';
+            errorDiv.innerHTML = `<i class="fas fa-flag text-gray-400 text-4xl mb-2 block"></i>Flag image not available<br><small class="text-xs">Country code: ${countryCode}</small>`;
+            this.parentNode.appendChild(errorDiv);
+        };
+    } else {
+        // Show error message
+        this.style.display = 'none';
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'flag-error';
+        errorDiv.innerHTML = `<i class="fas fa-flag text-gray-400 text-4xl mb-2 block"></i>Flag image not available<br><small class="text-xs">Country code: ${countryCode}</small>`;
+        this.parentNode.appendChild(errorDiv);
+    }
+}
+
+// Helper function to extract country code from URL
+function getCountryCodeFromUrl(url) {
+    const match = url.match(/\/([a-z]{2})\.png$/);
+    return match ? match[1].toUpperCase() : 'Unknown';
+}
+
+// Helper function to escape HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 function selectOption(value) {

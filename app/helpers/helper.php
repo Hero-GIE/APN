@@ -24,13 +24,25 @@ if (! function_exists('sendEmail')) {
     }
 }
 
+// if (! function_exists('messageAdmin')) {
+//     function messageAdmin($data)
+//     {
+//         sendEmail(
+//             'emails.admin-message',
+//             $data,
+//             'rowusu@wowlogbook.com', 
+//             'New Notification'
+//         );
+//     }
+// }
+
 if (! function_exists('messageAdmin')) {
     function messageAdmin($data)
     {
         sendEmail(
             'emails.admin-message',
             $data,
-            'rowusu@wowlogbook.com', 
+            'franklinadams773@gmail.com', 
             'New Notification'
         );
     }

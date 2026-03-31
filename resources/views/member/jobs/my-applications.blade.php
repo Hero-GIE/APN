@@ -6,11 +6,11 @@
         font-family: 'Open Sans', sans-serif;
         background-color: #f9fafb;
     }
+    
     h1, h2, h3, h4, h5, h6, .font-urbanist {
         font-family: 'Urbanist', sans-serif;
     }
-    
-    /* Breadcrumb styling matching other pages */
+
     .breadcrumb-link {
         font-family: 'Open Sans', sans-serif;
         font-size: 0.95rem;

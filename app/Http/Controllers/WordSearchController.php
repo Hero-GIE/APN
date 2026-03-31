@@ -230,8 +230,7 @@ class WordSearchController extends Controller
      */
     protected function validateWordPosition($submittedPositions, $actualPositions)
     {
-        // This is a simplified validation - you can implement more sophisticated logic
-        // For now, we'll accept any selection
+      
         return true;
     }
 

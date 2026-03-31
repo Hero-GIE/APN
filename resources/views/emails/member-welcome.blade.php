@@ -2,8 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Welcome to APN Membership</title>
     <style>
         * {
@@ -13,7 +12,7 @@
         }
         
         body {
-            font-family: 'Open Sans', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Open Sans', Arial, sans-serif;
             background-color: #f9fafb;
             margin: 0;
             padding: 20px;
@@ -23,27 +22,35 @@
         
         /* Headings */
         h1, h2, h3, h4, h5, h6 {
-            font-family: 'Urbanist', 'Segoe UI', sans-serif;
+            font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             font-weight: 700;
-            line-height: 1.2;
-            margin: 0 0 10px 0;
+            line-height: 1.3;
+            margin: 0 0 12px 0;
         }
         
         /* Container */
         .email-container {
-            max-width: 400px;
+            max-width: 600px;
+            width: 100%;
             margin: 0 auto;
             background: #ffffff;
-            border-radius: 16px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
         }
         
         /* Header */
         .header {
-            background: #000;
+            background: linear-gradient(135deg, #000000 0%, #1a1a2e 100%);
             padding: 40px 30px;
             text-align: center;
+        }
+        
+        .header-logo {
+            max-width: 120px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
         }
         
         .header-brand {
@@ -52,7 +59,7 @@
             letter-spacing: 3px;
             text-transform: uppercase;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         
         .header-title {
@@ -60,12 +67,14 @@
             font-size: 28px;
             font-weight: 800;
             margin: 0;
+            line-height: 1.2;
         }
         
         .header-sub {
             color: #dbeafe;
             font-size: 14px;
-            margin-top: 10px;
+            margin-top: 12px;
+            line-height: 1.4;
         }
         
         /* Content */
@@ -76,22 +85,24 @@
         
         /* Greeting */
         .greeting {
-            font-size: 24px;
+            font-size: 28px;
             color: #1f2937;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
+            word-break: break-word;
         }
         
         .message {
             color: #6b7280;
-            font-size: 15px;
+            font-size: 16px;
             margin-bottom: 30px;
+            line-height: 1.6;
         }
         
         /* Membership Card */
         .membership-card {
             background: linear-gradient(135deg, #f0f9ff, #e6f0fa);
             border: 2px solid #bfdbfe;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 28px;
             margin-bottom: 30px;
         }
@@ -102,7 +113,7 @@
             justify-content: space-between;
             margin-bottom: 20px;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
         }
         
         .card-title {
@@ -111,25 +122,27 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             color: #2563eb;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
         
         .plan-name {
             font-size: 28px;
             font-weight: 800;
             color: #1f2937;
+            word-break: break-word;
         }
         
         .status-badge {
             background: #2563eb;
             color: white;
-            padding: 4px 12px;
+            padding: 6px 14px;
             border-radius: 30px;
             font-size: 12px;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            white-space: nowrap;
         }
         
         .status-dot {
@@ -138,12 +151,28 @@
             background: #10b981;
             border-radius: 50%;
             display: inline-block;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.6;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
         
         /* Info Grid */
         .info-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 16px;
             margin-top: 20px;
         }
@@ -151,8 +180,14 @@
         .info-box {
             background: white;
             border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 12px;
+            padding: 14px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .info-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
         
         .info-label {
@@ -160,13 +195,14 @@
             color: #6b7280;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         
         .info-value {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
             color: #1f2937;
+            word-break: break-word;
         }
         
         .info-value small {
@@ -178,32 +214,34 @@
         /* Credentials Card */
         .credentials-card {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 30px;
             margin-bottom: 30px;
             color: white;
         }
         
         .credentials-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         
         .credentials-sub {
             font-size: 14px;
             opacity: 0.9;
             margin-bottom: 25px;
+            line-height: 1.5;
         }
         
         .credential-box {
             background: rgba(255, 255, 255, 0.15);
             border: 2px solid rgba(255, 255, 255, 0.25);
-            border-radius: 8px;
-            padding: 12px 16px;
-            margin-bottom: 12px;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+            word-break: break-all;
         }
         
         .credential-label {
@@ -211,18 +249,19 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             opacity: 0.8;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         
         .credential-value {
-            font-family: monospace;
-            font-size: 16px;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+            font-size: 15px;
             word-break: break-all;
         }
         
         .credential-password {
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             font-size: 18px;
+            font-weight: 600;
         }
         
         /* Button */
@@ -230,17 +269,25 @@
             display: inline-block;
             background: white;
             color: #2563eb;
-            padding: 12px 30px;
+            padding: 14px 32px;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 15px;
             margin-top: 20px;
-            transition: transform 0.2s ease;
+            transition: all 0.3s ease;
+            text-align: center;
+            width: auto;
+            min-width: 200px;
         }
         
         .button:hover {
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .button:active {
+            transform: translateY(0);
         }
         
         /* Security Notice */
@@ -248,7 +295,7 @@
             background: #eff6ff;
             border: 2px solid #bfdbfe;
             border-radius: 12px;
-            padding: 16px 20px;
+            padding: 18px 20px;
             margin-bottom: 30px;
         }
         
@@ -256,8 +303,14 @@
             font-size: 13px;
             color: #1e40af;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 12px;
+            line-height: 1.5;
+        }
+        
+        .security-icon {
+            font-size: 20px;
+            flex-shrink: 0;
         }
         
         /* Footer */
@@ -271,22 +324,29 @@
         .footer-copyright {
             font-size: 12px;
             color: #6b7280;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         
         .footer-email {
             font-size: 13px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         
         .footer-email a {
             color: #3b82f6;
             text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .footer-email a:hover {
+            color: #2563eb;
+            text-decoration: underline;
         }
         
         .footer-note {
             font-size: 11px;
             color: #9ca3af;
+            line-height: 1.4;
         }
         
         /* Impact Quote */
@@ -300,7 +360,9 @@
         .quote-text {
             color: #6b7280;
             font-style: italic;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.5;
         }
         
         .quote-author {
@@ -309,19 +371,45 @@
             font-weight: 600;
         }
         
-        /* Responsive */
-        @media (max-width: 480px) {
+        /* Responsive Design */
+        @media screen and (max-width: 600px) {
             body {
                 padding: 10px;
+            }
+            
+            .email-container {
+                border-radius: 16px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header-title {
+                font-size: 24px;
+            }
+            
+            .header-sub {
+                font-size: 13px;
             }
             
             .content {
                 padding: 25px 20px;
             }
             
-            .info-grid {
-                grid-template-columns: 1fr;
-                gap: 12px;
+            .greeting {
+                font-size: 24px;
+                margin-bottom: 12px;
+            }
+            
+            .message {
+                font-size: 15px;
+                margin-bottom: 25px;
+            }
+            
+            .membership-card {
+                padding: 20px;
+                margin-bottom: 25px;
             }
             
             .card-header {
@@ -333,12 +421,124 @@
                 font-size: 24px;
             }
             
-            .membership-card {
-                padding: 20px;
+            .status-badge {
+                align-self: flex-start;
+                white-space: normal;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .info-box {
+                padding: 12px;
+            }
+            
+            .info-value {
+                font-size: 18px;
             }
             
             .credentials-card {
                 padding: 20px;
+                margin-bottom: 25px;
+            }
+            
+            .credentials-title {
+                font-size: 16px;
+            }
+            
+            .credential-password {
+                font-size: 16px;
+            }
+            
+            .button {
+                padding: 12px 24px;
+                font-size: 14px;
+                min-width: 180px;
+                width: 100%;
+                max-width: 280px;
+            }
+            
+            .security-text {
+                font-size: 12px;
+                flex-direction: column;
+                text-align: center;
+                gap: 8px;
+            }
+            
+            .security-icon {
+                font-size: 24px;
+            }
+            
+            .footer {
+                padding: 25px 20px;
+            }
+            
+            .impact-quote {
+                margin-top: 25px;
+            }
+            
+            .quote-text {
+                font-size: 13px;
+            }
+        }
+        
+        /* Extra small devices */
+        @media screen and (max-width: 380px) {
+            .header-title {
+                font-size: 20px;
+            }
+            
+            .greeting {
+                font-size: 20px;
+            }
+            
+            .plan-name {
+                font-size: 20px;
+            }
+            
+            .info-value {
+                font-size: 16px;
+            }
+            
+            .credential-password {
+                font-size: 14px;
+            }
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            
+            .button {
+                display: none;
+            }
+            
+            .status-badge {
+                background: #e5e7eb;
+                color: #1f2937;
+            }
+        }
+        
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            @media screen and (max-width: 600px) {
+                body {
+                    background-color: #1a1a2e;
+                }
             }
         }
     </style>
@@ -348,8 +548,9 @@
         
         <!-- Header -->
         <div class="header">
-            <img src="{{asset('images/logo/APN-Logo-01-white.png')}}" width="100" class="img-fluid my-2" alt="">
-            <h1 class="header-title">Africa Prosperity Network</h1>
+            <img src="{{url('images/logo/apn-membership.png')}}" class="header-logo" alt="APN Logo" width="100" height="auto">
+            <div class="header-brand">Africa Prosperity Network</div>
+            <h1 class="header-title">Welcome to APN Membership</h1>
             <p class="header-sub">Your membership is building a prosperous Africa</p>
         </div>
         
@@ -402,7 +603,7 @@
                 @if(isset($membership->transaction_id))
                 <div style="margin-top: 20px; padding-top: 15px; border-top: 2px solid #e5e7eb;">
                     <div class="info-label">Transaction Reference</div>
-                    <div style="font-family: monospace; font-size: 13px; color: #1f2937;">{{ $membership->transaction_id }}</div>
+                    <div style="font-family: monospace; font-size: 13px; color: #1f2937; word-break: break-all;">{{ $membership->transaction_id }}</div>
                 </div>
                 @endif
             </div>
@@ -434,7 +635,7 @@
             <!-- Security Notice -->
             <div class="security-notice">
                 <div class="security-text">
-                    <span style="font-size: 18px;">🔒</span>
+                    <span class="security-icon">🔒</span>
                     <span><strong>Security tip:</strong> For your safety, please log in and change your password immediately. Never share your credentials with anyone.</span>
                 </div>
             </div>

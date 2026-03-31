@@ -1094,6 +1094,13 @@
         font-size: 0.875rem;
         margin-bottom: 0.75rem;
     }
+
+
+    .dashboard-tabs{
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: scroll;
+    }
 }
     
     /* Status badges */
@@ -1202,14 +1209,19 @@
 .tab-content[x-cloak] { display: none; }
 
     /* Tab styles */
-    .dashboard-tabs {
-        border-bottom: 2px solid #e5e7eb;
-        margin-bottom: 2rem;
-        display: flex;
-        gap: 0.5rem;
-        overflow-x: auto;
-        padding-bottom: 0;
-    }
+   .dashboard-tabs {
+    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 2rem;
+    display: flex;
+    /* flex-wrap: wrap; */
+    gap: 0.5rem;
+    padding-bottom: 15px;
+    justify-content: center;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    width: 100%;
+}
+
     .tab-button {
         padding: 0.75rem 1.5rem;
         font-weight: 600;
@@ -1235,7 +1247,50 @@
     .tab-content.active {
         display: block;
     }
+    /* Extra small screens (below 640px) */
+@media (max-width: 640px) {
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
     
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
+
+/* Scrollable filters on mobile */
+.overflow-x-auto {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.overflow-x-auto::-webkit-scrollbar {
+    height: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 10px;
+}
+
+/* Truncate long titles */
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
     /* News Card Styles */
     .news-card {
         background: white;
@@ -1292,7 +1347,7 @@
     }
     
     /* Responsive adjustments */
-    @media (max-width: 640px) {
+    @media (max-width: 768px) {
         body {
             font-size: 15px;
         }
@@ -2042,13 +2097,13 @@
         @endforelse
     </div>
 
-    @if($news->count() > 0)
+    {{-- @if($news->count() > 0)
     <div class="text-center mt-8">
-        <a href="{{ route('puzzles.index') }}" class="inline-block px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
+        <a href="{{ route('member.news.index') }}" class="inline-block px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
             Browse All News
         </a>
     </div>
-    @endif
+    @endif --}}
 </div>
 
 <!-- Tab Content - Event Calendar -->
@@ -2105,70 +2160,147 @@
 
 <!-- Tab Content - Job Opportunities -->
 <div id="content-jobs" class="tab-content">
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-xl font-bold text-gray-800">Featured Job Opportunities</h2>
-        <a href="{{ route('member.jobs.index') }}" class="text-sm text-indigo-600 hover:text-indigo-900">View All Jobs →</a>
+    <!-- Job Opportunities Header with Applications Link -->
+    <div class="mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Job Opportunities</h2>
+                <p class="text-base md:text-lg text-gray-600 mt-1">Explore career opportunities from our partner organizations</p>
+            </div>
+            <a href="{{ route('member.jobs.applications') }}" 
+               class="inline-flex items-center px-4 md:px-5 py-2.5 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors text-sm md:text-base font-medium gap-2 whitespace-nowrap">
+                <i class="fas fa-file-alt"></i>
+                <span>View My Applications</span>
+                @php
+                    $applicationsCount = \App\Models\JobApplication::where('donor_id', Auth::guard('donor')->id())->count();
+                @endphp
+                @if($applicationsCount > 0)
+                    <span class="bg-indigo-600 text-white text-xs rounded-full px-2 py-0.5">{{ $applicationsCount }}</span>
+                @endif
+            </a>
+        </div>
+        
+        <!-- My Applications Summary Card (if applications exist) -->
+        @php
+            $userApplications = \App\Models\JobApplication::where('donor_id', Auth::guard('donor')->id())
+                                ->with('job')
+                                ->orderBy('created_at', 'desc')
+                                ->take(3)
+                                ->get();
+        @endphp
+        
+        @if($userApplications->count() > 0)
+        <div class="mt-5 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 md:p-5">
+            <div class="flex items-start gap-3 md:gap-4">
+                <div class="bg-green-100 rounded-full p-2 md:p-2.5 flex-shrink-0">
+                    <i class="fas fa-check-circle text-green-600 text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="font-semibold text-gray-900 text-sm md:text-base">Your Recent Applications</h3>
+                    <div class="mt-3 space-y-2 md:space-y-3">
+                        @foreach($userApplications as $application)
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div class="flex items-center gap-2 min-w-0">
+                                    <span class="w-2 h-2 md:w-2.5 md:h-2.5 bg-green-500 rounded-full flex-shrink-0"></span>
+                                    <span class="text-gray-700 text-sm md:text-base truncate">{{ $application->job->title }}</span>
+                                    <span class="text-xs md:text-sm text-gray-500 hidden sm:inline">at {{ $application->job->company }}</span>
+                                </div>
+                                <span class="text-xs md:text-sm text-gray-500 flex-shrink-0">{{ $application->created_at->diffForHumans() }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                    @if($applicationsCount > 3)
+                        <a href="{{ route('member.jobs.applications') }}" class="inline-block mt-3 text-sm text-indigo-600 hover:text-indigo-800 font-medium">
+                            View all {{ $applicationsCount }} applications →
+                        </a>
+                    @endif
+                </div>
+            </div>
+        </div>
+        @else
+        <!-- No Applications Message -->
+        <div class="mt-5 bg-gray-50 border border-gray-200 rounded-xl p-4 md:p-5">
+            <div class="flex items-start gap-3 md:gap-4">
+                <div class="bg-gray-100 rounded-full p-2 md:p-2.5 flex-shrink-0">
+                    <i class="fas fa-inbox text-gray-500 text-base md:text-lg"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-gray-600 text-sm md:text-base">You haven't applied to any jobs yet.</p>
+                    <p class="text-xs md:text-sm text-gray-500 mt-1">Browse opportunities below and submit your application.</p>
+                </div>
+                <a href="{{ route('member.jobs.applications') }}" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium whitespace-nowrap">
+                    View →
+                </a>
+            </div>
+        </div>
+        @endif
     </div>
 
-    <!-- Job Filters -->
-    <div class="flex flex-wrap gap-2 mb-6">
-        <button class="filter-job-btn px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium" data-category="all">All Jobs</button>
-        <button class="filter-job-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200" data-category="executive">Executive</button>
-        <button class="filter-job-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200" data-category="finance">Finance</button>
-        <button class="filter-job-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200" data-category="technology">Technology</button>
-        <button class="filter-job-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200" data-category="operations">Operations</button>
-        <button class="filter-job-btn px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200" data-category="consulting">Consulting</button>
+    <!-- Job Filters - Responsive scroll on mobile -->
+    <div class="flex flex-nowrap md:flex-wrap gap-2 md:gap-3 mb-6 overflow-x-auto pb-2 md:pb-0">
+        <button class="filter-job-btn px-3 md:px-5 py-2 md:py-2.5 bg-indigo-600 text-white rounded-lg text-sm md:text-base font-medium whitespace-nowrap" data-category="all">All Jobs</button>
+        <button class="filter-job-btn px-3 md:px-5 py-2 md:py-2.5 bg-gray-100 text-gray-700 rounded-lg text-sm md:text-base font-medium hover:bg-gray-200 whitespace-nowrap" data-category="executive">Executive</button>
+        <button class="filter-job-btn px-3 md:px-5 py-2 md:py-2.5 bg-gray-100 text-gray-700 rounded-lg text-sm md:text-base font-medium hover:bg-gray-200 whitespace-nowrap" data-category="finance">Finance</button>
+        <button class="filter-job-btn px-3 md:px-5 py-2 md:py-2.5 bg-gray-100 text-gray-700 rounded-lg text-sm md:text-base font-medium hover:bg-gray-200 whitespace-nowrap" data-category="technology">Technology</button>
+        <button class="filter-job-btn px-3 md:px-5 py-2 md:py-2.5 bg-gray-100 text-gray-700 rounded-lg text-sm md:text-base font-medium hover:bg-gray-200 whitespace-nowrap" data-category="operations">Operations</button>
+        <button class="filter-job-btn px-3 md:px-5 py-2 md:py-2.5 bg-gray-100 text-gray-700 rounded-lg text-sm md:text-base font-medium hover:bg-gray-200 whitespace-nowrap" data-category="consulting">Consulting</button>
     </div>
 
     <!-- Jobs List Container -->
-    <div id="jobs-list-container" class="space-y-4">
+    <div id="jobs-list-container" class="space-y-4 md:space-y-5">
         @forelse($jobs as $job)
-        <div class="job-card" data-job-category="{{ strtolower($job->category) }}">
-            <div class="flex items-start justify-between">
-                <div>
-                    <h3 class="text-lg font-bold text-gray-900">{{ $job->title }}</h3>
-                    <p class="text-sm text-gray-600 mt-1">{{ $job->company }} • {{ $job->location }}</p>
+        <div class="job-card bg-white rounded-lg border border-gray-200 p-4 md:p-6 hover:shadow-md transition-all" data-job-category="{{ strtolower($job->category) }}">
+            <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <h3 class="text-lg md:text-xl font-bold text-gray-900 truncate">{{ $job->title }}</h3>
+                            <p class="text-sm md:text-base text-gray-600 mt-1">{{ $job->company }} • {{ $job->location }}</p>
+                        </div>
+                        @if($job->badge_type)
+                        <span class="text-xs md:text-sm 
+                            @if($job->badge_color == 'green') bg-green-100 text-green-700
+                            @elseif($job->badge_color == 'orange') bg-orange-100 text-orange-700
+                            @else bg-green-100 text-green-700
+                           @endif px-2 md:px-3 py-1 rounded-full whitespace-nowrap self-start sm:self-auto inline-flex items-center justify-center text-center">
+                            {{ $job->badge_type }}
+                        </span>
+                        @endif
+                    </div>
+                    <p class="text-sm md:text-base text-gray-600 mt-3 line-clamp-2 md:line-clamp-3">{{ $job->summary }}</p>
+                    <div class="flex flex-wrap items-center gap-3 md:gap-5 mt-4">
+                        <span class="text-xs md:text-sm text-gray-500"><i class="far fa-clock mr-1"></i> {{ $job->job_type }}</span>
+                        <span class="text-xs md:text-sm text-gray-500"><i class="far fa-money-bill-alt mr-1"></i> {{ $job->salary_range }}</span>
+                        <span class="text-xs md:text-sm text-gray-500"><i class="far fa-calendar mr-1"></i> Posted {{ $job->formatted_posted_date }}</span>
+                        <span class="text-xs md:text-sm 
+                            @if($job->category_color == 'indigo') bg-indigo-100 text-indigo-700
+                            @elseif($job->category_color == 'purple') bg-purple-100 text-purple-700
+                            @elseif($job->category_color == 'blue') bg-blue-100 text-blue-700
+                            @elseif($job->category_color == 'green') bg-green-100 text-green-700
+                            @else bg-indigo-100 text-indigo-700
+                            @endif px-2 md:px-3 py-1 rounded-xl ml-auto inline-flex items-center justify-center text-center">
+                            {{ $job->experience_level }}
+                        </span>
+                    </div>
                 </div>
-                @if($job->badge_type)
-                <span class="text-xs 
-                    @if($job->badge_color == 'green') bg-green-100 text-green-700
-                    @elseif($job->badge_color == 'orange') bg-orange-100 text-orange-700
-                    @else bg-green-100 text-green-700
-                    @endif px-2 py-1 rounded-full">
-                    {{ $job->badge_type }}
-                </span>
-                @endif
             </div>
-            <p class="text-sm text-gray-600 mt-3">{{ $job->summary }}</p>
-            <div class="flex flex-wrap items-center gap-4 mt-4">
-                <span class="text-xs text-gray-500"><i class="far fa-clock mr-1"></i> {{ $job->job_type }}</span>
-                <span class="text-xs text-gray-500"><i class="far fa-money-bill-alt mr-1"></i> {{ $job->salary_range }}</span>
-                <span class="text-xs text-gray-500"><i class="far fa-calendar mr-1"></i> {{ $job->formatted_posted_date }}</span>
-                <span class="text-xs 
-                    @if($job->category_color == 'indigo') bg-indigo-100 text-indigo-700
-                    @elseif($job->category_color == 'purple') bg-purple-100 text-purple-700
-                    @elseif($job->category_color == 'blue') bg-blue-100 text-blue-700
-                    @elseif($job->category_color == 'green') bg-green-100 text-green-700
-                    @else bg-indigo-100 text-indigo-700
-                    @endif px-2 py-1 rounded-full ml-auto">
-                    {{ $job->experience_level }}
-                </span>
-            </div>
-            <div class="mt-4 flex items-center justify-between">
-                <a href="{{ route('member.jobs.show', $job->slug) }}" class="text-sm text-indigo-600 hover:text-indigo-900">View Details →</a>
+            <div class="mt-4 md:mt-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 md:gap-4">
+                <a href="{{ route('member.jobs.show', $job->slug) }}" class="text-sm md:text-base text-indigo-600 hover:text-indigo-900 font-medium text-center sm:text-left">
+                    View Details →
+                </a>
                 
                 @php
                     $hasApplied = $job->hasApplied(Auth::guard('donor')->id());
                 @endphp
                 
                 @if($hasApplied)
-                    <span class="px-4 py-2 bg-green-100 text-green-700 rounded-lg text-sm font-medium flex items-center gap-2">
+                    <span class="px-4 md:px-5 py-2 md:py-2.5 bg-green-100 text-green-700 rounded-lg text-sm md:text-base font-medium flex items-center justify-center gap-2">
                         <i class="fas fa-check-circle"></i>
                         Application Submitted
                     </span>
                 @else
                     <a href="{{ route('member.jobs.apply', $job->slug) }}" 
-                       class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-sm hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-md flex items-center gap-2">
+                       class="px-4 md:px-5 py-2 md:py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-sm md:text-base hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-md flex items-center justify-center gap-2">
                         <i class="fas fa-paper-plane"></i>
                         Apply Now
                     </a>
@@ -2176,23 +2308,33 @@
             </div>
             
             @if($job->application_deadline && $job->application_deadline->diffInDays(now()) < 7)
-            <div class="mt-3 text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-1 inline-block">
+            <div class="mt-3 text-sm text-amber-600 bg-amber-50 rounded-lg px-3 md:px-4 py-1 md:py-1.5 inline-block">
                 <i class="far fa-clock mr-1"></i> Deadline: {{ $job->application_deadline->format('M d, Y') }}
             </div>
             @endif
         </div>
         @empty
-        <div class="text-center py-12">
-            <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="text-center py-10 md:py-14">
+            <div class="w-20 h-20 md:w-24 md:h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-5">
+                <svg class="w-10 h-10 md:w-12 md:h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                 </svg>
             </div>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">No jobs available</h3>
-            <p class="text-gray-500">Check back soon for new opportunities.</p>
+            <h3 class="text-lg md:text-xl font-medium text-gray-900 mb-2">No jobs available</h3>
+            <p class="text-sm md:text-base text-gray-500">Check back soon for new opportunities.</p>
         </div>
         @endforelse
     </div>
+    
+    <!-- View All Jobs Link -->
+    @if($jobs->count() > 0)
+    <div class="mt-6 md:mt-8 text-center">
+        <a href="{{ route('member.jobs.index') }}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium text-sm md:text-base">
+            Browse All Job Opportunities
+            <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+    </div>
+    @endif
 </div>
 
 <!-- Tab Content - Resources -->

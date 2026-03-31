@@ -254,12 +254,12 @@
 
         <div class="header">
             <div class="header-content">
-                <img src="{{ asset('images/logo/APN-Logo-01-white.png') }}" class="logo" alt="APN Logo">
+             <img src="{{ url('images/logo/apn-membership.png') }}" class="logo" alt="APN Logo">
                 <h1 class="header-title">Membership Renewed! 🎉</h1>
                 <p class="header-sub">Thank you for continuing your journey with us</p>
             </div>
         </div>
-
+  
         <div class="content">
             <h2 class="greeting">Welcome back, {{ $donor->firstname ?? 'Valued Member' }}!</h2>
             

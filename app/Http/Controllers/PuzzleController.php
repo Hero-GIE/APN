@@ -361,17 +361,38 @@ public function index(Request $request)
     /**
      * Start a quiz attempt
      */
-    public function quizStart($slug)
-    {
-        $donor = Auth::guard('donor')->user();
+    // public function quizStart($slug)
+    // {
+    //     $donor = Auth::guard('donor')->user();
         
-        if (!$donor) {
-            return redirect()->route('donor.login')->with('error', 'Please log in to play quizzes.');
-        }
+    //     if (!$donor) {
+    //         return redirect()->route('donor.login')->with('error', 'Please log in to play quizzes.');
+    //     }
         
-        $quiz = Puzzle::where('slug', $slug)->where('type', 'quiz')->where('is_active', true)->firstOrFail();
-        return $this->startGenericPuzzle($quiz, $donor);
+    //     $quiz = Puzzle::where('slug', $slug)->where('type', 'quiz')->where('is_active', true)->firstOrFail();
+    //     return $this->startGenericPuzzle($quiz, $donor);
+    // }
+
+
+    /**
+ * Start a quiz attempt
+ */
+public function quizStart($slug)
+{
+    $donor = Auth::guard('donor')->user();
+    
+    if (!$donor) {
+        return redirect()->route('donor.login')->with('error', 'Please log in to play quizzes.');
     }
+    
+    // Allow all quiz-like puzzle types
+    $quiz = Puzzle::where('slug', $slug)
+        ->whereIn('type', ['quiz', 'flag_match', 'capital_quiz', 'country_puzzle', 'heritage_quiz'])
+        ->where('is_active', true)
+        ->firstOrFail();
+    
+    return $this->startGenericPuzzle($quiz, $donor);
+}
 
     /**
      * Generic method to start any puzzle attempt
@@ -902,13 +923,12 @@ public function index(Request $request)
 /**
  * Display all quizzes
  */
-/**
- * Display all quizzes
- */
 public function quizIndex()
 {
     $donor = Auth::guard('donor')->user();
-    $quizzes = Puzzle::whereIn('type', ['quiz', 'flag_match'])
+    
+    // Include all quiz-like puzzle types
+    $quizzes = Puzzle::whereIn('type', ['quiz', 'flag_match', 'capital_quiz', 'country_puzzle', 'heritage_quiz'])
         ->where('is_active', true)
         ->orderBy('created_at', 'desc')
         ->paginate(12);
@@ -917,105 +937,107 @@ public function quizIndex()
     if ($donor) {
         $userStats = [
             'total_attempts' => PuzzleAttempt::where('donor_id', $donor->id)
-                ->whereHas('puzzle', fn($q) => $q->whereIn('type', ['quiz', 'flag_match']))
+                ->whereHas('puzzle', fn($q) => $q->whereIn('type', ['quiz', 'flag_match', 'capital_quiz', 'country_puzzle', 'heritage_quiz']))
                 ->count(),
             'completed' => PuzzleAttempt::where('donor_id', $donor->id)
-                ->whereHas('puzzle', fn($q) => $q->whereIn('type', ['quiz', 'flag_match']))
+                ->whereHas('puzzle', fn($q) => $q->whereIn('type', ['quiz', 'flag_match', 'capital_quiz', 'country_puzzle', 'heritage_quiz']))
                 ->where('completed', true)
                 ->count(),
             'total_score' => PuzzleAttempt::where('donor_id', $donor->id)
-                ->whereHas('puzzle', fn($q) => $q->whereIn('type', ['quiz', 'flag_match']))
+                ->whereHas('puzzle', fn($q) => $q->whereIn('type', ['quiz', 'flag_match', 'capital_quiz', 'country_puzzle', 'heritage_quiz']))
                 ->sum('score'),
             'average_score' => round(PuzzleAttempt::where('donor_id', $donor->id)
-                ->whereHas('puzzle', fn($q) => $q->whereIn('type', ['quiz', 'flag_match']))
+                ->whereHas('puzzle', fn($q) => $q->whereIn('type', ['quiz', 'flag_match', 'capital_quiz', 'country_puzzle', 'heritage_quiz']))
                 ->avg('score') ?? 0, 2),
         ];
     }
     
     return view('puzzles.quiz-index', compact('quizzes', 'donor', 'userStats'));
 }
-    /**
-     * Display quiz details
-     */
-    public function quizShow($slug)
-    {
-        $donor = Auth::guard('donor')->user();
-        $member = $donor ? Member::where('donor_id', $donor->id)->first() : null;
-        
-        $puzzle = Puzzle::with(['category', 'questions' => function($query) {
-            $query->where('is_active', true)->orderBy('order');
-        }])->where('slug', $slug)
-            ->where('type', 'quiz')
-            ->where('is_active', true)
-            ->firstOrFail();
-        
-        // Get user's attempts
-        $userAttempts = collect();
-        $userBestScore = 0;
-        $userBestTime = null;
-        $userRank = null;
-        
-        if ($donor) {
-            $userAttempts = PuzzleAttempt::where('donor_id', $donor->id)
-                ->where('puzzle_id', $puzzle->id)
-                ->orderBy('created_at', 'desc')
-                ->get();
-            
-            $userBestScore = $userAttempts->where('completed', true)->max('score') ?? 0;
-            
-            $bestTimeAttempt = $userAttempts->where('completed', true)->sortBy('time_taken')->first();
-            $userBestTime = $bestTimeAttempt?->time_taken;
-            
-            $leaderboardEntry = PuzzleLeaderboard::where('puzzle_id', $puzzle->id)
-                ->where('donor_id', $donor->id)
-                ->first();
-            $userRank = $leaderboardEntry?->rank;
-        }
-        
-        // Get leaderboard
-        $leaderboard = PuzzleLeaderboard::with('donor')
+   
+  /**
+ * Display quiz details
+ */
+public function quizShow($slug)
+{
+    $donor = Auth::guard('donor')->user();
+    $member = $donor ? Member::where('donor_id', $donor->id)->first() : null;
+    
+    // Allow all quiz-like puzzle types
+    $puzzle = Puzzle::with(['category', 'questions' => function($query) {
+        $query->where('is_active', true)->orderBy('order');
+    }])->where('slug', $slug)
+        ->whereIn('type', ['quiz', 'flag_match', 'capital_quiz', 'country_puzzle', 'heritage_quiz'])
+        ->where('is_active', true)
+        ->firstOrFail();
+    
+    // Get user's attempts
+    $userAttempts = collect();
+    $userBestScore = 0;
+    $userBestTime = null;
+    $userRank = null;
+    
+    if ($donor) {
+        $userAttempts = PuzzleAttempt::where('donor_id', $donor->id)
             ->where('puzzle_id', $puzzle->id)
-            ->whereNotNull('rank')
-            ->orderBy('rank')
-            ->limit(10)
+            ->orderBy('created_at', 'desc')
             ->get();
         
-        // Get comments
-        $comments = PuzzleComment::with('donor')
-            ->where('puzzle_id', $puzzle->id)
-            ->where('is_approved', true)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $userBestScore = $userAttempts->where('completed', true)->max('score') ?? 0;
         
-        // Get related puzzles
-        $relatedPuzzles = $puzzle->getRelatedPuzzles(3);
+        $bestTimeAttempt = $userAttempts->where('completed', true)->sortBy('time_taken')->first();
+        $userBestTime = $bestTimeAttempt?->time_taken;
         
-        // Check if user has rated
-        $userRating = null;
-        if ($donor) {
-            $userRating = PuzzleRating::where('puzzle_id', $puzzle->id)
-                ->where('donor_id', $donor->id)
-                ->first();
-        }
-        
-        // Increment view count
-        if (!session()->has("puzzle_viewed_{$puzzle->id}")) {
-            $puzzle->increment('play_count');
-            session()->put("puzzle_viewed_{$puzzle->id}", true);
-        }
-        
-        return view('puzzles.show', compact(
-            'puzzle',
-            'donor',
-            'member',
-            'userAttempts',
-            'userBestScore',
-            'userBestTime',
-            'userRank',
-            'leaderboard',
-            'comments',
-            'relatedPuzzles',
-            'userRating'
-        ));
+        $leaderboardEntry = PuzzleLeaderboard::where('puzzle_id', $puzzle->id)
+            ->where('donor_id', $donor->id)
+            ->first();
+        $userRank = $leaderboardEntry?->rank;
     }
+    
+    // Get leaderboard
+    $leaderboard = PuzzleLeaderboard::with('donor')
+        ->where('puzzle_id', $puzzle->id)
+        ->whereNotNull('rank')
+        ->orderBy('rank')
+        ->limit(10)
+        ->get();
+    
+    // Get comments
+    $comments = PuzzleComment::with('donor')
+        ->where('puzzle_id', $puzzle->id)
+        ->where('is_approved', true)
+        ->orderBy('created_at', 'desc')
+        ->paginate(10);
+    
+    // Get related puzzles
+    $relatedPuzzles = $puzzle->getRelatedPuzzles(3);
+    
+    // Check if user has rated
+    $userRating = null;
+    if ($donor) {
+        $userRating = PuzzleRating::where('puzzle_id', $puzzle->id)
+            ->where('donor_id', $donor->id)
+            ->first();
+    }
+    
+    // Increment view count
+    if (!session()->has("puzzle_viewed_{$puzzle->id}")) {
+        $puzzle->increment('play_count');
+        session()->put("puzzle_viewed_{$puzzle->id}", true);
+    }
+    
+    return view('puzzles.show', compact(
+        'puzzle',
+        'donor',
+        'member',
+        'userAttempts',
+        'userBestScore',
+        'userBestTime',
+        'userRank',
+        'leaderboard',
+        'comments',
+        'relatedPuzzles',
+        'userRating'
+    ));
+}
 }
