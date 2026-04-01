@@ -7,6 +7,26 @@
         font-size: 16px;
         line-height: 1.6;
     }
+
+    /* Badge preview with profile image */
+    .badge-preview-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .badge-profile-image {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
     h1, h2, h3, h4, h5, h6, .heading-font, .font-urbanist, .btn, button, [class*="font-bold"] {
         font-family: 'Urbanist', sans-serif;
     }
@@ -44,8 +64,8 @@
         transition: all 0.2s ease;
     }
     .copy-btn.copied {
-        background: #10b981;
-        color: white;
+        background: #10b981 !important;
+        color: white !important;
     }
     
     /* Tab styles */
@@ -56,6 +76,8 @@
         border-bottom: 2px solid transparent;
         transition: all 0.2s ease;
         cursor: pointer;
+        background: none;
+        border: none;
     }
     .tab-button.active {
         border-bottom-color: #3b82f6;
@@ -81,6 +103,10 @@
         }
         h1 {
             font-size: 1.75rem !important;
+        }
+        .tab-button {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
         }
     }
 </style>
@@ -129,16 +155,19 @@
         <!-- Main Content -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-1">
+                <!-- Badge Preview -->
                 <div class="bg-white rounded-lg shadow p-6 sticky top-6">
                     <h2 class="text-xl font-semibold text-gray-800 mb-4">Badge Preview</h2>
-                    <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-8 flex justify-center mb-4">
+                    <div class="bg-white rounded-xl p-8 flex justify-center mb-4">
                         <div class="text-center">
-                            <!-- Badge Image -->
-                            <img src="{{ route('member.badge.image', ['token' => $member->badge_token]) }}" 
-                                 alt="APN Member Badge" 
-                                 class="mx-auto mb-3" 
-                                 style="max-width: 150px;">
-                            <p class="font-medium text-gray-700">{{ $donor->firstname }} {{ $donor->lastname }}</p>
+                            <!-- Badge Container -->
+                            <div class="mx-auto mb-3" style="width: 150px; height: 150px;">
+                                <img src="{{ route('member.badge.image', ['token' => $member->badge_token]) }}" 
+                                     alt="APN Member Badge" 
+                                     class="w-full h-full object-contain">
+                            </div>
+                            
+                            <p class="font-medium text-gray-700 mt-2">{{ $donor->firstname }} {{ $donor->lastname }}</p>
                             <p class="text-xs text-gray-500">Member since {{ $member->start_date->format('M Y') }}</p>
                             @if($member->status == 'active')
                                 <span class="inline-block mt-2 px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">
@@ -160,12 +189,12 @@
                     <h3 class="font-semibold text-gray-800 mb-3">Download Badge</h3>
                     <div class="flex gap-2 mb-6">
                         <a href="{{ route('member.badge.download', ['format' => 'png']) }}" 
-                           class="flex-1 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 text-center">
-                            PNG
+                           class="flex-1 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 text-center transition-colors">
+                            Download PNG
                         </a>
                         <a href="{{ route('member.badge.download', ['format' => 'svg']) }}" 
-                           class="flex-1 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300 text-center">
-                            SVG
+                           class="flex-1 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300 text-center transition-colors">
+                            Download SVG
                         </a>
                     </div>
                     
@@ -214,8 +243,8 @@
                     <h2 class="text-xl font-semibold text-gray-800 mb-4">Embed Your Badge</h2>
                     
                     <!-- Platform Tabs -->
-                    <div class="border-b border-gray-200 mb-6">
-                        <div class="flex flex-wrap -mb-px">
+                    <div class="border-b border-gray-200 mb-6 overflow-x-auto">
+                        <div class="flex flex-nowrap min-w-max">
                             <button onclick="showTab('html')" class="tab-button active" id="tab-html">HTML</button>
                             <button onclick="showTab('markdown')" class="tab-button" id="tab-markdown">Markdown</button>
                             <button onclick="showTab('bbcode')" class="tab-button" id="tab-bbcode">BBCode (Forums)</button>
@@ -228,9 +257,9 @@
                         <h3 class="font-medium text-gray-800 mb-2">HTML Code</h3>
                         <p class="text-xs text-gray-500 mb-2">Use this for websites, email signatures, and anywhere HTML is supported.</p>
                         <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mb-3 overflow-x-auto">
-                            <code class="text-sm">{{ $embedCodes['html'] }}</code>
+                            <code id="htmlCode" class="text-sm whitespace-pre-wrap break-all">{{ $embedCodes['html'] }}</code>
                         </div>
-                        <button onclick="copyToClipboardText(`{{ $embedCodes['html'] }}`, this)" 
+                        <button onclick="copyToClipboardText(document.getElementById('htmlCode').textContent, this)" 
                                 class="copy-btn px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">
                             Copy HTML
                         </button>
@@ -240,9 +269,9 @@
                         <h3 class="font-medium text-gray-800 mb-2">Markdown Code</h3>
                         <p class="text-xs text-gray-500 mb-2">Use for GitHub profiles, README files, and Markdown-supported platforms.</p>
                         <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mb-3 overflow-x-auto">
-                            <code class="text-sm">{{ $embedCodes['markdown'] }}</code>
+                            <code id="markdownCode" class="text-sm whitespace-pre-wrap break-all">{{ $embedCodes['markdown'] }}</code>
                         </div>
-                        <button onclick="copyToClipboardText(`{{ $embedCodes['markdown'] }}`, this)" 
+                        <button onclick="copyToClipboardText(document.getElementById('markdownCode').textContent, this)" 
                                 class="copy-btn px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">
                             Copy Markdown
                         </button>
@@ -252,9 +281,9 @@
                         <h3 class="font-medium text-gray-800 mb-2">BBCode</h3>
                         <p class="text-xs text-gray-500 mb-2">Use for forums, discussion boards, and legacy platforms.</p>
                         <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mb-3 overflow-x-auto">
-                            <code class="text-sm">{{ $embedCodes['bbcode'] }}</code>
+                            <code id="bbcodeCode" class="text-sm whitespace-pre-wrap break-all">{{ $embedCodes['bbcode'] }}</code>
                         </div>
-                        <button onclick="copyToClipboardText(`{{ $embedCodes['bbcode'] }}`, this)" 
+                        <button onclick="copyToClipboardText(document.getElementById('bbcodeCode').textContent, this)" 
                                 class="copy-btn px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">
                             Copy BBCode
                         </button>
@@ -264,9 +293,9 @@
                         <h3 class="font-medium text-gray-800 mb-2">Iframe Code</h3>
                         <p class="text-xs text-gray-500 mb-2">Embed an interactive widget that shows your member status.</p>
                         <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mb-3 overflow-x-auto">
-                            <code class="text-sm">{{ $embedCodes['iframe'] }}</code>
+                            <code id="iframeCode" class="text-sm whitespace-pre-wrap break-all">{{ $embedCodes['iframe'] }}</code>
                         </div>
-                        <button onclick="copyToClipboardText(`{{ $embedCodes['iframe'] }}`, this)" 
+                        <button onclick="copyToClipboardText(document.getElementById('iframeCode').textContent, this)" 
                                 class="copy-btn px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">
                             Copy Iframe
                         </button>
@@ -325,8 +354,8 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="font-medium">LinkedIn</p>
-                                    <p class="text-xs text-gray-500">Add to "Featured" section</p>
+                                    <p class="font-medium">Email Signature</p>
+                                    <p class="text-xs text-gray-500">Add to your email signature</p>
                                 </div>
                             </div>
                         </div>
@@ -346,26 +375,98 @@
                 </div>
             </div>
         </div>
+
+        <!-- Email Signature Section -->
+        <div class="mt-8 bg-white rounded-lg shadow p-6" id="emailSignatureSection">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Email Signature</h2>
+            <p class="text-sm text-gray-600 mb-4">
+                Add your APN Member badge to your email signature to show your affiliation.
+            </p>
+            
+            <div class="mb-4">
+                <h3 class="font-medium text-gray-700 mb-2">Preview:</h3>
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div id="emailSignaturePreview" style="font-family: Arial, sans-serif; max-width: 500px;">
+                        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                            <tr>
+                                <td style="vertical-align: top; padding-right: 15px;">
+                                    <a href="{{ $verifyUrl }}" target="_blank">
+                                        <img src="{{ $badgeUrl }}" alt="APN Member" style="width: 80px; border: 0;">
+                                    </a>
+                                 </td>
+                                <td style="vertical-align: top;">
+                                    <div style="font-weight: bold; color: #1f2937;">{{ $donor->firstname }} {{ $donor->lastname }}</div>
+                                    <div style="color: #6b7280; font-size: 12px;">Africa Prosperity Network Member</div>
+                                    <div style="color: #4f46e5; font-size: 11px; margin-top: 5px;">
+                                        <a href="{{ $verifyUrl }}" style="color: #4f46e5; text-decoration: none;">Verify membership →</a>
+                                    </div>
+                                 </td>
+                             </tr>
+                         </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="font-medium text-gray-700 mb-2">Copy HTML for Email Signature:</h3>
+                <div class="bg-gray-900 text-gray-100 p-4 rounded-lg mb-3 overflow-x-auto">
+                    <code id="emailSignatureCode" class="text-sm whitespace-pre-wrap break-all">
+                        &lt;div style="font-family: Arial, sans-serif; max-width: 500px; padding: 15px; border-top: 2px solid #4f46e5;"&gt;
+                            &lt;table cellpadding="0" cellspacing="0" border="0" width="100%"&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="vertical-align: top; padding-right: 15px;"&gt;
+                                        &lt;a href="{{ $verifyUrl }}" target="_blank"&gt;
+                                            &lt;img src="{{ $badgeUrl }}" alt="APN Member" style="width: 80px; border: 0;"&gt;
+                                        &lt;/a&gt;
+                                    &lt;/td&gt;
+                                    &lt;td style="vertical-align: top;"&gt;
+                                        &lt;div style="font-weight: bold; color: #1f2937;"&gt;{{ $donor->firstname }} {{ $donor->lastname }}&lt;/div&gt;
+                                        &lt;div style="color: #6b7280; font-size: 12px;"&gt;Africa Prosperity Network Member&lt;/div&gt;
+                                        &lt;div style="color: #4f46e5; font-size: 11px; margin-top: 5px;"&gt;
+                                            &lt;a href="{{ $verifyUrl }}" style="color: #4f46e5; text-decoration: none;"&gt;Verify membership →&lt;/a&gt;
+                                        &lt;/div&gt;
+                                    &lt;/td&gt;
+                                &lt;/tr&gt;
+                            &lt;/table&gt;
+                        &lt;/div&gt;
+                    </code>
+                </div>
+                <button onclick="copyEmailSignature()" class="copy-btn px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">
+                    Copy HTML
+                </button>
+                <p class="text-xs text-gray-500 mt-3">
+                    <strong>How to add to email signature:</strong> Gmail, Outlook, Apple Mail, or other email clients → Settings → Signature → Paste HTML
+                </p>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
     function showTab(tabName) {
+        // Hide all tab contents
         document.querySelectorAll('.tab-content').forEach(el => {
             el.classList.remove('active');
         });
         
+        // Remove active class from all tab buttons
         document.querySelectorAll('.tab-button').forEach(el => {
             el.classList.remove('active');
         });
         
-        document.getElementById(`tab-${tabName}-content`).classList.add('active');
+        // Show selected tab content
+        const content = document.getElementById(`tab-${tabName}-content`);
+        if (content) content.classList.add('active');
         
-        document.getElementById(`tab-${tabName}`).classList.add('active');
+        // Activate selected tab button
+        const button = document.getElementById(`tab-${tabName}`);
+        if (button) button.classList.add('active');
     }
     
     function copyToClipboard(elementId, btn) {
         const input = document.getElementById(elementId);
+        if (!input) return;
+        
         input.select();
         input.setSelectionRange(0, 99999);
         
@@ -378,6 +479,9 @@
                 btn.textContent = originalText;
                 btn.classList.remove('copied');
             }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+            alert('Failed to copy to clipboard');
         });
     }
     
@@ -391,7 +495,55 @@
                 btn.textContent = originalText;
                 btn.classList.remove('copied');
             }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+            alert('Failed to copy to clipboard');
         });
     }
+    
+    function copyEmailSignature() {
+        const codeElement = document.getElementById('emailSignatureCode');
+        if (!codeElement) return;
+        
+        // Get the raw HTML text content
+        let textToCopy = codeElement.textContent || codeElement.innerText;
+        
+        // Clean up the text
+        textToCopy = textToCopy.trim();
+        
+        // Find the copy button in the email signature section
+        const btn = document.querySelector('#emailSignatureSection .copy-btn:last-of-type');
+        
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+            alert('Failed to copy to clipboard. You can manually select and copy the code.');
+        });
+    }
+    
+    // Check if download links work
+    document.querySelectorAll('a[href*="badge.download"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const format = this.href.includes('format=png') ? 'PNG' : 'SVG';
+            console.log(`Downloading ${format} badge...`);
+        });
+    });
 </script>
+
+<style>
+    .copy-btn.copied {
+        background: #10b981 !important;
+        color: white !important;
+    }
+</style>
 @endsection

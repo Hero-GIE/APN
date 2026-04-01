@@ -1555,8 +1555,6 @@
             </div>
         </div>
 
-
-
         <!-- Tab Content - Dashboard -->
        <div id="content-dashboard" class="tab-content active">
     <!-- Membership Card -->
@@ -1691,7 +1689,7 @@
         </div>
     </div>
 
-  <!-- CAROUSEL - Featured Content -->
+  <!-- CAROUSEL -->
 @if((isset($featuredNews) && $featuredNews->count() > 0) || (isset($featuredEvents) && $featuredEvents->count() > 0) || (isset($featuredJobs) && $featuredJobs->count() > 0))
 <div class="featured-carousel mb-6 md:mb-8">
     <div class="carousel-container">

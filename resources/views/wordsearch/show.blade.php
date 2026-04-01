@@ -59,9 +59,9 @@
         <!-- Puzzle Details Card -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             @if($puzzle->featured_image)
-            <div class="h-48 overflow-hidden">
-                <img src="{{ $puzzle->featured_image }}" class="w-full h-full object-cover">
-            </div>
+           <div class="h-64 md:h-80 overflow-hidden rounded-lg">
+    <img src="{{ $puzzle->featured_image }}" class="w-full h-full object-cover">
+</div>
             @endif
             
             <div class="p-6">

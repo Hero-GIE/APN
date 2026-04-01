@@ -274,12 +274,12 @@
                             </a>
                             @endif
                         @else
-                            <a href="{{ route('puzzles.show', $puzzle->slug) }}" 
+                            <a href="{{ route('wordsearch.show', $puzzle->slug) }}" 
                                class="flex-1 text-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium">
                                 View Details
                             </a>
                             @if($puzzle->can_play)
-                            <a href="{{ route('puzzles.start', $puzzle->slug) }}" 
+                            <a href="{{ route('wordsearch.start', $puzzle->slug) }}" 
                                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">
                                 Play
                             </a>
@@ -304,16 +304,6 @@
             <p class="mt-2 text-gray-500">Try adjusting your filters or check back later for new puzzles.</p>
         </div>
         @endif
-
-        {{-- <!-- Security Footer Note -->
-        <div class="flex items-center justify-center gap-3 mt-8 text-xs text-gray-400">
-            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
-            <span>256-bit encrypted</span>
-            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
-            <span>Powered by Paystack</span>
-            <i class="fas fa-circle text-yellow-500" style="font-size:0.35rem;"></i>
-            <span>Secure transactions</span>
-        </div> --}}
     </div>
 </div>
 

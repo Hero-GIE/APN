@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         * {
             margin: 0;
@@ -28,11 +29,18 @@
             padding: 20px 15px;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
             border: 1px solid #e2e8f0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .badge-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
         }
         .badge-image {
             width: 80px;
             height: 80px;
             margin: 0 auto 10px;
+            border-radius: 50%;
+            object-fit: cover;
         }
         .member-name {
             font-weight: 600;
@@ -52,9 +60,17 @@
             background: #dcfce7;
             color: #166534;
         }
-        .status-inactive {
-            background: #f1f5f9;
-            color: #475569;
+        .status-expired {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .status-cancelled {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status-pending {
+            background: #dbeafe;
+            color: #1e40af;
         }
         .member-since {
             font-size: 10px;
@@ -73,6 +89,7 @@
         }
         .verify-link:hover {
             background: #eff6ff;
+            color: #2563eb;
         }
         .error {
             color: #ef4444;
@@ -80,17 +97,41 @@
             text-align: center;
             padding: 20px;
         }
+        .error-icon {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 8px;
+            color: #ef4444;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+        }
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 8px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
-    @if(isset($error) || !$member)
+    @if(isset($error) || !isset($member) || !$member)
         <div class="badge-widget">
             <div class="badge-container">
                 <div class="error">
-                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="error-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    Member not found
+                    <p>Member not found</p>
+                    <p class="text-xs text-gray-400 mt-1">Invalid or expired badge</p>
                 </div>
             </div>
         </div>
@@ -99,19 +140,30 @@
             <div class="badge-container">
                 <img src="{{ route('member.badge.image', ['token' => $member->badge_token]) }}" 
                      alt="APN Member Badge" 
-                     class="badge-image">
+                     class="badge-image"
+                     onerror="this.src='{{ asset('images/badges/badge-placeholder.png') }}'">
                 
                 <div class="member-name">
-                    {{ $member->donor->firstname }} {{ $member->donor->lastname }}
+                    {{ $member->donor->firstname ?? 'Member' }} {{ $member->donor->lastname ?? '' }}
                 </div>
                 
-                <div class="member-status {{ $member->status === 'active' ? 'status-active' : 'status-inactive' }}">
-                    {{ $member->status === 'active' ? '● Active Member' : '● ' . ucfirst($member->status) }}
+                <div class="member-status status-{{ $member->status }}">
+                    @if($member->status === 'active')
+                        ● Active Member
+                    @elseif($member->status === 'expired')
+                        ● Expired
+                    @elseif($member->status === 'cancelled')
+                        ● Cancelled
+                    @else
+                        ● {{ ucfirst($member->status) }}
+                    @endif
                 </div>
                 
+                @if($member->start_date)
                 <div class="member-since">
                     Member since {{ $member->start_date->format('M Y') }}
                 </div>
+                @endif
                 
                 <a href="{{ route('member.badge.verify', ['token' => $member->badge_token]) }}" 
                    target="_blank" 
@@ -120,6 +172,22 @@
                 </a>
             </div>
         </div>
+    @endif
+
+    @if(isset($member) && $member && $member->status === 'active')
+    <script>
+        // Optional: Track widget impressions
+        if (typeof fetch !== 'undefined') {
+            fetch('{{ route('member.badge.track', ['token' => $member->badge_token]) }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ type: 'widget_impression' })
+            }).catch(() => {});
+        }
+    </script>
     @endif
 </body>
 </html>

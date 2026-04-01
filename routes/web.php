@@ -107,10 +107,13 @@ Route::middleware(['auth:donor', 'member.active'])->prefix('member')->name('memb
     // About
     Route::get('/about', [MemberController::class, 'about'])->name('about');
     
-    // Digital Badge Management
     Route::get('/badges', [MemberBadgeController::class, 'index'])->name('badges');
     Route::post('/badge/regenerate', [MemberBadgeController::class, 'regenerateToken'])->name('badge.regenerate');
     Route::get('/badge/download', [MemberBadgeController::class, 'download'])->name('badge.download');
+    
+    // Email Signature
+    Route::get('/badge/email-signature', [MemberBadgeController::class, 'emailSignature'])->name('badge.email-signature');
+    Route::post('/badge/copy-email-signature', [MemberBadgeController::class, 'copyEmailSignature'])->name('badge.copy-email-signature');
 
     // Magazine routes
     Route::get('/publications', [MagazineController::class, 'getMemberPublications'])->name('publications');
@@ -136,14 +139,27 @@ Route::middleware(['auth:donor', 'member.active'])->prefix('member')->name('memb
     Route::get('/membership', [MemberController::class, 'membership'])->name('membership');
 });
 
-// ===== NEW PUBLIC BADGE ROUTES 
+// TEMPORARY ROUTE TO REGENERATE BADGES (REMOVE AFTER USE)
+Route::middleware(['auth:donor'])->get('/member/regenerate-badges', function() {
+    $controller = new App\Http\Controllers\MemberBadgeController();
+    return $controller->regenerateAllBadges();
+});
+
+Route::prefix('badge')->name('member.badge.')->group(function () {
+    Route::get('image/{token}', [MemberBadgeController::class, 'image'])->name('image');
+    Route::get('widget/{token}', [MemberBadgeController::class, 'widget'])->name('widget');
+    Route::get('verify/{token}', [MemberBadgeController::class, 'verify'])->name('verify');
+    Route::post('track/{token}', [MemberBadgeController::class, 'track'])->name('track');
+});
+
+// ===== PUBLIC BADGE ROUTES 
 Route::prefix('badge')->name('member.badge.')->group(function () {
     Route::get('image/{token}', [MemberBadgeController::class, 'image'])->name('image');
     Route::get('widget/{token}', [MemberBadgeController::class, 'widget'])->name('widget');
     Route::get('verify/{token}', [MemberBadgeController::class, 'verify'])->name('verify');
 });
 
-// ===== PUZZLES ROUTES (Combined with Quiz and Word Search)
+// ===== PUZZLES ROUTES (Quiz and Word Search)
 Route::prefix('puzzles')->name('puzzles.')->group(function () {
     // Public routes
     Route::get('/', [PuzzleController::class, 'hub'])->name('hub');
@@ -154,7 +170,7 @@ Route::prefix('puzzles')->name('puzzles.')->group(function () {
     
     // Protected routes
     Route::middleware(['auth:donor'])->group(function () {
-  Route::match(['GET', 'POST'], '/{slug}/start', [PuzzleController::class, 'start'])->name('start');
+        Route::match(['GET', 'POST'], '/{slug}/start', [PuzzleController::class, 'start'])->name('start');
         Route::get('/play/{attempt}', [PuzzleController::class, 'play'])->name('play');
         Route::post('/submit/{attempt}', [PuzzleController::class, 'submit'])->name('submit');
         Route::get('/results/{attempt}', [PuzzleController::class, 'results'])->name('results');
@@ -183,7 +199,7 @@ Route::prefix('wordsearch')->name('wordsearch.')->group(function () {
     Route::get('/{slug}', [WordSearchController::class, 'show'])->name('show');
     
     Route::middleware(['auth:donor'])->group(function () {
-        Route::post('/{slug}/start', [WordSearchController::class, 'start'])->name('start');
+        Route::any('/{slug}/start', [WordSearchController::class, 'start'])->name('start');
         Route::get('/play/{attempt}', [WordSearchController::class, 'play'])->name('play');
         Route::post('/submit/{attempt}', [WordSearchController::class, 'submitWord'])->name('submit');
         Route::get('/results/{attempt}', [WordSearchController::class, 'results'])->name('results');
