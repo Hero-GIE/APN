@@ -170,7 +170,7 @@
                             <p class="font-medium text-gray-700 mt-2">{{ $donor->firstname }} {{ $donor->lastname }}</p>
                             <p class="text-xs text-gray-500">Member since {{ $member->start_date->format('M Y') }}</p>
                             @if($member->status == 'active')
-                                <span class="inline-block mt-2 px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">
+                                 <span class="inline-block mt-2 px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">
                                     ● Active Member
                                 </span>
                             @else
@@ -444,21 +444,16 @@
 
 <script>
     function showTab(tabName) {
-        // Hide all tab contents
         document.querySelectorAll('.tab-content').forEach(el => {
             el.classList.remove('active');
         });
-        
-        // Remove active class from all tab buttons
+    
         document.querySelectorAll('.tab-button').forEach(el => {
             el.classList.remove('active');
         });
-        
-        // Show selected tab content
+ 
         const content = document.getElementById(`tab-${tabName}-content`);
         if (content) content.classList.add('active');
-        
-        // Activate selected tab button
         const button = document.getElementById(`tab-${tabName}`);
         if (button) button.classList.add('active');
     }
@@ -504,14 +499,9 @@
     function copyEmailSignature() {
         const codeElement = document.getElementById('emailSignatureCode');
         if (!codeElement) return;
-        
-        // Get the raw HTML text content
+
         let textToCopy = codeElement.textContent || codeElement.innerText;
-        
-        // Clean up the text
         textToCopy = textToCopy.trim();
-        
-        // Find the copy button in the email signature section
         const btn = document.querySelector('#emailSignatureSection .copy-btn:last-of-type');
         
         navigator.clipboard.writeText(textToCopy).then(() => {
