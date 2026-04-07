@@ -444,6 +444,7 @@
 
 <script>
     function showTab(tabName) {
+
         document.querySelectorAll('.tab-content').forEach(el => {
             el.classList.remove('active');
         });

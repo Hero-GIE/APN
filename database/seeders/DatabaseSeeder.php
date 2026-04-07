@@ -23,7 +23,6 @@ class DatabaseSeeder extends Seeder
                 'password' => bcrypt('password'),
             ]
         );
-
         // Generate 10 random users
         User::factory(10)->create();
 

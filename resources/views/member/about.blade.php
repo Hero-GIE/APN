@@ -833,10 +833,9 @@
         </div>
     </section>
 
-</div><!-- end page-content -->
+</div>
 
 <script>
-// ── Hero fixed-bg: hide when scrolled out of view ──
 (function(){
     const heroSection = document.getElementById('hero-section');
     const fixedEls = ['heroBg','heroOv1','heroOv2','heroOv3','heroDots'].map(id=>document.getElementById(id));
