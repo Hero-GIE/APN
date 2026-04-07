@@ -252,39 +252,28 @@
 
                     <div class="flex space-x-3">
                         @if(isset($puzzle->puzzle_type) && $puzzle->puzzle_type == 'wordsearch')
-                            <a href="{{ route('wordsearch.show', $puzzle->slug) }}" 
-                               class="flex-1 text-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium">
-                                View Details
-                            </a>
-                            @if($puzzle->can_play ?? true)
-                            <a href="{{ route('wordsearch.start', $puzzle->slug) }}" 
-                               class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">
-                                Play
-                            </a>
-                            @endif
-                        @elseif($puzzle->type == 'quiz')
-                            <a href="{{ route('quiz.show', $puzzle->slug) }}" 
-                               class="flex-1 text-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium">
-                                View Details
-                            </a>
-                            @if($puzzle->can_play)
-                            <a href="{{ route('quiz.start', $puzzle->slug) }}" 
-                               class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">
-                                Play
-                            </a>
-                            @endif
-                        @else
-                            <a href="{{ route('wordsearch.show', $puzzle->slug) }}" 
-                               class="flex-1 text-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium">
-                                View Details
-                            </a>
-                            @if($puzzle->can_play)
-                            <a href="{{ route('wordsearch.start', $puzzle->slug) }}" 
-                               class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">
-                                Play
-                            </a>
-                            @endif
-                        @endif
+    <a href="{{ route('wordsearch.show', $puzzle->slug) }}" 
+       class="flex-1 text-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium">
+        View Details
+    </a>
+    @if($puzzle->can_play ?? true)
+    <a href="{{ route('wordsearch.start', $puzzle->slug) }}" 
+       class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">
+        Play
+    </a>
+    @endif
+@elseif($puzzle->type == 'quiz' || $puzzle->type == 'capital_quiz' || $puzzle->type == 'flag_match')
+    <a href="{{ route('quiz.show', $puzzle->slug) }}" 
+       class="flex-1 text-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium">
+        View Details
+    </a>
+    @if($puzzle->can_play)
+    <a href="{{ route('quiz.start', $puzzle->slug) }}" 
+       class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">
+        Play
+    </a>
+    @endif
+@endif
                     </div>
                 </div>
             </div>
