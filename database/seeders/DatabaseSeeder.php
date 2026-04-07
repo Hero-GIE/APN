@@ -24,8 +24,16 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // Generate 10 random users
-        User::factory(10)->create();
+         $this->call([
+            EventSeeder::class,
+            JobOpportunitySeeder::class,
+            MagazineSeeder::class,
+            MemberBadgeTokenSeeder::class,
+            NewsSeeder::class,
+            PuzzleAchievementSeeder::class,
+            PuzzleSeeder::class,
+            WordSearchSeeder::class,
+        ]);
 
     }
 }
