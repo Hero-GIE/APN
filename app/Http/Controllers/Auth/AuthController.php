@@ -20,8 +20,8 @@ class AuthController extends Controller
     /**
      * Show donor login form
      */
-public function showLoginForm()
-{
+  public function showLoginForm()
+  {
     if (Auth::guard('donor')->check()) {
         $donor = Auth::guard('donor')->user();
         $member = Member::where('donor_id', $donor->id)->latest()->first();
@@ -33,7 +33,7 @@ public function showLoginForm()
     }
 
     return view('auth.donor-login');
-}
+  }
 
     /**
      * Show donor profile
@@ -103,9 +103,8 @@ public function login(Request $request)
 }
 
 
-
-public function logout(Request $request)
-{
+ public function logout(Request $request)
+ {
     $donor = Auth::guard('donor')->user();
  
     Log::info('User logged out', [
@@ -139,7 +138,7 @@ public function logout(Request $request)
     }
  
     return $response;
-}
+ }
  
 /**
  * Show donor dashboard

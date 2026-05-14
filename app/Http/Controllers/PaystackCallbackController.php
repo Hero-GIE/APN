@@ -380,10 +380,10 @@ class PaystackCallbackController extends Controller
     }
 
    private function processMembership($donor, $reference, $data, $metadata, $membershipType, $usdAmount)
-   {
+{
     $now = Carbon::now();
     
-    // Look for ANY existing membership of the same type (including cancelled)
+    // Look for existing membership of the SAME type for renewal
     $existingMember = Member::where('donor_id', $donor->id)
         ->where('membership_type', $membershipType)
         ->orderBy('created_at', 'desc')
@@ -394,9 +394,10 @@ class PaystackCallbackController extends Controller
     $payment   = null;
     
     if ($existingMember) {
-        $isRenewal  = true;
+        // Same membership type - RENEWAL
+        $isRenewal = true;
         $oldEndDate = $existingMember->end_date;
-        $oldStatus = $existingMember->status;  
+        $oldStatus = $existingMember->status;
         
         // Calculate new end date
         if ($membershipType === 'annual') {
@@ -416,7 +417,7 @@ class PaystackCallbackController extends Controller
         $existingMember->update([
             'end_date'      => $newEndDate,
             'renewal_count' => $existingMember->renewal_count + 1,
-            'status'        => 'active',  
+            'status'        => 'active',
             'start_date'    => $existingMember->start_date ?: $now,
         ]);
         
@@ -433,7 +434,22 @@ class PaystackCallbackController extends Controller
             'renewal_count' => $member->renewal_count,
         ]);
     } else {
-        // New membership
+        // Check if donor has ANY other membership type (switching plans)
+        $anyExistingMember = Member::where('donor_id', $donor->id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+        
+        if ($anyExistingMember) {
+            // User is switching from one plan type to another
+            Log::info('Member switching membership type (not a renewal)', [
+                'donor_id' => $donor->id,
+                'old_type' => $anyExistingMember->membership_type,
+                'new_type' => $membershipType,
+                'old_status' => $anyExistingMember->status,
+            ]);
+        }
+        
+        // Create NEW membership for different type
         $startDate = $now->copy();
         $endDate   = $membershipType === 'annual'
             ? $now->copy()->addYear()
@@ -448,7 +464,7 @@ class PaystackCallbackController extends Controller
             'renewal_count'   => 0,
         ]);
         
-        Log::info('New membership created', [
+        Log::info('New membership created (different plan type)', [
             'donor_id'        => $donor->id,
             'member_id'       => $member->id,
             'membership_type' => $membershipType,
@@ -476,7 +492,7 @@ class PaystackCallbackController extends Controller
         'payment' => $payment,
         'is_renewal' => $isRenewal
     ];
-    }
+}
 
     private function updateDonorIfNeeded(Donor $donor, array $metadata): void
     {

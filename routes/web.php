@@ -56,9 +56,9 @@ Route::get('/filter/download/{id}', [FilterController::class, 'downloadImage'])-
 Route::delete('/filter/delete/{id}', [FilterController::class, 'deleteImage'])->name('filter.delete');
 
 // Donor routes (guests)
-Route::prefix('donor')->name('donor.')->group(function () {
+Route::middleware('guest:donor')->prefix('donor')->name('donor.')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->middleware('guest:donor');
+    Route::post('/login', [AuthController::class, 'login']);
 });
 
 // Donor routes (authenticated)
