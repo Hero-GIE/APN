@@ -695,7 +695,6 @@ function fallbackCopy(text) {
 
 // Show success notification
 function showCopySuccess() {
-    // Update button text temporarily
     const copyBtn = document.querySelector('.copy-btn');
     if (copyBtn) {
         const copyText = copyBtn.querySelector('.copy-text');
@@ -703,27 +702,22 @@ function showCopySuccess() {
         
         copyText.textContent = 'Copied!';
         copyBtn.classList.add('copy-success');
-        
-        // Reset button text after 2 seconds
         setTimeout(() => {
             copyText.textContent = originalText;
             copyBtn.classList.remove('copy-success');
         }, 2000);
     }
     
-    // Create toast notification
     const toast = document.createElement('div');
     toast.className = 'copy-toast';
     toast.innerHTML = '<i class="fas fa-check-circle" style="margin-right: 8px;"></i> Reference copied to clipboard!';
     document.body.appendChild(toast);
     
-    // Remove toast after 2 seconds
     setTimeout(() => {
         toast.remove();
     }, 2000);
 }
 
-// Show error notification
 function showCopyError() {
     const toast = document.createElement('div');
     toast.className = 'copy-toast';
@@ -738,7 +732,6 @@ function showCopyError() {
 
 createParticles();
 
-// Handle resize for particles
 let resizeTimeout;
 window.addEventListener('resize', function() {
     clearTimeout(resizeTimeout);

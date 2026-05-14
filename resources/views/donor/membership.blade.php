@@ -2,7 +2,6 @@
 
 @section('content')
 <style>
-    /* Import fonts */
     @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Urbanist:wght@400;500;600;700;800;900&display=swap');
     
     body {
@@ -239,15 +238,6 @@
                     <h4 class="font-semibold text-gray-900">Member Dashboard</h4>
                     <p class="text-sm text-gray-600">Exclusive member-only area with benefits</p>
                 </div>
-                {{-- <div class="flex flex-col items-center text-center">
-                    <div class="bg-indigo-100 rounded-full p-3 mb-3">
-                        <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h4 class="font-semibold text-gray-900">Event Discounts</h4>
-                    <p class="text-sm text-gray-600">10% off all APN events</p>
-                </div> --}}
                 <div class="flex flex-col items-center text-center">
                     <div class="bg-indigo-100 rounded-full p-3 mb-3">
                         <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

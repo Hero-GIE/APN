@@ -110,9 +110,8 @@
         visibility: visible;
     }
 
-/* ── CAROUSEL ──────────────────────────────────────────────────────── */
+/* ── CAROUSEL  */
 
-/* Kente-inspired geometric pattern (SVG data URI) */
 .carousel-kente-pattern {
     position: absolute;
     inset: 0;
@@ -324,23 +323,6 @@
     color: #000;
 }
 .carousel-button:hover::before { opacity: 1; }
-
-/* Progress bar at bottom */
-/* .carousel-progress {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 2px;
-    background: rgba(255,255,255,0.08);
-    z-index: 10;
-    overflow: hidden;
-} */
-/* .carousel-progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #D4AF37, #F0D060);
-    width: 0%;
-    transition: width linear;
-    border-radius: 0 2px 2px 0;
-} */
 
 /* Slide counter top-right */
 .carousel-counter {
@@ -1365,6 +1347,125 @@
             font-size: 0.9rem;
         }
     }
+
+    /* Toast Notification Styles */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    min-width: 300px;
+    max-width: 400px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    overflow: hidden;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    animation: slideIn 0.3s ease forwards;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
+.toast-success {
+    border-left: 4px solid #10b981;
+}
+.toast-error {
+    border-left: 4px solid #ef4444;
+}
+.toast-warning {
+    border-left: 4px solid #f59e0b;
+}
+.toast-info {
+    border-left: 4px solid #3b82f6;
+}
+
+.toast-content {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.toast-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+.toast-success .toast-icon { color: #10b981; }
+.toast-error .toast-icon { color: #ef4444; }
+.toast-warning .toast-icon { color: #f59e0b; }
+.toast-info .toast-icon { color: #3b82f6; }
+
+.toast-message {
+    flex: 1;
+    font-size: 14px;
+    color: #1f2937;
+    line-height: 1.4;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px;
+    flex-shrink: 0;
+    transition: color 0.2s;
+}
+.toast-close:hover {
+    color: #6b7280;
+}
+
+.toast-progress {
+    height: 3px;
+    background: #e5e7eb;
+    width: 100%;
+}
+.toast-progress-bar {
+    height: 100%;
+    width: 100%;
+    animation: progress 3s linear forwards;
+}
+.toast-success .toast-progress-bar { background: #10b981; }
+.toast-error .toast-progress-bar { background: #ef4444; }
+.toast-warning .toast-progress-bar { background: #f59e0b; }
+.toast-info .toast-progress-bar { background: #3b82f6; }
+
+@keyframes progress {
+    from { width: 100%; }
+    to { width: 0%; }
+}
 </style>
 
     <div class="min-h-screen bg-gray-50 py-8">
@@ -1926,23 +2027,25 @@
                     <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
             </a>
-            @if($member->status == 'active')
-            <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-                <form action="{{ route('member.cancel') }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel your membership? This action cannot be undone.')" class="w-full">
-                    @csrf
-                    <button type="submit" class="w-full flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="bg-red-100 rounded-lg p-2 mr-3">
-                                <svg class="h-5 w-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                </svg>
-                            </div>
-                            <span class="font-medium text-red-700">Cancel Membership</span>
-                        </div>
-                    </button>
-                </form>
-            </div>
-            @endif
+         @if($member->status == 'active')
+<div class="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+    <div class="flex items-center flex-1">
+        <div class="bg-red-100 rounded-lg p-2 mr-3">
+            <svg class="h-5 w-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linecap="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+        </div>
+        <div>
+            <span class="font-medium text-red-700">Cancel Membership</span>
+            <p class="text-xs text-red-500 mt-0.5">Your benefits will end after billing period</p>
+        </div>
+    </div>
+    <button onclick="confirmCancelMembership()" 
+            class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium ml-4">
+        Cancel
+    </button>
+</div>
+@endif
         </div>
     </div>
 
@@ -3077,6 +3180,8 @@
         </div>
     </div>
 </div>
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
 
 <style>
     [x-cloak] { display: none !important; }
@@ -3516,6 +3621,119 @@ function loadResources() {
     });
 }
 
+// ==================== TOAST NOTIFICATION FUNCTIONS ====================
+function showToast(message, type = 'info', duration = 3000) {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    
+    const toastId = 'toast_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    const icons = {
+        success: '<i class="fas fa-check-circle"></i>',
+        error: '<i class="fas fa-exclamation-circle"></i>',
+        warning: '<i class="fas fa-exclamation-triangle"></i>',
+        info: '<i class="fas fa-info-circle"></i>'
+    };
+    
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.id = toastId;
+    toast.innerHTML = `
+        <div class="toast-content">
+            <div class="toast-icon">${icons[type] || icons.info}</div>
+            <div class="toast-message">${message}</div>
+            <button class="toast-close" onclick="closeToast('${toastId}')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="toast-progress">
+            <div class="toast-progress-bar" style="animation-duration: ${duration}ms;"></div>
+        </div>
+    `;
+    
+    container.appendChild(toast);
+    
+    // Auto remove after duration
+    setTimeout(() => {
+        closeToast(toastId);
+    }, duration);
+}
+
+function closeToast(toastId) {
+    const toast = document.getElementById(toastId);
+    if (toast) {
+        toast.style.animation = 'slideOut 0.3s ease forwards';
+        setTimeout(() => {
+            if (toast && toast.parentNode) {
+                toast.remove();
+            }
+        }, 300);
+    }
+}
+
+// ==================== CANCEL MEMBERSHIP WITH TOAST ====================
+function confirmCancelMembership() {
+    const container = document.getElementById('toastContainer');
+    const confirmToastId = 'confirm_toast_' + Date.now();
+    
+    const confirmToast = document.createElement('div');
+    confirmToast.className = 'toast toast-warning';
+    confirmToast.id = confirmToastId;
+    confirmToast.innerHTML = `
+        <div class="toast-content" style="flex-direction: column; align-items: stretch;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="toast-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="toast-message" style="flex: 1;">
+                    <strong>Cancel Membership?</strong><br>
+                    <small style="color: #6b7280;">Your benefits will end after your current billing period.</small>
+                </div>
+                <button class="toast-close" onclick="closeToast('${confirmToastId}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 12px;">
+                <button onclick="closeToast('${confirmToastId}'); executeCancelMembership()" 
+                        style="flex: 1; padding: 8px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                    Yes, Cancel
+                </button>
+                <button onclick="closeToast('${confirmToastId}')" 
+                        style="flex: 1; padding: 8px; background: #e5e7eb; color: #374151; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                    No, Keep It
+                </button>
+            </div>
+        </div>
+    `;
+    
+    container.appendChild(confirmToast);
+}
+function executeCancelMembership() {    
+    const formData = new FormData();
+    formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+    formData.append('_method', 'POST');
+    
+    fetch('{{ route("member.cancel") }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            alert(data.message || 'Failed to cancel membership. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again later.');
+    });
+}
+
 function renderResourceItems(listId, items) {
     const list = document.getElementById(listId);
     let html = '';
@@ -3905,6 +4123,7 @@ function downloadDonationReceipt(transactionId, amount, date, paymentMethod) {
                     </div>
                 </div>
             </body>
+            
             </html>
         `;
         const blob = new Blob([receiptHTML], { type: 'text/html' });

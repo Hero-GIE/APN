@@ -15,7 +15,7 @@ use Carbon\Carbon;
 
 class DonationController extends Controller
 {
-    private const USD_TO_GHS_RATE = 10.89;
+    private const USD_TO_GHS_RATE = 11.30;
     
     public function initialize(Request $request)
     {
@@ -64,8 +64,6 @@ class DonationController extends Controller
             }
 
             $isMembership = in_array($request->membership_type, ['monthly', 'annual']);
-            
-            // For membership, validate the amount matches the plan
             if ($isMembership) {
                 $expectedAmount = $request->membership_type === 'monthly' ? 10 : 100;
                 
@@ -123,7 +121,6 @@ class DonationController extends Controller
 
                 $email = $authenticatedDonor->email;
             } else {
-                // Validate required fields for new donor
                 if (empty($request->firstname)) {
                     return response()->json([
                         'status' => false,

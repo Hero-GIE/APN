@@ -132,15 +132,15 @@ class Member extends Model
         return $this->end_date;
     }
 
-    public function getPlanNameAttribute(): string
-    {
-        return $this->membership_type === 'yearly' ? 'Yearly Plan' : 'Monthly Plan';
-    }
+   public function getPlanNameAttribute(): string
+{
+    return $this->membership_type === 'annual' ? 'Annual Plan' : 'Monthly Plan';
+}
 
-    public function getPriceAttribute(): int
-    {
-        return $this->membership_type === 'yearly' ? 299 : 29;
-    }
+public function getPriceAttribute(): int
+{
+    return $this->membership_type === 'annual' ? 100 : 10;
+}
     
     /**
      * Get total paid amount

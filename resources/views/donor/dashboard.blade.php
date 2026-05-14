@@ -354,7 +354,7 @@
             </div>
         </div>
 
-     <!-- Member CTA Banner (for non-members and expired members) -->
+     <!-- Member CTA Banner -->
 @if(!$activeMember || $activeMember->status != 'active')
 <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg shadow-lg p-6 mb-8">
     <div class="flex items-center justify-between">

@@ -68,26 +68,35 @@ class PaystackCallbackController extends Controller
         // ── 3. Extract details 
         $email    = $data['customer']['email'];
         $metadata = $data['metadata'] ?? [];
-        $amount   = ($data['amount'] ?? 0) / 100; // Amount in USD (converted from GHS if applicable)
-        $currency = $data['currency'] ?? 'USD';
+        $amountGHS = ($data['amount'] ?? 0) / 100; 
+        $currency = $data['currency'] ?? 'GHS';
 
         // ── 4. Determine payment type
         $membershipType = $metadata['membership_type'] ?? null;
         $isMembership = in_array($membershipType, ['monthly', 'annual']);
         $isDonation = !$isMembership; 
 
+        // IMPORTANT: Get USD amount from metadata (this is the correct 100 or 10)
+        $usdAmount = (float)($metadata['original_amount_usd'] ?? 0);
+
+        // If for some reason metadata doesn't have it, calculate based on membership type
+        if ($usdAmount <= 0 && $isMembership) {
+            $usdAmount = $membershipType === 'annual' ? 100 : 10;
+        }
+
         Log::info('Payment callback received', [
             'reference' => $reference,
             'email' => $email,
-            'amount' => $amount,
+            'amountGHS' => $amountGHS,
+            'usdAmount' => $usdAmount,
             'currency' => $currency,
             'membership_type' => $membershipType,
-            'is_membership' => $isMembership
+            'is_membership' => $isMembership,
+            'metadata_original_amount_usd' => $metadata['original_amount_usd'] ?? 'NOT_SET'
         ]);
 
         // ── 5. Prevent duplicate processing
         if ($isMembership) {
-
             if (MemberPayment::where('transaction_id', $reference)->exists()) {
                 Log::info('Duplicate membership callback — already processed', ['reference' => $reference]);
                 
@@ -104,7 +113,6 @@ class PaystackCallbackController extends Controller
         }
         
         if ($isDonation) {
-            // Check if donation already exists
             if (Donation::where('transaction_id', $reference)->exists()) {
                 Log::info('Duplicate donation callback — already processed', ['reference' => $reference]);
                 
@@ -124,26 +132,28 @@ class PaystackCallbackController extends Controller
         $existingDonor = Donor::where('email', $email)->first();
         $isNewDonor    = false;
         $plainPassword = null;
+        $hadMembershipBefore = false;
 
         if ($existingDonor) {
             $donor = $existingDonor;
             $this->updateDonorIfNeeded($donor, $metadata);
             
-            $hadMembershipBefore = Member::where('donor_id', $donor->id)->exists();
+            // Check if donor had a membership before (active or expired) for the same type
+            $hadMembershipBefore = Member::where('donor_id', $donor->id)
+                ->where('membership_type', $membershipType)
+                ->exists();
             
             Log::info('Existing donor found', [
                 'donor_id' => $donor->id,
-                'email' => $donor->email
+                'email' => $donor->email,
+                'had_membership_before' => $hadMembershipBefore
             ]);
-
         } else {
             $plainPassword = $this->generateDefaultPassword();
 
-            // Get values from metadata with fallbacks
             $firstname = $metadata['firstname'] ?? '';
             $lastname = $metadata['lastname'] ?? '';
             
-            // If firstname or lastname are empty, use parts from email
             if (empty($firstname)) {
                 $firstname = explode('@', $email)[0];
             }
@@ -156,10 +166,9 @@ class PaystackCallbackController extends Controller
                 'firstname' => $firstname,
                 'lastname' => $lastname,
                 'membership_type' => $membershipType,
-                'amount' => $amount
+                'usdAmount' => $usdAmount
             ]);
 
-            // Create donor WITHOUT email_verified_at (it's not in fillable)
             $donor = Donor::create([
                 'firstname'         => $firstname,
                 'lastname'          => $lastname,
@@ -175,7 +184,6 @@ class PaystackCallbackController extends Controller
                 'password'          => Hash::make($plainPassword),
             ]);
 
-            // Set email_verified_at separately (not mass assignable)
             $donor->email_verified_at = now();
             $donor->save();
 
@@ -189,37 +197,39 @@ class PaystackCallbackController extends Controller
             ]);
         }
 
-        $existingMember = Member::where('donor_id', $donor->id)->first();
-        $isExistingMember = $existingMember && $existingMember->status == 'active';
-
         // ── 7. Handle payment based on type
         $member = null;
         $donation = null;
+        $payment = null;
+        $isRenewalProcessed = false;
 
         if ($isMembership) {
-            // Process membership payment
-            $member = $this->processMembership($donor, $reference, $data, $metadata, $membershipType, $amount);
+            // Process membership payment - pass USD amount
+            $result = $this->processMembership($donor, $reference, $data, $metadata, $membershipType, $usdAmount);
+            $member = $result['member'];
+            $payment = $result['payment'];
+            $isRenewalProcessed = $result['is_renewal'];
             
             Log::info('Membership payment processed', [
                 'donor_id' => $donor->id,
                 'member_id' => $member->id,
+                'payment_id' => $payment->id,
                 'transaction_id' => $reference,
-                'amount' => $amount,
-                'membership_type' => $membershipType,
-                'is_existing_member' => $isExistingMember
+                'usdAmount' => $usdAmount,
+                'is_renewal' => $isRenewalProcessed,
+                'renewal_count' => $member->renewal_count
             ]);
         }
         
         if ($isDonation) {
-            // Process donation with reason
             $donationReason = $metadata['donation_reason'] ?? null;
             $customReason = $metadata['custom_reason'] ?? null;
             
             $donation = Donation::create([
                 'donor_id'          => $donor->id,
                 'transaction_id'    => $reference,
-                'amount'            => $amount,
-                'currency'          => $currency,
+                'amount'            => $usdAmount,
+                'currency'          => 'USD',
                 'payment_status'    => 'success',
                 'payment_method'    => $data['authorization']['channel'] ?? 'card',
                 'paystack_response' => $data,
@@ -231,10 +241,8 @@ class PaystackCallbackController extends Controller
                 'donor_id' => $donor->id,
                 'donation_id' => $donation->id,
                 'transaction_id' => $reference,
-                'amount' => $amount,
-                'donation_reason' => $donationReason,
-                'custom_reason' => $customReason,
-                'donor_is_member' => $isExistingMember
+                'amount' => $usdAmount,
+                'donation_reason' => $donationReason
             ]);
         }
 
@@ -305,8 +313,7 @@ class PaystackCallbackController extends Controller
                     'emails.member-renewal',
                     [
                         'member' => $member,
-                        'donation' => $donation,
-                        'membership_type' => $membershipType,
+                        'payment' => $payment,
                         'donor' => $donor,
                     ],
                     $donor->email,
@@ -315,7 +322,9 @@ class PaystackCallbackController extends Controller
                 
                 Log::info('✅ Member renewal email sent', [
                     'donor_id' => $donor->id,
-                    'email' => $donor->email
+                    'email' => $donor->email,
+                    'payment_id' => $payment->id ?? null,
+                    'amount' => $payment->amount ?? 0
                 ]);
             }
             
@@ -351,132 +360,123 @@ class PaystackCallbackController extends Controller
                 'message'   => "A new {$type} account was created after a successful payment.",
                 'user_info' => $donor->firstname . ' ' . $donor->lastname
                              . ' — ' . $donor->email
-                         . ($isMembership ? " ({$membershipType} membership - $" . $amount . ")" : " (Donation - $" . $amount . ")"),
+                         . ($isMembership ? " ({$membershipType} membership - $" . $usdAmount . ")" : " (Donation - $" . $usdAmount . ")"),
                 'time'      => now()->format('d M Y, h:i A'),
             ]);
         }
 
-Auth::guard('donor')->login($donor);
+        Auth::guard('donor')->login($donor);
 
-$isRenewal = false;
-if ($isMembership && isset($existingMember) && $existingMember) {
-    // Check if the member's renewal_count increased
-    $member = Member::where('donor_id', $donor->id)->first();
-    $isRenewal = $member && $member->renewal_count > 0;
-}
-
-// ── 10. Redirect to appropriate success page
-if ($isMembership) {
-    return redirect()->route('member.success', [
-        'reference' => $reference,
-        'is_renewal' => $isRenewal ? 'true' : 'false'
-    ])->with('success', $isRenewal ? 'Membership renewed successfully!' : 'Membership payment successful! Welcome to APN!');
-} else {
-    return redirect()->route('donation.success', ['reference' => $reference])
-        ->with('success', 'Donation successful! Thank you for your support!');
-}
+        // ── 10. Redirect to appropriate success page
+        if ($isMembership) {
+            return redirect()->route('member.success', [
+                'reference' => $reference,
+                'is_renewal' => $isRenewalProcessed ? 'true' : 'false'
+            ])->with('success', $isRenewalProcessed ? 'Membership renewed successfully!' : 'Membership payment successful! Welcome to APN!');
+        } else {
+            return redirect()->route('donation.success', ['reference' => $reference])
+                ->with('success', 'Donation successful! Thank you for your support!');
+        }
     }
 
-   private function processMembership($donor, $reference, $data, $metadata, $membershipType, $amount)
-{
+   private function processMembership($donor, $reference, $data, $metadata, $membershipType, $usdAmount)
+   {
     $now = Carbon::now();
     
-    if ($membershipType === 'annual') {
-        $startDate = $now->copy();
-        $endDate = $now->copy()->addYear();
-    } else { 
-        $startDate = $now->copy();
-        $endDate = $now->copy()->addMonth();
-    }
-
+    // Look for ANY existing membership of the same type (including cancelled)
     $existingMember = Member::where('donor_id', $donor->id)
-        ->where('status', 'active')
+        ->where('membership_type', $membershipType)
+        ->orderBy('created_at', 'desc')
         ->first();
-
+    
     $isRenewal = false;
-    $oldEndDate = null;
-
+    $member    = null;
+    $payment   = null;
+    
     if ($existingMember) {
-        // This is a RENEWAL
-        $isRenewal = true;
+        $isRenewal  = true;
         $oldEndDate = $existingMember->end_date;
+        $oldStatus = $existingMember->status;  
         
-        // Extend the end date
+        // Calculate new end date
+        if ($membershipType === 'annual') {
+            if ($existingMember->end_date && $existingMember->end_date->isFuture()) {
+                $newEndDate = $existingMember->end_date->copy()->addYear();
+            } else {
+                $newEndDate = $now->copy()->addYear();
+            }
+        } else {
+            if ($existingMember->end_date && $existingMember->end_date->isFuture()) {
+                $newEndDate = $existingMember->end_date->copy()->addMonth();
+            } else {
+                $newEndDate = $now->copy()->addMonth();
+            }
+        }
+        
         $existingMember->update([
-            'end_date' => $membershipType === 'annual' 
-                ? $existingMember->end_date->addYear() 
-                : $existingMember->end_date->addMonth(),
+            'end_date'      => $newEndDate,
             'renewal_count' => $existingMember->renewal_count + 1,
-            'status' => 'active',
+            'status'        => 'active',  
+            'start_date'    => $existingMember->start_date ?: $now,
         ]);
         
+        $existingMember->refresh();
         $member = $existingMember;
         
-        Log::info('Membership renewed', [
-            'donor_id' => $donor->id,
-            'member_id' => $member->id,
-            'old_end_date' => $oldEndDate,
-            'new_end_date' => $member->end_date,
-            'renewal_count' => $member->renewal_count
+        Log::info('Membership renewed - status updated', [
+            'donor_id'      => $donor->id,
+            'member_id'     => $member->id,
+            'old_status'    => $oldStatus,
+            'new_status'    => $member->status,
+            'old_end_date'  => $oldEndDate,
+            'new_end_date'  => $member->end_date,
+            'renewal_count' => $member->renewal_count,
         ]);
     } else {
         // New membership
+        $startDate = $now->copy();
+        $endDate   = $membershipType === 'annual'
+            ? $now->copy()->addYear()
+            : $now->copy()->addMonth();
+        
         $member = Member::create([
-            'donor_id' => $donor->id,
+            'donor_id'        => $donor->id,
             'membership_type' => $membershipType,
-            'status' => 'active',
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'renewal_count' => 0,
+            'status'          => 'active',
+            'start_date'      => $startDate,
+            'end_date'        => $endDate,
+            'renewal_count'   => 0,
         ]);
         
         Log::info('New membership created', [
-            'donor_id' => $donor->id,
-            'member_id' => $member->id,
+            'donor_id'        => $donor->id,
+            'member_id'       => $member->id,
             'membership_type' => $membershipType,
-            'start_date' => $startDate,
-            'end_date' => $endDate
         ]);
     }
     
-    // Record membership payment
+    // Create payment record
     $payment = MemberPayment::create([
-        'donor_id' => $donor->id,
-        'member_id' => $member->id,
-        'transaction_id' => $reference,
-        'membership_type' => $membershipType,
-        'amount' => $amount,
-        'currency' => $data['currency'] ?? 'USD',
-        'payment_method' => $data['authorization']['channel'] ?? 'card',
-        'payment_status' => 'success',
+        'donor_id'          => $donor->id,
+        'member_id'         => $member->id,
+        'transaction_id'    => $reference,
+        'membership_type'   => $membershipType,
+        'amount'            => $usdAmount,
+        'currency'          => 'USD',
+        'payment_method'    => $data['authorization']['channel'] ?? 'card',
+        'payment_status'    => 'success',
         'paystack_response' => $data,
-        'payment_date' => $now,
-        'period_start' => $member->start_date,
-        'period_end' => $member->end_date,
+        'payment_date'      => $now,
+        'period_start'      => $member->start_date,
+        'period_end'        => $member->end_date,
     ]);
-
-    // Send renewal email if this is a renewal
-    if ($isRenewal && function_exists('sendEmail')) {
-        sendEmail(
-            'emails.membership-renewal',
-            [
-                'donor' => $donor,
-                'member' => $member,
-                'payment' => $payment,
-                'old_end_date' => $oldEndDate
-            ],
-            $donor->email,
-            'Your APN Membership Has Been Renewed'
-        );
-        
-        Log::info('Membership renewal email sent', [
-            'donor_id' => $donor->id,
-            'email' => $donor->email
-        ]);
+    
+    return [
+        'member' => $member,
+        'payment' => $payment,
+        'is_renewal' => $isRenewal
+    ];
     }
-
-    return $member;
-}
 
     private function updateDonorIfNeeded(Donor $donor, array $metadata): void
     {

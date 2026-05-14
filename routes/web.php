@@ -37,10 +37,14 @@ Route::get('/donation/success', function (Request $request) {
 
 Route::get('/member/success', function (Request $request) {
     $reference = $request->reference;
+    $isRenewal = $request->is_renewal === 'true';
+    
     $membership = \App\Models\MemberPayment::with('member')
         ->where('transaction_id', $reference)
-        ->first();    
-    return view('member.success', compact('reference', 'membership'));
+        ->first();
+    
+    // Pass wasRenewal to the view
+    return view('member.success', compact('reference', 'membership'))->with('wasRenewal', $isRenewal);
 })->name('member.success');
 
 Route::post('/donation/initialize', [DonationController::class, 'initialize'])->name('donation.initialize');
@@ -52,9 +56,9 @@ Route::get('/filter/download/{id}', [FilterController::class, 'downloadImage'])-
 Route::delete('/filter/delete/{id}', [FilterController::class, 'deleteImage'])->name('filter.delete');
 
 // Donor routes (guests)
-Route::middleware('guest:donor')->prefix('donor')->name('donor.')->group(function () {
+Route::prefix('donor')->name('donor.')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->middleware('guest:donor');
 });
 
 // Donor routes (authenticated)
@@ -139,7 +143,7 @@ Route::middleware(['auth:donor', 'member.active'])->prefix('member')->name('memb
     Route::get('/membership', [MemberController::class, 'membership'])->name('membership');
 });
 
-// TEMPORARY ROUTE TO REGENERATE BADGES (REMOVE AFTER USE)
+// TEMPORARY ROUTE TO REGENERATE BADGES 
 Route::middleware(['auth:donor'])->get('/member/regenerate-badges', function() {
     $controller = new App\Http\Controllers\MemberBadgeController();
     return $controller->regenerateAllBadges();
@@ -150,13 +154,6 @@ Route::prefix('badge')->name('member.badge.')->group(function () {
     Route::get('widget/{token}', [MemberBadgeController::class, 'widget'])->name('widget');
     Route::get('verify/{token}', [MemberBadgeController::class, 'verify'])->name('verify');
     Route::post('track/{token}', [MemberBadgeController::class, 'track'])->name('track');
-});
-
-// ===== PUBLIC BADGE ROUTES 
-Route::prefix('badge')->name('member.badge.')->group(function () {
-    Route::get('image/{token}', [MemberBadgeController::class, 'image'])->name('image');
-    Route::get('widget/{token}', [MemberBadgeController::class, 'widget'])->name('widget');
-    Route::get('verify/{token}', [MemberBadgeController::class, 'verify'])->name('verify');
 });
 
 // ===== PUZZLES ROUTES (Quiz and Word Search)

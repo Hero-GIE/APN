@@ -163,28 +163,6 @@
     .country-item .ci-name { flex: 1; }
     .country-no-results { padding: 1rem; text-align: center; color: #94a3b8; font-size: 0.83rem; }
 
-    /* .region-picker { position: relative; }
-    .region-trigger { width: 100%; padding: 0.75rem 2.5rem 0.75rem 2.6rem; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 0.88rem; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s ease; text-align: left; outline: none; user-select: none; font-family: 'Open Sans', sans-serif; }
-    .region-trigger:hover, .region-trigger.open { border-color: #3b82f6; background: #fff; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
-    .region-trigger .rt-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .region-trigger .rt-chevron { position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.75rem; transition: transform 0.2s ease; }
-    .region-trigger.open .rt-chevron { transform: translateY(-50%) rotate(180deg); }
-    .region-trigger .rt-icon { position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem; pointer-events: none; }
-    .region-dropdown { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #fff; border: 2px solid #e2e8f0; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 100; display: none; overflow: hidden; }
-    .region-dropdown.open { display: block; }
-    .region-list { max-height: 220px; overflow-y: auto; }
-    .region-list::-webkit-scrollbar { width: 4px; }
-    .region-list::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
-    .region-item { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.6rem 0.9rem; font-size: 0.85rem; color: #334155; cursor: pointer; transition: background 0.15s ease; border-bottom: 1px solid #f8fafc; font-family: 'Open Sans', sans-serif; }
-    .region-item:last-child { border-bottom: none; }
-    .region-item:hover { background: #eff6ff; }
-    .region-item.selected { background: #dbeafe; font-weight: 600; }
-    .region-item .ri-name { font-weight: 700; color: #1e293b; font-family: 'Urbanist', sans-serif; }
-    .region-item .ri-cap { font-size: 0.75rem; color: #64748b; margin-top: 1px; }
-    .region-custom-wrap { border-top: 1px solid #e2e8f0; padding: 0.6rem; background: #fafbfc; }
-    .region-custom-input { width: 100%; padding: 0.5rem 0.8rem; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 0.83rem; outline: none; background: #fff; color: #1e293b; font-family: 'Open Sans', sans-serif; }
-    .region-custom-input:focus { border-color: #3b82f6; }
-    .region-custom-label { font-size: 0.73rem; color: #94a3b8; margin-bottom: 0.35rem; display: block; } */
 </style>
 
 <div class="apn-layout animate-page-reveal">
@@ -213,9 +191,6 @@
             </p>
         </div>
     </div>
-
-
-
 
     <!-- Left Panel -->
     <div class="left-panel apn-scrollbar p-6 md:p-8 relative">
@@ -325,7 +300,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="mb-4">
                 <label class="flex items-center gap-1 text-xs font-semibold text-[#334155] mb-1.5" style="font-family:'Urbanist',sans-serif;">
                     <i class="far fa-envelope text-[#3b82f6]" style="font-size:0.75rem;"></i> Email Address <span class="text-red-500">*</span>
@@ -378,27 +352,6 @@
                         <input type="text" id="city" class="field-apn" placeholder="Accra">
                     </div>
                 </div>
-                {{-- <div>
-                    <label class="flex items-center gap-1 text-xs font-semibold text-[#334155] mb-1.5" style="font-family:'Urbanist',sans-serif;">
-                        <i class="fas fa-map text-[#3b82f6]" style="font-size:0.75rem;"></i> Region
-                    </label>
-                    <input type="hidden" id="region" value="">
-                    <div class="region-picker" id="regionPicker">
-                        <button type="button" class="region-trigger" id="regionTrigger" onclick="toggleRegionDropdown()">
-                            <i class="fas fa-map rt-icon"></i>
-                            <span class="rt-name" id="selectedRegionName">Select or type region</span>
-                            <i class="fas fa-chevron-down rt-chevron"></i>
-                        </button>
-                        <div class="region-dropdown" id="regionDropdown">
-                            <div class="region-list" id="regionList"></div>
-                            <div class="region-custom-wrap">
-                                <span class="region-custom-label">Not listed? Type your region:</span>
-                                <input type="text" class="region-custom-input" id="regionCustomInput" placeholder="e.g. Ashanti, Northern..." oninput="onRegionCustomInput(this.value)">
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
-
 
                 <div>
     <label class="flex items-center gap-1 text-xs font-semibold text-[#334155] mb-1.5" style="font-family:'Urbanist',sans-serif;">
@@ -435,7 +388,7 @@
 <script>
 const INITIATE_URL = '{{ route("donation.initialize") }}';
 let selectedMembership = 'annual';
-let selectedAmount = 350;
+let selectedAmount = 100;
 
 function selectPlan(type, amount, cardEl) {
     selectedMembership = type;
@@ -604,44 +557,6 @@ document.addEventListener('click', function(e) {
         countryDropdownOpen = false;
     }
 });
-
-// const GHANA_REGIONS = [
-//     {name:'Ahafo',capital:'Goaso'},{name:'Ashanti',capital:'Kumasi'},
-//     {name:'Bono',capital:'Sunyani'},{name:'Bono East',capital:'Techiman'},
-//     {name:'Central',capital:'Cape Coast'},{name:'Eastern',capital:'Koforidua'},
-//     {name:'Greater Accra',capital:'Accra'},{name:'North East',capital:'Nalerigu'},
-//     {name:'Northern',capital:'Tamale'},{name:'Oti',capital:'Dambai'},
-//     {name:'Savannah',capital:'Damongo'},{name:'Upper East',capital:'Bolgatanga'},
-//     {name:'Upper West',capital:'Wa'},{name:'Volta',capital:'Ho'},
-//     {name:'Western',capital:'Sekondi-Takoradi'},{name:'Western North',capital:'Sefwi Wiawso'},
-// ];
-
-// let regionDropdownOpen = false;
-
-// function buildRegionList() {
-//     const list = document.getElementById('regionList');
-//     list.innerHTML = GHANA_REGIONS.map(r => `<div class="region-item" onclick="selectRegion('${r.name}','${r.capital}')"><div><div class="ri-name">${r.name}</div><div class="ri-cap">Capital: ${r.capital}</div></div></div>`).join('');
-// }
-
-// function toggleRegionDropdown() {
-//     const dropdown = document.getElementById('regionDropdown');
-//     const trigger = document.getElementById('regionTrigger');
-//     regionDropdownOpen = !regionDropdownOpen;
-//     dropdown.classList.toggle('open', regionDropdownOpen);
-//     trigger.classList.toggle('open', regionDropdownOpen);
-//     if (regionDropdownOpen) { buildRegionList(); setTimeout(() => document.getElementById('regionCustomInput').focus(), 80); }
-// }
-
-// function selectRegion(name, capital) {
-//     document.getElementById('region').value = name;
-//     document.getElementById('selectedRegionName').textContent = name + ' (' + capital + ')';
-//     document.getElementById('regionCustomInput').value = '';
-//     document.querySelectorAll('.region-item').forEach(el => el.classList.remove('selected'));
-//     event.currentTarget.classList.add('selected');
-//     document.getElementById('regionDropdown').classList.remove('open');
-//     document.getElementById('regionTrigger').classList.remove('open');
-//     regionDropdownOpen = false;
-// }
 
 function onRegionCustomInput(val) {
     document.getElementById('region').value = val;

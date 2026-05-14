@@ -18,7 +18,9 @@ class MemberBadgeController extends Controller
     public function index()
     {
         $donor = Auth::guard('donor')->user();
-        $member = Member::where('donor_id', $donor->id)->first();
+      $member = Member::where('donor_id', $donor->id)
+        ->orderBy('id', 'desc') 
+        ->first();
         
         if (!$member) {
             return redirect()->route('donor.membership')
@@ -64,30 +66,43 @@ class MemberBadgeController extends Controller
     /**
      * Serve the badge image with profile picture (optimized sizing)
      */
-    public function image($token)
-    {
-        $member = Member::where('badge_token', $token)->first();
-        
-        if (!$member) {
-            return $this->getBadgeResponse('not-found');
-        }
-        
-        $this->ensureBadgeImagesExist();
-        
-        if ($member->status === 'active') {
-            $badgeType = 'active';
-        } elseif ($member->status === 'expired') {
-            $badgeType = 'expired';
-        } elseif ($member->status === 'cancelled') {
-            $badgeType = 'cancelled';
-        } else {
-            $badgeType = 'pending';
-        }
-        
-        $this->logBadgeView($member, request()->header('Referer'));
-        
-        return $this->getBadgeWithProfileImage($member, $badgeType);
+   public function image($token)
+{
+    $member = Member::where('badge_token', $token)->first();
+    
+    if (!$member) {
+        return $this->getBadgeResponse('not-found');
     }
+    
+    // Refresh to get latest data
+    $member->refresh();
+    
+    // Get the most recent active membership for this donor
+    $latestActive = Member::where('donor_id', $member->donor_id)
+        ->where('status', 'active')
+        ->orderBy('id', 'desc')
+        ->first();
+    
+    // If there's a newer active membership with a token, use that instead
+    if ($latestActive && $latestActive->badge_token && $latestActive->id != $member->id) {
+        return redirect()->route('member.badge.image', ['token' => $latestActive->badge_token]);
+    }
+    
+    // Determine badge type based on status
+    if ($member->status === 'active') {
+        $badgeType = 'active';
+    } elseif ($member->status === 'expired') {
+        $badgeType = 'expired';
+    } elseif ($member->status === 'cancelled') {
+        $badgeType = 'cancelled';
+    } else {
+        $badgeType = 'pending';
+    }
+    
+    $this->logBadgeView($member, request()->header('Referer'));
+    
+    return $this->getBadgeWithProfileImage($member, $badgeType);
+}
     
 /**
  * Get badge with properly sized profile image overlay
@@ -442,9 +457,9 @@ public function download(Request $request)
         $transparent = imagecolorallocatealpha($img, 0, 0, 0, 127);
         imagefill($img, 0, 0, $transparent);
         
-        $accentColor = imagecolorallocatealpha($img, 79, 70, 229, 50); // Semi-transparent
-        $textColor = imagecolorallocatealpha($img, 255, 255, 255, 200); // Mostly white
-        $lightGray = imagecolorallocatealpha($img, 255, 255, 255, 150); // Semi-transparent white
+        $accentColor = imagecolorallocatealpha($img, 79, 70, 229, 50); 
+        $textColor = imagecolorallocatealpha($img, 255, 255, 255, 200);
+        $lightGray = imagecolorallocatealpha($img, 255, 255, 255, 150); 
         
         // Draw decorative border with accent color
         imagerectangle($img, 5, 5, $width - 5, $height - 5, $accentColor);
@@ -500,7 +515,7 @@ public function download(Request $request)
         imagestring($img, 3, $bottomX, $bottomY, $bottomText, $lightGray);
         
     } else {
-        // For other badge types, keep the original colored backgrounds
+      
         $colorSchemes = [
             'expired' => [
                 'bg' => [239, 68, 68],

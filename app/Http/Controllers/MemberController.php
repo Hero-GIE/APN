@@ -155,7 +155,7 @@ public function dashboard()
     return view('member.dashboard', compact(
         'donor',
         'member',
-        'activeMember',  // Pass the active member separately
+        'activeMember', 
         'payments',
         'donations',
         'stats',
@@ -515,30 +515,45 @@ public function dashboard()
     /**
      * Cancel Membership
      */
-    public function cancelMembership(Request $request)
-    {
-        $donor = Auth::guard('donor')->user();
-        $member = Member::where('donor_id', $donor->id)
-            ->where('status', 'active')
-            ->first();
+ /**
+ * Cancel Membership
+ */
+public function cancelMembership(Request $request)
+{
+    $donor = Auth::guard('donor')->user();
+    $member = Member::where('donor_id', $donor->id)
+        ->where('status', 'active')
+        ->first();
 
-        if (!$member) {
-            return redirect()->back()
-                ->with('error', 'No active membership found.');
+    if (!$member) {
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No active membership found.'
+            ], 404);
         }
-
-        $member->update([
-            'status' => 'cancelled',
-        ]);
-
-        Log::info('Membership cancelled', [
-            'donor_id' => $donor->id,
-            'member_id' => $member->id
-        ]);
-
-        return redirect()->route('member.dashboard')
-            ->with('success', 'Your membership has been cancelled. You will continue to have access until the end of your billing period.');
+        return redirect()->back()->with('error', 'No active membership found.');
     }
+
+    $member->update([
+        'status' => 'cancelled',
+    ]);
+
+    Log::info('Membership cancelled', [
+        'donor_id' => $donor->id,
+        'member_id' => $member->id
+    ]);
+
+    if ($request->wantsJson()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Your membership has been cancelled successfully.'
+        ]);
+    }
+
+    return redirect()->route('member.dashboard')
+        ->with('success', 'Your membership has been cancelled. You will continue to have access until the end of your billing period.');
+}
 
     /**
      * Renew Membership

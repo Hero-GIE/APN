@@ -999,12 +999,10 @@
         `;
     }
 
-    // Close modal when clicking outside
     document.getElementById('modalOverlay')?.addEventListener('click', function() {
         closeTransactionModal();
     });
 
-    // Close modal with Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeTransactionModal();
